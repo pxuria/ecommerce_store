@@ -3,7 +3,6 @@ import Image from "next/image";
 import Carousel from "@/components/shared/Carousel";
 import Categories from "@/components/home/Categories";
 import HomeFeatures from "@/components/home/HomeFeatures";
-import ExpandableCards from "@/components/shared/ExpandableCards";
 
 export const metadata: Metadata = {
   title: "فروشگاه آنلاین | صفحه اصلی",
@@ -30,7 +29,6 @@ const page = () => {
           api="products/newest"
         />
       </div>
-      <ExpandableCards />
       <div className="relative w-full mt-20 z-0">
         <Image
           src="/assets/images/dots.svg"

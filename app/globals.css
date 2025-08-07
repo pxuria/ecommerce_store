@@ -158,9 +158,6 @@ input[type="search"]::-webkit-search-results-decoration {
   }
 }
 
-@import "slick-carousel/slick/slick.css";
-@import "slick-carousel/slick/slick-theme.css";
-
 .loader {
   width: 25px;
   aspect-ratio: 1;
