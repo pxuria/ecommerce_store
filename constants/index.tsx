@@ -330,8 +330,23 @@ export const dashboardAdminTabs = [
     icon: <IoBagAdd className="w-5 h-5" />,
   },
   {
-    name: "افزودن بلاگ",
-    dashName: "add_blog",
+    name: "بلاگ ها",
+    dashName: "blogs",
+    icon: <IoMdPerson className="w-5 h-5" />,
+  },
+  {
+    name: "محصولات",
+    dashName: "products",
+    icon: <IoMdPerson className="w-5 h-5" />,
+  },
+  {
+    name: "دسته بندی محصولات",
+    dashName: "product-categories",
+    icon: <IoMdPerson className="w-5 h-5" />,
+  },
+  {
+    name: "لیست کاربران",
+    dashName: "users-list",
     icon: <IoMdPerson className="w-5 h-5" />,
   },
   {
