@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" id="box">
+  <path fill="#f8b84e" fill-rule="evenodd" d="m20.951 8.638 3.9-3.9h-15.6l-3.9 3.9z"></path>
+  <path fill="#fcd062" fill-rule="evenodd" d="M5.351 8.638h15.6v15.6h-15.6z"></path>
+  <path fill="#f8aa3a" fill-rule="evenodd" d="M20.951 24.238v-15.6l3.9-3.9v15.6z"></path>
+  <path fill="none" stroke="#34485c" stroke-linecap="round" stroke-linejoin="round" d="M7.86 18.486h5.85m-5.85 2h3.9"></path>
+  <path fill="#25b39e" d="M509.002 1406.303a4.494 4.494 0 0 1 0 6.367 4.494 4.494 0 0 1-6.368 0 4.497 4.497 0 0 1 0-6.37 4.497 4.497 0 0 1 6.368 0z" color="#000" font-family="sans-serif" font-weight="400" overflow="visible" style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal;marker:none" transform="translate(-484.324 -1385.993)"></path>
+  <path fill="#e9eded" fill-rule="evenodd" d="M508.554 1407.486a.5.5 0 0 0-.31.106l-3.579 2.705-1.193-1.45a.5.5 0 1 0-.771.637l1.498 1.819a.5.5 0 0 0 .687.082l3.961-2.996a.5.5 0 0 0-.293-.903z" color="#000" font-family="sans-serif" font-weight="400" overflow="visible" style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal" transform="translate(-484.324 -1385.993)"></path>
+</svg>

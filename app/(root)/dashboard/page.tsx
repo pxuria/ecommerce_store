@@ -1,0 +1,91 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import Orders from "@/components/dashboard/Orders";
+import Profile from "@/components/dashboard/Profile";
+import Bookmarks from "@/components/dashboard/Bookmarks";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { dashboardAdminTabs, dashboardTabs } from "@/constants";
+import { IoExitOutline } from "react-icons/io5";
+import AddProduct from "@/components/dashboard/AddProduct";
+import AddCategory from "@/components/dashboard/AddCategory";
+
+const Page = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("tab") || "profile"
+  );
+
+  useEffect(
+    () => router.replace(`?tab=${activeTab}`, { scroll: false }),
+    [activeTab, router]
+  );
+
+  return (
+    <section className="px-10 mt-12">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        dir="rtl"
+        className="w-full flex items-start jusrify-start flex-col md:flex-row gap-8 my-10"
+      >
+        <TabsList className="flex flex-row md:flex-column justify-start gap-2 w-full md:w-1/4 bg-white overflow-y-hidden overflow-x-auto h-fit">
+          {dashboardTabs.map((item) => (
+            <TabsTrigger
+              key={item.dashName}
+              value={item.dashName}
+              className="w-full flex_center gap-2 py-3 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted"
+            >
+              {item.name}
+              {item.icon}
+            </TabsTrigger>
+          ))}
+
+          {session?.user.role === "admin" && (
+            dashboardAdminTabs.map(item => (
+              <TabsTrigger
+                key={item.dashName}
+                value={item.dashName}
+                className="w-full flex_center gap-2 py-3 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted"
+              >
+                {item.name}
+                {item.icon}
+              </TabsTrigger>
+            ))
+          )}
+
+          <button
+            className="text-sm font-medium flex_center gap-2 bg-[#EF4156] primary_transition w-full py-3 px-4 md:px-0 text-white rounded-lg text-nowrap"
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/" })}
+          >
+            خروج از حساب کاربری
+            <IoExitOutline className="w-5 h-5" />
+          </button>
+        </TabsList>
+
+        <TabsContent value="profile" className="w-full md:w-3/4 !mt-0">
+          <Profile />
+        </TabsContent>
+        <TabsContent value="orders" className="w-full md:w-3/4 !mt-0">
+          <Orders />
+        </TabsContent>
+        <TabsContent value="bookmarks" className="w-full md:w-3/4 !mt-0">
+          <Bookmarks />
+        </TabsContent>
+        <TabsContent value="add_product" className="w-full md:w-3/4 !mt-0">
+          <AddProduct />
+        </TabsContent>
+        <TabsContent value="add_category" className="w-full md:w-3/4 !mt-0">
+          <AddCategory />
+        </TabsContent>
+      </Tabs>
+    </section>
+  );
+};
+
+export default Page;

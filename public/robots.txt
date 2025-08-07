@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /dashboard
+
+# Host
+Host: https://marincollection.com
+
+# Sitemaps
+Sitemap: https://marincollection.com/sitemap.xml
+Sitemap: https://marincollection.com/product-sitemap.xml
