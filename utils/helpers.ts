@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import axiosInstance from "@/lib/axiosInstance";
 import { CartItem } from "@/types";
 
@@ -52,4 +53,12 @@ export async function asyncHandler<T>(actionFn: ActionFn<T>, errorMsg: string): 
     console.error(errorMsg, error);
     return { error: errorMsg };
   }
+}
+
+export function getFinalPrice(pricePerMeter: Decimal, discountPercent?: Decimal) {
+  if (!discountPercent || discountPercent.equals(0)) {
+    return pricePerMeter;
+  }
+  const discountMultiplier = new Decimal(1).minus(discountPercent.div(100));
+  return pricePerMeter.mul(discountMultiplier);
 }
