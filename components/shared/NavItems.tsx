@@ -1,6 +1,6 @@
-import { navbarLinks } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { navbarLinks } from "@/constants";
 
 const NavItems = () => {
   const pathname = usePathname();
@@ -12,9 +12,8 @@ const NavItems = () => {
         <Link
           key={index}
           href={item.link}
-          className={`nav_link ${navLinkClasses} text-black ${
-            pathname === item?.link ? "nav_link_active" : ""
-          }`}
+          className={`nav_link ${navLinkClasses} text-black ${pathname === item?.link ? "nav_link_active" : ""
+            }`}
         >
           {item.label}
         </Link>
