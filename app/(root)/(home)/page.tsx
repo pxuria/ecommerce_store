@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Carousel from "@/components/shared/Carousel";
-import Categories from "@/components/home/Categories";
 import HomeFeatures from "@/components/home/HomeFeatures";
 
 export const metadata: Metadata = {
@@ -19,31 +17,21 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <>
-      <Categories />
-      <div className="relative w-full">
-        <Carousel
-          title="محصولات جدید"
-          side="right"
-          seeAllLink="products"
-          carouselBg="white"
-          api="products/newest"
-        />
-      </div>
-      <div className="relative w-full mt-20 z-0">
-        <Image
-          src="/assets/images/dots.svg"
-          alt="vector"
-          width={170}
-          height={220}
-          className="absolute right-1 -top-12 opacity-25 -z-10"
-        />
-        <Carousel
-          title="محصولات پرفروش"
-          seeAllLink="products  "
-          carouselClass="z-10"
-          api="products/best-selling"
-        />
-      </div>
+      <Carousel
+        title="محصولات جدید"
+        side="right"
+        seeAllLink="products"
+        carouselBg="white"
+        api="products/newest"
+      />
+
+      <Carousel
+        title="محصولات پرفروش"
+        seeAllLink="products  "
+        carouselClass="z-10"
+        api="products/best-selling"
+      />
+
       <HomeFeatures />
     </>
   );

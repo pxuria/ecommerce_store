@@ -1,22 +1,12 @@
 import { brandName } from "@/constants";
-import Image from "next/image";
 
 const ContactusText = () => {
     return (
         <div className="py-10 px-4 w-full lg:w-3/5 mx-auto flex-column items-start justify-start">
-            <div className="relative">
-                <Image
-                    src="/assets/images/dots.svg"
-                    alt="vector"
-                    width={170}
-                    height={220}
-                    className="absolute -right-14 top-0 opacity-20 -z-10"
-                />
-                <h1 className="text-3xl font-bold mb-8 bg-white">
-                    تماس با{" "}
-                    <strong className="text-pink_800 text-4xl font-bold ">{brandName}</strong>
-                </h1>
-            </div>
+            <h1 className="text-3xl font-bold mb-8 bg-white">
+                تماس با{" "}
+                <strong className="text-pink_800 text-4xl font-bold ">{brandName}</strong>
+            </h1>
 
             <p className="text-lg leading-relaxed bg-white">
                 <strong className="text-pink_800">{brandName}</strong>، فروشگاه آنلاین مدرن و
