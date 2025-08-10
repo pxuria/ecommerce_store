@@ -11,7 +11,7 @@ const socials = [
   {
     href: 'https://t.me/marin',
     ariaLabel: `تلگرام ${brandName}`,
-    icon: <FaTelegramPlane className="text-[#3AA9EA] hover:text-blue_700 transition" />
+    icon: <FaTelegramPlane className="text-[#3AA9EA] hover:text-secondary-700 transition" />
   },
   {
     href: 'https://wa.me/yourwhatsappnumber',

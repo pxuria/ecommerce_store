@@ -114,7 +114,7 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
 
           <div className="flex items-center justify-start gap-3">
             <span className="text-black font-medium">دسته بندی :</span>
-            <span className="text-black text-blue-700 font-medium">
+            <span className="text-secondary-700 font-medium">
               {product.category.name}
             </span>
           </div>
@@ -129,11 +129,10 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
                   <button
                     key={size.name}
                     type="button"
-                    className={`px-4 py-1 rounded-lg font-medium flex_center ${
-                      selectedSize === size.name
-                        ? "border-2 bg-yellow_300 text-black border-orange_900"
-                        : "border border-muted"
-                    }`}
+                    className={`px-4 py-1 rounded-lg font-medium flex_center ${selectedSize === size.name
+                      ? "border-2 bg-yellow_300 text-black border-primary-900"
+                      : "border border-muted"
+                      }`}
                     onClick={() => setSelectedSize(size.name)}
                     aria-label={`انتخاب سایز ${size.name}`}
                   >
@@ -153,11 +152,10 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
                 <button
                   key={index}
                   type="button"
-                  className={`px-4 py-1 ${
-                    selectedColor === item.name
-                      ? "border-2 bg-yellow_300 text-black border-orange_900"
-                      : "border border-muted"
-                  } rounded-lg flex_center`}
+                  className={`px-4 py-1 ${selectedColor === item.name
+                    ? "border-2 bg-yellow_300 text-black border-primary-900"
+                    : "border border-muted"
+                    } rounded-lg flex_center`}
                   onClick={() => setSelectedColor(item.name)}
                   aria-label={`انتخاب رنگ ${item.name}`}
                 >
@@ -179,9 +177,8 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
           <div className="flex gap-2 mt-2">
             <h2 className="font-medium text-base">موجودی :</h2>
             <span
-              className={`font-bold text-lg ${
-                stockCount > 0 ? "text-green-600" : "text-red-600"
-              }`}
+              className={`font-bold text-lg ${stockCount > 0 ? "text-green-600" : "text-red-600"
+                }`}
             >
               {stockCount > 0 ? `${stockCount} عدد موجود است` : "ناموجود"}
             </span>
@@ -216,13 +213,12 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
 
             <button
               type="button"
-              className={`btn py-2 rounded-lg text-white flex_center gap-2 ${
-                quantity === 0
-                  ? stockCount === 0
-                    ? "w-full bg-[#636363] hover:bg-black cursor-not-allowed"
-                    : "w-full bg-pink_600 hover:bg-pink_700"
-                  : "w-4/5 bg-red-500 hover:bg-red-600"
-              }`}
+              className={`btn py-2 rounded-lg text-white flex_center gap-2 ${quantity === 0
+                ? stockCount === 0
+                  ? "w-full bg-[#636363] hover:bg-black cursor-not-allowed"
+                  : "w-full bg-pink_600 hover:bg-pink_700"
+                : "w-4/5 bg-red-500 hover:bg-red-600"
+                }`}
               onClick={
                 quantity === 0 ? handleAddToCart : handleRemoveAllFromCart
               }
@@ -231,8 +227,8 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
               {stockCount === 0
                 ? "ناموجود"
                 : quantity === 0
-                ? "افزودن به سبد خرید"
-                : "حذف از سبد خرید"}
+                  ? "افزودن به سبد خرید"
+                  : "حذف از سبد خرید"}
               {stockCount === 0 ? null : quantity === 0 ? (
                 <FiShoppingBag />
               ) : (

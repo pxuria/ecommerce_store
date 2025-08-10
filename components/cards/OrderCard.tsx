@@ -32,19 +32,18 @@ const OrderCard = ({ order }: Props) => {
         </h3>
 
         <span
-          className={`rounded border-2 ${
-            order.status === "pending"
-              ? "border-orange_900 bg-yellow_300 text-orange_900"
+          className={`rounded border-2 ${order.status === "pending"
+              ? "border-primary-900 bg-yellow_300 text-secondary-border-primary-900"
               : order.status === "paid"
-              ? "border-green-800 bg-green-200 text-green-800"
-              : "border-red-700 bg-red-100 text-red-700"
-          } text-xs font-medium text-nowrap px-2 py-1 select-none`}
+                ? "border-green-800 bg-green-200 text-green-800"
+                : "border-red-700 bg-red-100 text-red-700"
+            } text-xs font-medium text-nowrap px-2 py-1 select-none`}
         >
           {order.status === "pending"
             ? "در انتظار پرداخت"
             : order.status === "paid"
-            ? "پرداخت شده"
-            : "ناموفق"}
+              ? "پرداخت شده"
+              : "ناموفق"}
         </span>
       </div>
 

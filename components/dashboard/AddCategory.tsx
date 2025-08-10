@@ -65,7 +65,7 @@ const AddCategory = () => {
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-500 text-white py-2 rounded-md w-full disabled:bg-blue-400 disabled:cursor-not-allowed"
+          className="bg-secondary-500 text-white py-2 rounded-md w-full disabled:bg-secondary-400 disabled:cursor-not-allowed"
         >
           {loading ? "در حال ارسال ..." : "افزودن دسته بندی"}
         </button>

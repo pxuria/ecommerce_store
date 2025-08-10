@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Carousel from "@/components/shared/Carousel";
 import HomeFeatures from "@/components/home/HomeFeatures";
+import HeroSlider from "@/components/home/HeroSlider";
 
 export const metadata: Metadata = {
   title: "فروشگاه آنلاین | صفحه اصلی",
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <>
+      <HeroSlider />
+
       <Carousel
         title="محصولات جدید"
         side="right"

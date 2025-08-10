@@ -54,21 +54,6 @@
     --yellow-400: #f9e7c3;
     --yellow-300: #fcf0da;
 
-    --blue-900: #2c6fe9;
-    --blue-800: #437eeb;
-    --blue-700: #5a8eee;
-    --blue-600: #719ef0;
-    --blue-500: #88aef2;
-    --blue-400: #9fbef5;
-    --blue-300: #b6cdf7;
-
-    --orange-900: #f37773;
-    --orange-800: #f58d8a;
-    --orange-700: #f7a4a2;
-    --orange-600: #f9bbb9;
-    --orange-500: #fbd2d0;
-    --orange-400: #fde9e8;
-
     --light-pink: #f9bbb9;
     --gray: #3a3a3a;
     --muted: #d9d9d9;
@@ -168,7 +153,7 @@ input[type="search"]::-webkit-search-results-decoration {
     @apply !hidden;
   }
   .submit_btn {
-    @apply font-medium border-2 border-pink text-base text-white outline-none bg-pink hover:bg-white hover:text-pink duration-200 flex_center;
+    @apply font-medium border-2 border-secondary-300 text-base text-white outline-none bg-secondary-600 hover:bg-white hover:text-secondary-600 duration-200 flex_center;
   }
   .close_btn {
     @apply bg-white border-2 border-[#A12347] text-[#A12347] font-medium text-base outline-none hover:text-white hover:bg-[#A12347] duration-200 flex_center;
@@ -185,9 +170,9 @@ input[type="search"]::-webkit-search-results-decoration {
   width: 25px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(farthest-side, var(--pink-700) 94%, #0000) top/8px
-      8px no-repeat,
-    conic-gradient(#0000 30%, var(--pink-700));
+  background: radial-gradient(farthest-side, var(--secondary-700) 94%, #0000)
+      top/8px 8px no-repeat,
+    conic-gradient(#0000 30%, var(--secondary-700));
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
   animation: l13 1s infinite linear;
 }
@@ -267,7 +252,7 @@ body {
 }
 
 ul.slick-dots li button::before {
-  @apply cursor-default !text-blue-600;
+  @apply cursor-default !text-secondary-600;
 }
 
 .carousel_item_img {
@@ -307,7 +292,7 @@ ul.slick-dots li button::before {
 }
 
 .nav_link_active::after {
-  @apply content-[""] absolute bg-secondary-600 h-[3px] !w-full left-0 -bottom-[2px];
+  @apply content-[""] absolute bg-secondary-400 h-[3px] !w-full left-0 -bottom-[2px];
 }
 
 .mobile_nav_link_active {
@@ -336,7 +321,7 @@ ul.slick-dots li button::before {
   @apply flex flex-col items-end;
 }
 .form_input {
-  @apply mx-auto px-4 py-3 border-2 select-none border-pink rounded-lg bg-white text-black flex-row-reverse !ring-offset-0 !ring-0 outline-none text-base font-medium;
+  @apply mx-auto px-4 py-3 border-2 select-none border-secondary-600 rounded-lg bg-white text-black flex-row-reverse !ring-offset-0 !ring-0 outline-none text-base font-medium;
 }
 .form_item_error {
   @apply text-[#F40333] text-sm;
@@ -395,7 +380,7 @@ ul.slick-dots li button::before {
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary-600;
   }
 
   .hover-card {
