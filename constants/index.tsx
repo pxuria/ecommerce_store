@@ -340,8 +340,13 @@ export const dashboardAdminTabs = [
     icon: <IoMdPerson className="w-5 h-5" />,
   },
   {
-    name: "دسته بندی محصولات",
-    dashName: "product-categories",
+    name: "رنگ ها",
+    dashName: "colors",
+    icon: <IoMdPerson className="w-5 h-5" />,
+  },
+  {
+    name: "برند ها",
+    dashName: "brands",
     icon: <IoMdPerson className="w-5 h-5" />,
   },
   {
@@ -350,8 +355,8 @@ export const dashboardAdminTabs = [
     icon: <IoMdPerson className="w-5 h-5" />,
   },
   {
-    name: "افزودن دسته بندی",
-    dashName: "add_category",
+    name: "دسته بندی محصولات",
+    dashName: "product_category",
     icon: <BiSolidCategory className="w-5 h-5" />,
   }
 ]

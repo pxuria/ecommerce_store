@@ -56,7 +56,7 @@ const Orders = () => {
         ) : (
           <>
             {cart.items.length === 0 && (
-              <div className="flex-column items-center">
+              <div className="flex-column items-center mx-auto">
                 <Image
                   src="/assets/images/no_orders.svg"
                   alt="no orders"

@@ -25,6 +25,7 @@ const Page = () => {
     [activeTab, router]
   );
 
+  console.log(session)
   return (
     <section className="px-10 mt-12">
       <Tabs
@@ -80,7 +81,10 @@ const Page = () => {
         <TabsContent value="add_product" className="w-full md:w-3/4 !mt-0">
           <AddProduct />
         </TabsContent>
-        <TabsContent value="add_category" className="w-full md:w-3/4 !mt-0">
+        <TabsContent value="product_category" className="w-full md:w-3/4 !mt-0">
+          <AddCategory />
+        </TabsContent>
+        <TabsContent value="colors" className="w-full md:w-3/4 !mt-0">
           <AddCategory />
         </TabsContent>
       </Tabs>

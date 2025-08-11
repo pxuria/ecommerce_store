@@ -66,29 +66,52 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      if (session.user && token.id) {
-        session.user.id = token.id as string;
-        session.user.first_name = token.first_name as string;
-        session.user.last_name = token.last_name as string;
-        session.user.role = token.role as string;
+      if (!token?.id) return session;
+
+      await ConnectDB();
+      const dbUser = await User.findById(token.id).lean();
+
+      if (dbUser) {
+        session.user = {
+          id: dbUser._id.toString(),
+          email: dbUser.email,
+          first_name: dbUser.first_name,
+          last_name: dbUser.last_name,
+          role: dbUser.role,
+        };
       }
-
       const payload = {
-        id: token.id,
-        email: token.email,
-        first_name: token.first_name,
-        last_name: token.last_name,
-        role: token.role,
-        channels: token.channels,
-        purchasedCourses: token.purchasedCourses,
+        id: dbUser._id.toString(),
+        email: dbUser.email,
+        first_name: dbUser.first_name,
+        last_name: dbUser.last_name,
+        role: dbUser.role,
       };
+      session.accessToken = jwt.sign(payload, process.env.NEXTAUTH_SECRET!, { expiresIn: "7d" });
 
-      const signedToken = jwt.sign(payload, process.env.NEXTAUTH_SECRET!, {
-        expiresIn: "7d",
-      });
-
-      session.accessToken = signedToken;
       return session;
+
+      // if (session.user && token.id) {
+      //   session.user.id = token.id as string;
+      //   session.user.first_name = token.first_name as string;
+      //   session.user.last_name = token.last_name as string;
+      //   session.user.role = token.role as string;
+      // }
+
+      // const payload = {
+      //   id: token.id,
+      //   email: token.email,
+      //   first_name: token.first_name,
+      //   last_name: token.last_name,
+      //   role: token.role
+      // };
+
+      // const signedToken = jwt.sign(payload, process.env.NEXTAUTH_SECRET!, {
+      //   expiresIn: "7d",
+      // });
+
+      // session.accessToken = signedToken;
+      // return session;
     },
     async jwt({ token, user }) {
       if (user) {
