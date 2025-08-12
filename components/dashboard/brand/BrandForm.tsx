@@ -1,34 +1,34 @@
 'use client';
 
 import { useState } from "react";
-import { Form } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import InputField from "../InputField";
+import { BrandSchema, brandValues } from "@/utils/validations/brand.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@/components/ui/form";
 import axiosInstance from "@/lib/axiosInstance";
-import { ColorSchema, colorValues } from "@/utils/validations/color.schema";
-import { IColor } from "@/types/model";
+import { IBrand } from "@/types/model";
+import InputField from "../InputField";
 
 interface Props {
-    item?: IColor;
+    item?: IBrand;
     onClose: () => void;
     onUpdated?: () => void;
 }
 
-const ColorForm = ({ item, onClose, onUpdated }: Props) => {
+const BrandForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const defaultValues = {
         name: item?.name || '',
-        hex: item?.hex || ''
+        slug: item?.slug || ''
     }
 
-    const form = useForm<colorValues>({
-        resolver: zodResolver(ColorSchema),
+    const form = useForm<brandValues>({
+        resolver: zodResolver(BrandSchema),
         defaultValues
     });
 
-    const submitHandler = async (values: colorValues) => {
+    const submitHandler = async (values: brandValues) => {
         if (!(await form.trigger())) {
             console.error("Validation failed:", form.formState.errors);
             return;
@@ -36,16 +36,16 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
         setLoading(true);
         try {
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`color/${item?.id}`, {
+                const { data } = await axiosInstance.put(`brand/${item?.id}`, {
                     name: values.name,
-                    hex: values.hex
+                    slug: values.slug
                 });
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("color", {
+                const { data } = await axiosInstance.post("brand", {
                     name: values.name,
-                    hex: values.hex
+                    slug: values.slug
                 });
                 console.log(data);
             }
@@ -63,18 +63,18 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
                 className="flex items-start justify-center flex-wrap gap-4"
                 onSubmit={form.handleSubmit(submitHandler)}
             >
-                {/* color name Field */}
+                {/* brand name Field */}
                 <InputField
                     name="name"
-                    label="نام رنگ"
+                    label="نام برند"
                     control={form.control}
                     loading={loading}
                 />
 
-                {/* color hex Field */}
+                {/* brand slug Field */}
                 <InputField
-                    name="hex"
-                    label="کد رنگی"
+                    name="slug"
+                    label="slug"
                     control={form.control}
                     loading={loading}
                 />
@@ -85,7 +85,7 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
                         disabled={loading}
                         className="bg-secondary-500 text-white py-2 rounded-md w-full lg:w-[calc(50%-16px)] disabled:bg-secondary-400 disabled:cursor-not-allowed"
                     >
-                        {loading ? "در حال ارسال ..." : "افزودن رنگ"}
+                        {loading ? "در حال ارسال ..." : "افزودن برند"}
                     </button>
                     <button
                         type="button"
@@ -101,4 +101,4 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
     );
 };
 
-export default ColorForm;
+export default BrandForm;

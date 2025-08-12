@@ -3,49 +3,50 @@
 import { useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { Button } from "@/components/ui/button";
-import ConfirmBox from "@/components/ui/ConfirmBox";
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
-import { IColor } from "@/types/model";
-import ColorForm from "./ColorForm";
+import { IBrand } from "@/types/model";
+import { Button } from "@/components/ui/button";
+import ConfirmBox from "@/components/ui/ConfirmBox";
+import BrandForm from "./BrandForm";
 
-const Colors = () => {
+
+const Brands = () => {
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [colors, setColors] = useState<IColor[]>([]);
-    const [selectedColor, setSelectedColor] = useState<IColor | null>();
+    const [brands, setBrands] = useState<IBrand[]>([]);
+    const [selectedBrand, setSelectedBrand] = useState<IBrand | null>();
 
-    const fetchColors = async () => {
+    const fetchBrands = async () => {
         try {
             const { data } = await axiosInstance.get('color?populated=true');
-            setColors(data);
+            setBrands(data);
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         }
     };
 
     useEffect(() => {
-        fetchColors();
+        fetchBrands();
     }, [])
 
-    const selectChannelHandler = (item: IColor) => {
-        if (selectedColor?.id === item.id) setSelectedColor(null);
-        else setSelectedColor(item);
+    const selectChannelHandler = (item: IBrand) => {
+        if (selectedBrand?.id === item.id) setSelectedBrand(null);
+        else setSelectedBrand(item);
     }
 
     const handleDelete = async () => {
-        if (!selectedColor?.id) return;
+        if (!selectedBrand?.id) return;
         try {
-            await axiosInstance.delete(`channel/${selectedColor?.id}`);
-            handleShowToast("رنگ با موفقیت حذف شد.", "success");
-            setSelectedColor(null);
-            await fetchColors();
+            await axiosInstance.delete(`channel/${selectedBrand?.id}`);
+            handleShowToast("برند با موفقیت حذف شد.", "success");
+            setSelectedBrand(null);
+            await fetchBrands();
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
             } else {
-                handleShowToast("خطا در حذف رنگ.", "error");
+                handleShowToast("خطا در حذف برند.", "error");
             }
         } finally {
             setIsDeleteDialogOpen(false);
@@ -66,17 +67,17 @@ const Colors = () => {
 
     const onUpdated = async () => {
         setFormMode(null);
-        await fetchColors();
+        await fetchBrands();
     };
 
     return (
         <section>
-            {formMode === "edit" && selectedColor && (
-                <ColorForm item={selectedColor} onClose={handleCancelForm} onUpdated={onUpdated} />
+            {formMode === "edit" && selectedBrand && (
+                <BrandForm item={selectedBrand} onClose={handleCancelForm} onUpdated={onUpdated} />
             )}
 
             {formMode === "add" && (
-                <ColorForm onClose={handleCancelForm} />
+                <BrandForm onClose={handleCancelForm} />
             )}
 
             {formMode === null &&
@@ -86,33 +87,33 @@ const Colors = () => {
                             <Button
                                 onClick={handleEdit}
                                 className="text-white bg-lightPurple w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base"
-                                disabled={selectedColor ? false : true}>
-                                ویرایش رنگ
+                                disabled={selectedBrand ? false : true}>
+                                ویرایش برند
                                 <FaRegEdit />
                             </Button>
 
                             <Button
                                 onClick={() => setIsDeleteDialogOpen(true)}
                                 className="text-white bg-red w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base"
-                                disabled={selectedColor ? false : true}>
-                                حذف رنگ
+                                disabled={selectedBrand ? false : true}>
+                                حذف برند
                                 <FaRegTrashCan />
                             </Button>
 
                             <Button
                                 onClick={handleAdd}
                                 className="text-white bg-primary w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
-                                افزودن رنگ
+                                افزودن برند
                                 <FaRegTrashCan />
                             </Button>
                         </div>
 
                         <div className="flex items-start justify-start gap-4 flex-wrap">
-                            {colors.length > 0 && colors.map((item) => (
+                            {brands.length > 0 && brands.map((item) => (
                                 <div
                                     key={item.id as string}
                                     onClick={() => selectChannelHandler(item)}
-                                    className={`w-full sm:w-[calc(50%-16px)] min-h-[80px] rounded-xl bg-hoverBlack border-2 p-4 cursor-pointer ${selectedColor?.id === item.id ? "border-lightPurple" : "border-white"}`} >
+                                    className={`w-full sm:w-[calc(50%-16px)] min-h-[80px] rounded-xl bg-hoverBlack border-2 p-4 cursor-pointer ${selectedBrand?.id === item.id ? "border-lightPurple" : "border-white"}`} >
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-white text-base font-medium">{item.name}</h3>
                                     </div>
@@ -131,7 +132,7 @@ const Colors = () => {
                             content={
                                 <p className="text-sm md:text-md text-white">
                                     آیا مطمئن هستید که می‌خواهید رنگ{" "}
-                                    <span className="font-bold text-base md:text-md">{selectedColor?.name}</span>{" "}
+                                    <span className="font-bold text-base md:text-md">{selectedBrand?.name}</span>{" "}
                                     را حذف کنید؟
                                 </p>
                             }
@@ -143,4 +144,4 @@ const Colors = () => {
     )
 }
 
-export default Colors;
+export default Brands;
