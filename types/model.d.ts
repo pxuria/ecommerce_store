@@ -9,3 +9,9 @@ export interface IBrand {
     name: string;
     slug: string;
 }
+
+export interface ICategory {
+    id: string;
+    name: string;
+    slug: string;
+}

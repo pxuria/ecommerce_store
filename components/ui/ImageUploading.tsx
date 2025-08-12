@@ -1,59 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { IoCloseCircle } from "react-icons/io5";
 import { FileWithPreview } from "@/types";
 
 interface ImageUploadingProps {
-  setValue: (value: FileWithPreview[]) => void;
+  setValue: (value: FileWithPreview | string) => void;
+  setFile: (file: FileWithPreview | null) => void;
+  file: FileWithPreview | null;
+  existingImageUrl?: string | null;
+  setExistingImageUrl?: (val: null | string) => void;
   disabled: boolean;
 }
 
-const ImageUploading = ({ setValue, disabled }: ImageUploadingProps) => {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
-
+const ImageUploading = ({
+  setValue,
+  disabled,
+  file,
+  setFile,
+  existingImageUrl,
+  setExistingImageUrl
+}: ImageUploadingProps) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: { "image/*": [] },
-    multiple: true,
+    multiple: false,
     disabled,
     onDrop: (acceptedFiles) => {
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, { preview: URL.createObjectURL(file) })
-      );
-      setFiles((prevFiles) => {
-        const updatedFiles = [...prevFiles, ...newFiles];
-        setValue(updatedFiles);
-        return updatedFiles;
-      });
+      const selected = acceptedFiles[0];
+      if (selected) {
+        const fileWithPreview = Object.assign(selected, {
+          preview: URL.createObjectURL(selected),
+        });
+        setFile(fileWithPreview);
+        setValue(fileWithPreview);
+      }
     },
   });
 
   // Remove image from preview
-  const removeFile = (fileName: string) => {
+  const removeFile = () => {
     if (disabled) return;
-
-    setFiles((prevFiles) => {
-      const updatedFiles = prevFiles.filter((file) => file.name !== fileName);
-      setValue(updatedFiles); // Update the form when removing an image
-      return updatedFiles;
-    });
+    if (file) URL.revokeObjectURL(file.preview);
+    setFile(null);
+    setValue("");
+    if (setExistingImageUrl) setExistingImageUrl(null);
   };
 
   useEffect(() => {
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, [files]);
+    return () => {
+      if (file) URL.revokeObjectURL(file.preview);
+    };
+  }, [file]);
 
   return (
-    <div className="w-full mt-8">
+    <div className="mt-2">
       <div
         {...getRootProps()}
-        className={`border-2 border-dashed p-6 text-center transition-all ${
-          disabled
-            ? "border-gray-200 bg-gray-100 cursor-not-allowed"
-            : "border-gray-300 cursor-pointer hover:border-gray-500"
-        }`}
+        className={`border-2 border-dashed p-6 text-center transition-all ${disabled
+          ? "border-gray-200 bg-gray-100 cursor-not-allowed"
+          : "border-gray-300 cursor-pointer hover:border-gray-500"
+          }`}
       >
         <input {...getInputProps()} />
         <p className={`${disabled ? "text-gray-400" : "text-gray-600"}`}>
@@ -65,28 +73,24 @@ const ImageUploading = ({ setValue, disabled }: ImageUploadingProps) => {
 
       {/* Preview Thumbnails */}
       <aside className="flex flex-wrap mt-4">
-        {files.map((file) => (
-          <div
-            key={file.name}
-            className="relative m-2 w-24 h-24 border rounded-md overflow-hidden"
-          >
+        {(file || existingImageUrl) && (
+          <div className="relative m-4 w-24 h-24 border rounded-md overflow-hidden">
             <Image
-              src={file.preview}
+              src={file ? file.preview : (existingImageUrl as string)}
               alt="preview"
               layout="fill"
               objectFit="cover"
               className="rounded-md"
-              onLoad={() => URL.revokeObjectURL(file.preview)}
             />
 
             {!disabled && (
               <IoCloseCircle
-                onClick={() => removeFile(file.name)}
+                onClick={removeFile}
                 className="text-red-600 bg-white p-0 rounded-full w-6 h-6 absolute top-0 right-0 hover:text-red-700 transition cursor-pointer"
               />
             )}
           </div>
-        ))}
+        )}
       </aside>
     </div>
   );
