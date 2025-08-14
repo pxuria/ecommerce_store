@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.787.0",
@@ -73,6 +77,7 @@
     "postcss": "^8",
     "prisma": "^6.13.0",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.20.4",
     "typescript": "^5.9.2"
   }
 }
