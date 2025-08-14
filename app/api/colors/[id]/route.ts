@@ -11,7 +11,6 @@ export async function GET(_req: Request, { params }: Params) {
     try {
         const color = await prisma.productColor.findUnique({ where: { id: parseInt(params.id) } });
         if (!color) return NextResponse.json({ error: 'Color not found' }, { status: 404 });
-
         return NextResponse.json(color);
     } catch (error) {
         console.error(error);

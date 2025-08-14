@@ -7,8 +7,8 @@ export async function GET() {
     await connectDB();
 
     try {
-        const brands = await prisma.ProductBrand.findMany({ orderBy: { id: 'asc' }, });
-        return NextResponse.json(brands);
+        const categories = await prisma.ProductCategory.findMany({ orderBy: { id: 'asc' }, });
+        return NextResponse.json(categories);
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
@@ -20,10 +20,10 @@ export async function POST(request: Request) {
 
     try {
         const { name, slug } = await request.json();
-        if (!name || slug) return NextResponse.json({ error: 'brand name or slug is required' }, { status: 400 });
+        if (!name || !slug) return NextResponse.json({ error: 'category name or slug is required' }, { status: 400 });
 
-        const brand = await prisma.ProductBrand.create({ data: { name, slug } });
-        return NextResponse.json(brand, { status: 201 });
+        const category = await prisma.ProductCategory.create({ data: { name, slug } });
+        return NextResponse.json(category, { status: 201 });
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
