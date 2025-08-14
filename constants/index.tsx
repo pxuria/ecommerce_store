@@ -1,19 +1,25 @@
+import { Bounce, ToastOptions, ToastPosition } from "react-toastify";
 import {
   FaGifts,
   FaInstagram,
   FaTelegramPlane,
   FaWhatsapp,
+  FaTag,
+  FaBoxes,
+  FaBox,
+  FaBookmark,
+  FaUser,
+  FaUsers,
+  FaPaintBrush
 } from "react-icons/fa";
-import { IoMdPerson } from "react-icons/io";
-import { Bounce, ToastOptions, ToastPosition } from "react-toastify";
-import { MdOutlineBookmark } from "react-icons/md";
+
 import supportLottie from "../public/assets/lotties/support.json";
 import originalLottie from "../public/assets/lotties/original.json";
 import returnLottie from "../public/assets/lotties/gift-on-the-way.json";
 import deliveryLottie from "../public/assets/lotties/delivery-service.json";
 import payLottie from "../public/assets/lotties/pay.json";
-import { IoBagAdd } from "react-icons/io5";
-import { BiSolidCategory } from "react-icons/bi";
+import { FaBoxesPacking, FaNewspaper } from "react-icons/fa6";
+
 
 export const brandName = 'مارین';
 export const enBrandName = 'marin';
@@ -309,7 +315,7 @@ export const dashboardTabs = [
   {
     name: "حساب کاربری",
     dashName: "profile",
-    icon: <IoMdPerson className="w-5 h-5" />,
+    icon: <FaUser className="w-5 h-5" />,
   },
   {
     name: "سفارشات",
@@ -319,7 +325,7 @@ export const dashboardTabs = [
   {
     name: "علاقه مندی ها",
     dashName: "bookmarks",
-    icon: <MdOutlineBookmark className="w-5 h-5" />,
+    icon: <FaBookmark className="w-5 h-5" />,
   },
 ];
 
@@ -327,37 +333,37 @@ export const dashboardAdminTabs = [
   {
     name: "افزودن محصول",
     dashName: "add_product",
-    icon: <IoBagAdd className="w-5 h-5" />,
+    icon: <FaBox className="w-5 h-5" />,
   },
   {
     name: "بلاگ ها",
     dashName: "blogs",
-    icon: <IoMdPerson className="w-5 h-5" />,
+    icon: <FaNewspaper className="w-5 h-5" />,
   },
   {
     name: "محصولات",
     dashName: "products",
-    icon: <IoMdPerson className="w-5 h-5" />,
+    icon: <FaBoxes className="w-5 h-5" />,
   },
   {
     name: "رنگ ها",
     dashName: "colors",
-    icon: <IoMdPerson className="w-5 h-5" />,
+    icon: <FaPaintBrush className="w-5 h-5" />,
   },
   {
     name: "برند ها",
     dashName: "brands",
-    icon: <IoMdPerson className="w-5 h-5" />,
+    icon: <FaTag className="w-5 h-5" />,
   },
   {
     name: "لیست کاربران",
     dashName: "users-list",
-    icon: <IoMdPerson className="w-5 h-5" />,
+    icon: <FaUsers className="w-5 h-5" />,
   },
   {
     name: "دسته بندی محصولات",
     dashName: "product_category",
-    icon: <BiSolidCategory className="w-5 h-5" />,
+    icon: <FaBoxesPacking className="w-5 h-5" />,
   }
 ]
 
