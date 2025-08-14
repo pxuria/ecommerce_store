@@ -165,7 +165,7 @@ const Colors = () => {
                             isDialogOpen={isDeleteDialogOpen}
                             setIsDialogOpen={setIsDeleteDialogOpen}
                             content={
-                                <p className="text-sm md:text-md text-white">
+                                <p className="text-sm md:text-md text-black">
                                     آیا مطمئن هستید که می‌خواهید رنگ{" "}
                                     <span className="font-bold text-base md:text-md">{selectedColor?.name}</span>{" "}
                                     را حذف کنید؟
