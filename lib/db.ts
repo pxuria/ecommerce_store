@@ -26,6 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
  */
 export async function connectDB() {
     try {
+        if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
         await prisma.$connect();
         return prisma;
     } catch (err) {

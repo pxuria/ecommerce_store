@@ -8,6 +8,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { Form } from "@/components/ui/form";
 import { IColor } from "@/types/model";
 import InputField from "../InputField";
+import FormButtons from "../FormButtons";
 
 interface Props {
     item?: IColor;
@@ -36,14 +37,14 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
         setLoading(true);
         try {
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`color/${item?.id}`, {
+                const { data } = await axiosInstance.put(`colors/${item?.id}`, {
                     name: values.name,
                     hex: values.hex
                 });
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("color", {
+                const { data } = await axiosInstance.post("colors", {
                     name: values.name,
                     hex: values.hex
                 });
@@ -52,7 +53,7 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
         } catch (error) {
             console.log(error);
         } finally {
-            // form.reset();
+            form.reset();
             setLoading(false);
         }
     };
@@ -79,23 +80,7 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
                     loading={loading}
                 />
 
-                <div className="flex_center gap-4 flex-wrap lg:flex-nowrap">
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="bg-secondary-500 text-white py-2 rounded-md w-full lg:w-[calc(50%-16px)] disabled:bg-secondary-400 disabled:cursor-not-allowed"
-                    >
-                        {loading ? "در حال ارسال ..." : "افزودن رنگ"}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        disabled={loading}
-                        className="bg-red-700 text-white py-2 rounded-md w-full lg:w-[calc(50%-16px)] disabled:bg-red-400 disabled:cursor-not-allowed"
-                    >
-                        انصراف
-                    </button>
-                </div>
+                <FormButtons loading={loading} submitTitle="افزودن رنگ" onClose={onClose} />
             </form>
         </Form>
     );

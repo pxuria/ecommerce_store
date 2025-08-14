@@ -7,7 +7,7 @@ export async function GET() {
     await connectDB();
 
     try {
-        const categories = await prisma.ProductCategory.findMany({ orderBy: { id: 'asc' }, });
+        const categories = await prisma.productCategory.findMany({ orderBy: { id: 'asc' }, });
         return NextResponse.json(categories);
     } catch (error) {
         console.error(error);
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         const { name, slug } = await request.json();
         if (!name || !slug) return NextResponse.json({ error: 'category name or slug is required' }, { status: 400 });
 
-        const category = await prisma.ProductCategory.create({ data: { name, slug } });
+        const category = await prisma.productCategory.create({ data: { name, slug } });
         return NextResponse.json(category, { status: 201 });
     } catch (error) {
         console.error(error);

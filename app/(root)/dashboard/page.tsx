@@ -3,14 +3,18 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
+import { FaSignOutAlt } from "react-icons/fa";
+
 import Orders from "@/components/dashboard/Orders";
 import Profile from "@/components/dashboard/Profile";
 import Bookmarks from "@/components/dashboard/Bookmarks";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { dashboardAdminTabs, dashboardTabs } from "@/constants";
-import { IoExitOutline } from "react-icons/io5";
 import AddProduct from "@/components/dashboard/AddProduct";
 import AddCategory from "@/components/dashboard/AddCategory";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { dashboardAdminTabs, dashboardTabs } from "@/constants";
+import Colors from "@/components/dashboard/colors/Colors";
+
+const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -34,15 +38,15 @@ const Page = () => {
         dir="rtl"
         className="w-full flex items-start jusrify-start flex-col md:flex-row gap-8 my-10"
       >
-        <TabsList className="flex flex-row md:flex-column justify-start gap-2 w-full md:w-1/4 bg-white overflow-y-hidden overflow-x-auto h-fit">
+        <TabsList className="flex flex-row md:flex-column justify-start items-start gap-2 w-full md:w-1/4 bg-white overflow-y-hidden overflow-x-auto h-fit">
           {dashboardTabs.map((item) => (
             <TabsTrigger
               key={item.dashName}
               value={item.dashName}
-              className="w-full flex_center gap-2 py-3 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted"
+              className={tabsTriggerClass}
             >
-              {item.name}
               {item.icon}
+              {item.name}
             </TabsTrigger>
           ))}
 
@@ -51,10 +55,10 @@ const Page = () => {
               <TabsTrigger
                 key={item.dashName}
                 value={item.dashName}
-                className="w-full flex_center gap-2 py-3 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted"
+                className={tabsTriggerClass}
               >
-                {item.name}
                 {item.icon}
+                {item.name}
               </TabsTrigger>
             ))
           )}
@@ -65,7 +69,7 @@ const Page = () => {
             onClick={() => signOut({ callbackUrl: "/" })}
           >
             خروج از حساب کاربری
-            <IoExitOutline className="w-5 h-5" />
+            <FaSignOutAlt className="w-5 h-5" />
           </button>
         </TabsList>
 
@@ -85,6 +89,9 @@ const Page = () => {
           <AddCategory />
         </TabsContent>
         <TabsContent value="colors" className="w-full md:w-3/4 !mt-0">
+          <Colors />
+        </TabsContent>
+        <TabsContent value="brands" className="w-full md:w-3/4 !mt-0">
           <AddCategory />
         </TabsContent>
       </Tabs>
