@@ -1,28 +1,39 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { FaRegEdit } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
 import { IBrand } from "@/types/model";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import BrandForm from "./BrandForm";
+import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { FaRegTrashCan } from "react-icons/fa6";
 
+const COLUMNS = [
+    { title: 'نام برند', className: 'text-right' },
+    { title: 'برند (نشانی کوتاه)', className: 'text-right' },
+    { title: 'عملیات', className: 'text-center' }
+];
 
 const Brands = () => {
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [brands, setBrands] = useState<IBrand[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<IBrand | null>();
+    const [loading, setLoading] = useState(true);
 
     const fetchBrands = async () => {
         try {
-            const { data } = await axiosInstance.get('color?populated=true');
+            setLoading(true);
+            const { data } = await axiosInstance.get('brands');
             setBrands(data);
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -30,15 +41,10 @@ const Brands = () => {
         fetchBrands();
     }, [])
 
-    const selectChannelHandler = (item: IBrand) => {
-        if (selectedBrand?.id === item.id) setSelectedBrand(null);
-        else setSelectedBrand(item);
-    }
-
     const handleDelete = async () => {
         if (!selectedBrand?.id) return;
         try {
-            await axiosInstance.delete(`channel/${selectedBrand?.id}`);
+            await axiosInstance.delete(`brands/${selectedBrand?.id}`);
             handleShowToast("برند با موفقیت حذف شد.", "success");
             setSelectedBrand(null);
             await fetchBrands();
@@ -53,7 +59,8 @@ const Brands = () => {
         }
     }
 
-    const handleEdit = () => {
+    const handleEdit = (item: IBrand) => {
+        setSelectedBrand(item)
         setFormMode("edit");
     };
 
@@ -83,32 +90,53 @@ const Brands = () => {
             {formMode === null &&
                 (
                     <>
-                        <div className="flex items-center flex-wrap md:flex-nowrap gap-2 md:gap-4 mb-8">
-                            <Button
-                                onClick={handleEdit}
-                                className="text-white bg-lightPurple w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base"
-                                disabled={selectedBrand ? false : true}>
-                                ویرایش برند
-                                <FaRegEdit />
-                            </Button>
+                        <Button
+                            onClick={handleAdd}
+                            className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
+                            افزودن برند
+                            <FaRegPlusSquare />
+                        </Button>
 
-                            <Button
-                                onClick={() => setIsDeleteDialogOpen(true)}
-                                className="text-white bg-red w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base"
-                                disabled={selectedBrand ? false : true}>
-                                حذف برند
-                                <FaRegTrashCan />
-                            </Button>
-
-                            <Button
-                                onClick={handleAdd}
-                                className="text-white bg-primary w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
-                                افزودن برند
-                                <FaRegTrashCan />
-                            </Button>
+                        <div className="rounded-md border">
+                            <DashboardTable columns={COLUMNS}>
+                                {loading
+                                    ? renderSkeletonRows(3, COLUMNS)
+                                    : brands.length > 0
+                                        ? brands.map((brand) => (
+                                            <TableRow key={brand.id}>
+                                                <TableCell>{brand.name}</TableCell>
+                                                <TableCell>{brand.slug}</TableCell>
+                                                <TableCell className="flex_center gap-2">
+                                                    <Button
+                                                        className="bg-primary-500 text-black !text-xs lg:text-base"
+                                                        onClick={() => handleEdit(brand)}
+                                                    >
+                                                        <FaRegEdit className="mr-1" /> ویرایش
+                                                    </Button>
+                                                    <Button
+                                                        className="bg-red-700 text-white !text-xs lg:text-base"
+                                                        onClick={() => {
+                                                            setSelectedBrand(brand);
+                                                            setIsDeleteDialogOpen(true);
+                                                        }}
+                                                    >
+                                                        <FaRegTrashCan className="mr-1" /> حذف
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                        : (
+                                            <TableRow>
+                                                <TableCell colSpan={4} className="text-center text-gray-500">
+                                                    هیچ برندی ثبت نشده است.
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                }
+                            </DashboardTable>
                         </div>
 
-                        <div className="flex items-start justify-start gap-4 flex-wrap">
+                        {/* <div className="flex items-start justify-start gap-4 flex-wrap">
                             {brands.length > 0 && brands.map((item) => (
                                 <div
                                     key={item.id as string}
@@ -119,19 +147,19 @@ const Brands = () => {
                                     </div>
                                 </div>
                             ))}
-                        </div>
+                        </div> */}
 
                         <ConfirmBox
-                            title="حذف رنگ"
+                            title="حذف برند"
                             onOk={handleDelete}
-                            onOkText="حذف رنگ"
+                            onOkText="حذف برند"
                             onCancelText="انصراف"
                             onCancel={() => setIsDeleteDialogOpen(false)}
                             isDialogOpen={isDeleteDialogOpen}
                             setIsDialogOpen={setIsDeleteDialogOpen}
                             content={
                                 <p className="text-sm md:text-md text-white">
-                                    آیا مطمئن هستید که می‌خواهید رنگ{" "}
+                                    آیا مطمئن هستید که می‌خواهید برند{" "}
                                     <span className="font-bold text-base md:text-md">{selectedBrand?.name}</span>{" "}
                                     را حذف کنید؟
                                 </p>

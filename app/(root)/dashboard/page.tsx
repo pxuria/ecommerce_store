@@ -13,6 +13,7 @@ import AddCategory from "@/components/dashboard/AddCategory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardAdminTabs, dashboardTabs } from "@/constants";
 import Colors from "@/components/dashboard/colors/Colors";
+import Brands from "@/components/dashboard/brand/Brands";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
@@ -92,7 +93,7 @@ const Page = () => {
           <Colors />
         </TabsContent>
         <TabsContent value="brands" className="w-full md:w-3/4 !mt-0">
-          <AddCategory />
+          <Brands />
         </TabsContent>
       </Tabs>
     </section>
