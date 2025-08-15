@@ -11,6 +11,7 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table"
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import axiosInstance from "@/lib/axiosInstance";
@@ -30,13 +31,17 @@ const Colors = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [colors, setColors] = useState<IColor[]>([]);
     const [selectedColor, setSelectedColor] = useState<IColor | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const fetchColors = async () => {
         try {
+            setLoading(true);
             const { data } = await axiosInstance.get('colors');
             setColors(data);
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -80,7 +85,17 @@ const Colors = () => {
         await fetchColors();
     };
 
-    console.log(selectedColor ? false : true)
+    const renderSkeletonRows = (count: number, COLUMNS: { title: string }[]) => {
+        return Array.from({ length: count }).map((_, idx) => (
+            <TableRow key={`skeleton-${idx}`}>
+                {COLUMNS.map((_, colIdx) => (
+                    <TableCell key={colIdx}>
+                        <Skeleton className="h-6 w-full" />
+                    </TableCell>
+                ))}
+            </TableRow>
+        ));
+    };
 
     return (
         <section>
@@ -115,16 +130,60 @@ const Colors = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {colors.length > 0 ? (
+                                    {loading
+                                        ? renderSkeletonRows(5, COLUMNS)
+                                        : colors.length > 0
+                                            ? colors.map((color) => (
+                                                <TableRow key={color.id}>
+                                                    <TableCell>{color.name}</TableCell>
+                                                    <TableCell>{color.hex}</TableCell>
+                                                    <TableCell>
+                                                        <div
+                                                            className={`w-8 h-8 rounded border flex_center font-bold ${!color.hex && "bg-gray-200"}`}
+                                                            style={{ backgroundColor: color.hex || "#fff" }}
+                                                        >
+                                                            {!color.hex && '?'}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="flex_center gap-2">
+                                                        <Button
+                                                            className="bg-primary-500 text-black !text-xs lg:text-base"
+                                                            onClick={() => handleEdit(color)}
+                                                        >
+                                                            <FaRegEdit className="mr-1" /> ویرایش
+                                                        </Button>
+                                                        <Button
+                                                            className="bg-red-700 text-white !text-xs lg:text-base"
+                                                            onClick={() => {
+                                                                setSelectedColor(color);
+                                                                setIsDeleteDialogOpen(true);
+                                                            }}
+                                                        >
+                                                            <FaRegTrashCan className="mr-1" /> حذف
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                            : (
+                                                <TableRow>
+                                                    <TableCell colSpan={4} className="text-center text-gray-500">
+                                                        هیچ رنگی ثبت نشده است.
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                    }
+                                    {/* {colors.length > 0 ? (
                                         colors.map((color) => (
                                             <TableRow key={color.id}>
                                                 <TableCell>{color.name}</TableCell>
-                                                <TableCell>{color.hex || "-"}</TableCell>
+                                                <TableCell>{color.hex}</TableCell>
                                                 <TableCell>
                                                     <div
-                                                        className={`w-8 h-8 rounded border ${!color.hex && "bg-gray-200"}`}
+                                                        className={`w-8 h-8 rounded border flex_center font-bold ${!color.hex && "bg-gray-200"}`}
                                                         style={{ backgroundColor: color.hex || "#fff" }}
-                                                    />
+                                                    >
+                                                        {!color.hex && '?'}
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell className="flex_center gap-2">
                                                     <Button
@@ -151,7 +210,7 @@ const Colors = () => {
                                                 هیچ رنگی ثبت نشده است.
                                             </TableCell>
                                         </TableRow>
-                                    )}
+                                    )} */}
                                 </TableBody>
                             </Table>
                         </div>

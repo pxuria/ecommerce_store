@@ -80,7 +80,7 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
                     loading={loading}
                 />
 
-                <FormButtons loading={loading} submitTitle="افزودن رنگ" onClose={onClose} />
+                <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش رنگ" : "افزودن رنگ"} onClose={onClose} />
             </form>
         </Form>
     );
