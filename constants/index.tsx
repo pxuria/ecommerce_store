@@ -10,7 +10,8 @@ import {
   FaBookmark,
   FaUser,
   FaUsers,
-  FaPaintBrush
+  FaPaintBrush,
+  FaGlobeAmericas
 } from "react-icons/fa";
 
 import supportLottie from "../public/assets/lotties/support.json";
@@ -349,6 +350,11 @@ export const dashboardAdminTabs = [
     name: "رنگ ها",
     dashName: "colors",
     icon: <FaPaintBrush className="w-5 h-5" />,
+  },
+  {
+    name: "کشور ها",
+    dashName: "countries",
+    icon: <FaGlobeAmericas className="w-5 h-5" />,
   },
   {
     name: "برند ها",

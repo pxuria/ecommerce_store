@@ -2,21 +2,21 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BrandSchema, brandValues } from "@/utils/validations/brand.schema";
+import { CountrySchema, countryValues } from "@/utils/validations/country.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axiosInstance";
 import { Form } from "@/components/ui/form";
-import { IBrand } from "@/types/model";
+import { ICountry } from "@/types/model";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
 
 interface Props {
-    item?: IBrand;
+    item?: ICountry;
     onClose: () => void;
     onUpdated?: () => void;
 }
 
-const BrandForm = ({ item, onClose, onUpdated }: Props) => {
+const CoutnryForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const defaultValues = {
@@ -24,12 +24,12 @@ const BrandForm = ({ item, onClose, onUpdated }: Props) => {
         slug: item?.slug || ''
     }
 
-    const form = useForm<brandValues>({
-        resolver: zodResolver(BrandSchema),
+    const form = useForm<countryValues>({
+        resolver: zodResolver(CountrySchema),
         defaultValues
     });
 
-    const submitHandler = async (values: brandValues) => {
+    const submitHandler = async (values: countryValues) => {
         if (!(await form.trigger())) {
             console.error("Validation failed:", form.formState.errors);
             return;
@@ -37,14 +37,14 @@ const BrandForm = ({ item, onClose, onUpdated }: Props) => {
         setLoading(true);
         try {
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`brands/${item?.id}`, {
+                const { data } = await axiosInstance.put(`countries/${item?.id}`, {
                     name: values.name,
                     slug: values.slug
                 });
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("brands", {
+                const { data } = await axiosInstance.post("countries", {
                     name: values.name,
                     slug: values.slug
                 });
@@ -67,7 +67,7 @@ const BrandForm = ({ item, onClose, onUpdated }: Props) => {
                 {/* brand name Field */}
                 <InputField
                     name="name"
-                    label="نام برند"
+                    label="نام کشور"
                     control={form.control}
                     loading={loading}
                 />
@@ -75,15 +75,15 @@ const BrandForm = ({ item, onClose, onUpdated }: Props) => {
                 {/* brand slug Field */}
                 <InputField
                     name="slug"
-                    label="برند (نشانی کوتاه)"
+                    label="کشور (نشانی کوتاه)"
                     control={form.control}
                     loading={loading}
                 />
 
-                <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش برند" : "افزودن برند"} onClose={onClose} />
+                <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش کشور" : "افزودن کشور"} onClose={onClose} />
             </form>
         </Form>
     );
 };
 
-export default BrandForm;
+export default CoutnryForm;

@@ -10,6 +10,12 @@ export interface IBrand {
     slug: string;
 }
 
+export interface ICountry {
+    id: string;
+    name: string;
+    slug: string;
+}
+
 export interface ICategory {
     id: string;
     name: string;

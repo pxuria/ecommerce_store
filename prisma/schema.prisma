@@ -47,6 +47,13 @@ model ProductBrand {
   products Product[]
 }
 
+model ProductCountry {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+}
+
 model ProductColor {
   id       Int       @id @default(autoincrement())
   name     String    @unique
@@ -65,6 +72,8 @@ model Product {
   countryOfOrigin String?
   categoryId      Int
   category        ProductCategory    @relation(fields: [categoryId], references: [id])
+  countryId       Int?
+  country         ProductCountry?    @relation(fields: [countryId], references: [id])
   brandId         Int?
   brand           ProductBrand?      @relation(fields: [brandId], references: [id])
   images          ProductImage[]
