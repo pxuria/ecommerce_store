@@ -58,7 +58,7 @@ const MobileNavbar = () => {
               onClick={handleAuthButton}
             >
               <span className="font-bold">
-                {isAuthenticated ? session?.user?.name : "ورود به حساب"}
+                {isAuthenticated ? `${session.user.firstName} ${session.user.lastName}` : "ورود به حساب"}
               </span>
               <IoPersonSharp className="w-6 h-6" />
             </Button>

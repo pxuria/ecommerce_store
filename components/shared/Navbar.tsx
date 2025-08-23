@@ -99,7 +99,7 @@ const Navbar = () => {
               href="dashboard"
               className="flex_center gap-1 font-bold border-2 border-black btn text-black text-sm rounded-md px-4 py-2 bg-transparent hover:text-white hover:bg-black"
             >
-              {session.user?.name}
+              {session.user.firstName} {session.user.lastName}
               <IoPersonSharp className="w-5 h-5" />
             </Link>
           )}
