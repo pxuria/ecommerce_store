@@ -28,17 +28,28 @@ const Login = ({ setOpen }: Props) => {
 
   const submitHandler = async (data: loginValues) => {
     setLoading(true);
-    const result = await signIn("credentials", {
-      phone: data.phone,
-      password: data.password,
-      redirect: false,
-    });
-    setLoading(false);
-    if (result?.error) {
-      toast.error("ایمیل یا رمز عبور اشتباه است", toasterOptions);
-    } else {
-      toast.success("با موفقیت وارد شدید", toasterOptions);
-      setOpen(false);
+    try {
+      const result = await signIn("credentials", {
+        phone: data.phone,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast.error("ایمیل یا رمز عبور اشتباه است", toasterOptions);
+      } else {
+        toast.success("با موفقیت وارد شدید", toasterOptions);
+        setOpen(false);
+      }
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        toast.error(error.message || "خطایی رخ داد.", toasterOptions);
+      } else {
+        toast.error("خطایی رخ داد.", toasterOptions);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 

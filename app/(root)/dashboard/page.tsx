@@ -15,16 +15,23 @@ import { dashboardAdminTabs, dashboardTabs } from "@/constants";
 import Colors from "@/components/dashboard/colors/Colors";
 import Brands from "@/components/dashboard/brand/Brands";
 import Countries from "@/components/dashboard/country/Countries";
+import { toast } from "react-toastify";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
 const Page = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [activeTab, setActiveTab] = useState(
     searchParams.get("tab") || "profile"
   );
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/")
+    }
+  }, [status, router])
 
   useEffect(
     () => router.replace(`?tab=${activeTab}`, { scroll: false }),
@@ -52,7 +59,7 @@ const Page = () => {
             </TabsTrigger>
           ))}
 
-          {session?.user.role === "admin" && (
+          {session?.user.role === "ADMIN" && (
             dashboardAdminTabs.map(item => (
               <TabsTrigger
                 key={item.dashName}
@@ -68,7 +75,9 @@ const Page = () => {
           <button
             className="text-sm font-medium flex_center gap-2 bg-[#EF4156] primary_transition w-full py-3 px-4 md:px-0 text-white rounded-lg text-nowrap"
             type="button"
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => signOut({ callbackUrl: "/" }).then(() => {
+              toast.success("خروج از حساب با موفقیت انجام شد.")
+            })}
           >
             خروج از حساب کاربری
             <FaSignOutAlt className="w-5 h-5" />

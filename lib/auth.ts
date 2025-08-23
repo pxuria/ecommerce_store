@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next";
 export async function isAdmin(): Promise<boolean> {
   const session = await getServerSession(authOptions);
 
-  if (!session || session.user.role !== "admin") {
+  if (!session || session.user.role !== "ADMIN") {
     return false;
   }
 

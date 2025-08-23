@@ -32,7 +32,7 @@ const Signup = ({ setOpen }: Props) => {
   const submitHandler = async (data: signupValues) => {
     setLoading(true);
     try {
-      const res = await fetch("/api/users", {
+      const res = await fetch("/api/users/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)

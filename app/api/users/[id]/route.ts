@@ -14,7 +14,7 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    if (authUser.id !== params.id && authUser.role !== "admin") {
+    if (authUser.id !== Number(params.id) && authUser.role !== "ADMIN") {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
     const user = await User.findById(params.id).select("-password");
@@ -48,7 +48,7 @@ export async function PUT(
     const { id } = params;
     const updateFields = await req.json();
 
-    if (authUser.id !== id && authUser.role !== "admin") {
+    if (authUser.id !== Number(params.id) && authUser.role !== "ADMIN") {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
@@ -111,7 +111,7 @@ export async function DELETE(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    if (authUser.role !== "admin") {
+    if (authUser.role !== "ADMIN") {
       return NextResponse.json(
         { message: "Forbidden: Only admins can delete users" },
         { status: 403 }
