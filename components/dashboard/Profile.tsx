@@ -17,6 +17,8 @@ import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 import PasswordField from "../ui/PasswordField";
+import { handleShowToast } from "@/lib/toast";
+import Loading from "../shared/Loading";
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -25,13 +27,13 @@ const Profile = () => {
   const form = useForm({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       phone: "",
       address: "",
       city: "",
-      postal_code: "",
+      postalCode: "",
       password: "",
       confirm_password: "",
     },
@@ -46,13 +48,13 @@ const Profile = () => {
       const { data } = await axiosInstance.get(`users/${session.user.id}`);
 
       reset({
-        first_name: data.first_name || "",
-        last_name: data.last_name || "",
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
         email: data.email || "",
         phone: data.phone || "",
         address: data.address || "",
         city: data.city || "",
-        postal_code: data.postal_code || "",
+        postalCode: data.postalCode || "",
       });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -65,29 +67,33 @@ const Profile = () => {
 
   const onSubmit = async (values: profileValues) => {
     if (!session?.user?.id) {
-      alert("کاربر یافت نشد، لطفا دوباره وارد شوید.");
+      handleShowToast("کاربر یافت نشد، لطفا دوباره وارد شوید", "error");
       return;
     }
 
     setLoading(true);
     try {
       const { data } = await axiosInstance.put(`users/${session.user.id}`, {
-        id: session.user.id, // Ensure the user ID is sent
-        ...values,
+        id: session.user.id,
+        ...values
       });
 
       console.log(data);
 
-      alert("اطلاعات شما با موفقیت به‌روز شد.");
+      handleShowToast("اطلاعات شما با موفقیت به‌روز شد");
     } catch (error) {
       console.error("Error updating user:", error);
-      alert("مشکلی در بروزرسانی اطلاعات پیش آمد. لطفا دوباره تلاش کنید.");
+      handleShowToast("مشکلی در بروزرسانی اطلاعات پیش آمد. لطفا دوباره تلاش کنید", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <p className="">loading</p>;
+  if (loading) return (
+    <div className="flex_center h-screen bg-white">
+      <Loading />
+    </div>
+  );
 
   return (
     <div className="rounded-xl p-4">
@@ -105,12 +111,12 @@ const Profile = () => {
               name={
                 item.name as
                 | "email"
-                | "first_name"
-                | "last_name"
+                | "firstName"
+                | "lastName"
                 | "phone"
                 | "address"
                 | "city"
-                | "postal_code"
+                | "postalCode"
               }
               render={({ field }) => (
                 <FormItem className="w-full lg:w-[calc(50%-8px)]">

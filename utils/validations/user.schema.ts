@@ -29,11 +29,11 @@ export const loginSchema = z.object({
 });
 
 export const profileSchema = z.object({
-    first_name: z
+    firstName: z
         .string()
         .min(2, "نام باید حداقل ۲ حرف باشد")
         .nonempty("نام الزامی است"),
-    last_name: z
+    lastName: z
         .string()
         .min(2, "نام خانوادگی باید حداقل ۲ حرف باشد")
         .nonempty("نام خانوادگی الزامی است"),
@@ -48,12 +48,19 @@ export const profileSchema = z.object({
         .max(180, "آدرس باید کمتر از 180 کاراکتر باشد")
         .nonempty("آدرس الزامی است"),
     city: z.string().min(2, "شهر معتبر نیست").nonempty("شهر الزامی است"),
-    postal_code: z.string().min(10, "کد پستی معتبر نیست").optional(),
-    password: z.string().min(8, "رمز عبور جدید باید حداقل ۸ کاراکتر باشد"),
-    confirm_password: z
-        .string()
-        .min(8, "تأیید رمز عبور باید حداقل ۸ کاراکتر باشد")
-});
+    postalCode: z.string().min(10, "کد پستی معتبر نیست").optional(),
+    password: z.string().min(8, "رمز عبور جدید باید حداقل ۸ کاراکتر باشد").optional().or(z.literal("")),
+    confirm_password: z.string().optional().or(z.literal(""))
+}).refine(
+    (data) => {
+        if (data.password || data.confirm_password) return data.password === data.confirm_password;
+        return true;
+    },
+    {
+        message: "رمز عبور و تکرار آن باید یکسان باشند.",
+        path: ["confirm_password"],
+    }
+);
 
 export type signupValues = z.infer<typeof signupSchema>
 export type loginValues = z.infer<typeof loginSchema>

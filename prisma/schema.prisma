@@ -20,15 +20,18 @@ enum UserRole {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  firstName String   @map("first_name")
-  lastName  String   @map("last_name")
-  email     String   @unique
-  phone     String   @unique
-  password  String
-  role      UserRole @default(USER)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  firstName  String   @map("first_name")
+  lastName   String   @map("last_name")
+  email      String   @unique
+  phone      String   @unique
+  password   String
+  role       UserRole @default(USER)
+  address    String?
+  city       String?
+  postalCode String?  @map("postal_code")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }

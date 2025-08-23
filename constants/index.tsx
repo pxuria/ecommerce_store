@@ -375,12 +375,12 @@ export const dashboardAdminTabs = [
 
 export const profileFields = [
   {
-    name: "first_name",
+    name: "firstName",
     label: "نام",
     type: "text",
   },
   {
-    name: "last_name",
+    name: "lastName",
     label: "نام خانوادگی",
     type: "text",
   },
@@ -394,7 +394,7 @@ export const profileFields = [
     label: "شماره همراه",
     type: "text",
   },
-  { 
+  {
     name: "address",
     label: "آدرس",
     type: "text",
@@ -405,7 +405,7 @@ export const profileFields = [
     type: "text",
   },
   {
-    name: "postal_code",
+    name: "postalCode",
     label: "کد پستی",
     type: "text",
   }

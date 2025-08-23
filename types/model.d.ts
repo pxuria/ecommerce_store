@@ -21,3 +21,16 @@ export interface ICategory {
     name: string;
     slug: string;
 }
+
+export interface IUser {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    password: string;
+    role: "USER" | "ADMIN";
+    bookmarks: Schema.Types.ObjectId[];
+    address?: string;
+    city?: string;
+    postalCode?: string;
+}
