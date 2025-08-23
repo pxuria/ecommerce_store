@@ -14,6 +14,7 @@ type InputFieldProps<T extends string> = {
   itemClass?: string;
   label: string;
   type?: string;
+  placeholder?: string;
   control: Control<ProductFormValues>;
   loading?: boolean;
 };
@@ -21,6 +22,7 @@ type InputFieldProps<T extends string> = {
 const InputField = <T extends Path<ProductFormValues>>({
   name,
   label,
+  placeholder,
   type = "text",
   itemClass = "w-full sm:w-[calc(50%-8px)]",
   control,
@@ -35,6 +37,7 @@ const InputField = <T extends Path<ProductFormValues>>({
         <FormControl>
           <Input
             type={type}
+            placeholder={placeholder || label}
             {...field}
             value={
               typeof field.value === "string" || typeof field.value === "number"

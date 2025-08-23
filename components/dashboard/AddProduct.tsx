@@ -12,13 +12,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import axiosInstance from "@/lib/axiosInstance";
 import ImageUploading from "../ui/ImageUploading";
 import InputField from "./InputField";
 import ColorSection from "./ColorSection";
 import { ProductFormValues } from "@/types";
 import SelectField from "../ui/SelectField";
+import { Switch } from "../ui/switch";
 
 const AddProduct = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -134,28 +134,12 @@ const AddProduct = () => {
         />
 
         {/* stock Field */}
-        <FormField
-          control={form.control}
+        <InputField
           name="stock"
-          render={({ field }) => (
-            <FormItem className="w-full sm:w-[calc(50%-8px)]">
-              <FormLabel className="form_label block">موجود</FormLabel>
-              <FormControl>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <Input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                  />
-                  <div className="group peer ring-0 bg-rose-400 rounded-full outline-none duration-300 after:duration-300 w-16 h-8 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-['✖️'] after:rounded-full after:absolute after:bg-white after:outline-none after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-8 peer-checked:after:content-['✔️'] peer-hover:after:scale-95" />
-                </label>
-              </FormControl>
-              <FormMessage className="form_item_error" dir="rtl" />
-            </FormItem>
-          )}
+          label="موجودی"
+          placeholder="120"
+          loading={loading}
+          control={form.control}
         />
 
         <ImageUploading
