@@ -3,20 +3,13 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { z } from "zod";
+import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/utils/validations/authentication";
+import { loginSchema, loginValues } from "@/utils/validations/user.schema";
 import { toast } from "react-toastify";
 import { toasterOptions } from "@/constants";
+import PasswordField from "@/components/ui/PasswordField";
+import InputField from "@/components/dashboard/InputField";
 
 interface Props {
   setOpen: (val: boolean) => void;
@@ -25,18 +18,18 @@ interface Props {
 const Login = ({ setOpen }: Props) => {
   const [loading, setLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof loginSchema>>({
+  const form = useForm<loginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      phone: "",
       password: "",
     },
   });
 
-  const submitHandler = async (data: z.infer<typeof loginSchema>) => {
+  const submitHandler = async (data: loginValues) => {
     setLoading(true);
     const result = await signIn("credentials", {
-      email: data.email,
+      phone: data.phone,
       password: data.password,
       redirect: false,
     });
@@ -56,44 +49,20 @@ const Login = ({ setOpen }: Props) => {
         className="flex-column gap-3"
         onSubmit={form.handleSubmit(submitHandler)}
       >
-        {/* Email Field */}
-        <FormField
+        {/* phone */}
+        <InputField
+          name='phone'
+          loading={loading}
+          itemClass='w-full'
+          label='شماره همراه'
           control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel className="form_label">ایمیل</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  {...field}
-                  className="form_input"
-                  disabled={loading}
-                />
-              </FormControl>
-              <FormMessage className="form_item_error" dir="rtl" />
-            </FormItem>
-          )}
         />
 
         {/* Password Field */}
-        <FormField
-          control={form.control}
+        <PasswordField
           name="password"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel className="form_label">رمز عبور</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  {...field}
-                  className="form_input"
-                  disabled={loading}
-                />
-              </FormControl>
-              <FormMessage className="form_item_error" dir="rtl" />
-            </FormItem>
-          )}
+          loading={loading}
+          control={form.control}
         />
       </form>
     </Form>

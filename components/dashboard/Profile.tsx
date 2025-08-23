@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -13,10 +12,11 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { profileFields } from "@/constants";
-import { profileSchema } from "@/utils/validations";
+import { profileSchema, profileValues } from "@/utils/validations/user.schema";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
+import PasswordField from "../ui/PasswordField";
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -29,7 +29,6 @@ const Profile = () => {
       last_name: "",
       email: "",
       phone: "",
-      instagram: "",
       address: "",
       city: "",
       postal_code: "",
@@ -51,7 +50,6 @@ const Profile = () => {
         last_name: data.last_name || "",
         email: data.email || "",
         phone: data.phone || "",
-        instagram: data.instagram || "",
         address: data.address || "",
         city: data.city || "",
         postal_code: data.postal_code || "",
@@ -65,7 +63,7 @@ const Profile = () => {
     fetchUser();
   }, [fetchUser]);
 
-  const onSubmit = async (values: z.infer<typeof profileSchema>) => {
+  const onSubmit = async (values: profileValues) => {
     if (!session?.user?.id) {
       alert("کاربر یافت نشد، لطفا دوباره وارد شوید.");
       return;
@@ -106,38 +104,50 @@ const Profile = () => {
               control={form.control}
               name={
                 item.name as
-                  | "email"
-                  | "instagram"
-                  | "first_name"
-                  | "last_name"
-                  | "phone"
-                  | "address"
-                  | "city"
-                  | "postal_code"
-                  | "password"
-                  | "confirm_password"
+                | "email"
+                | "first_name"
+                | "last_name"
+                | "phone"
+                | "address"
+                | "city"
+                | "postal_code"
               }
               render={({ field }) => (
                 <FormItem className="w-full lg:w-[calc(50%-8px)]">
-                  <Label htmlFor={item.name}>{item.label}</Label>
+                  <Label htmlFor={item.name} className="form_label">{item.label}</Label>
                   <FormControl>
                     <Input
                       id={item.name}
                       type={item.type}
                       placeholder={item.label}
                       {...field}
-                      className="!h-fit !bg-white !ring-0 outline-none"
+                      className="form_input !bg-white !ring-0 outline-none font-medium"
                     />
                   </FormControl>
-                  <FormMessage className="form_item_error" />
+                  <FormMessage className="form_item_error" dir="rtl" />
                 </FormItem>
               )}
             />
           ))}
+          <div className="hidden lg:block w-[calc(50%-8px)]" />
+
+          <PasswordField
+            name="password"
+            loading={loading}
+            control={form.control}
+            itemClass="lg:w-[calc(50%-8px)]"
+          />
+          <PasswordField
+            name="confirm_password"
+            loading={loading}
+            control={form.control}
+            label="تکرار رمز عبور"
+            itemClass="lg:w-[calc(50%-8px)]"
+          />
 
           <button
             type="submit"
-            className="s-full md:w-[calc(50%-8px)] flex_center bg-purple_900 rounded-md text-white h-fit py-2 primary_transition mt-4"
+            className="w-full flex_center bg-purple_900 rounded-md text-white h-fit py-2 primary_transition mt-4"
           >
             ذخیره تغییرات
           </button>

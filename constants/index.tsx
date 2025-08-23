@@ -394,12 +394,7 @@ export const profileFields = [
     label: "شماره همراه",
     type: "text",
   },
-  {
-    name: "instagram",
-    label: "پیج اینستاگرام",
-    type: "text",
-  },
-  {
+  { 
     name: "address",
     label: "آدرس",
     type: "text",
@@ -413,17 +408,7 @@ export const profileFields = [
     name: "postal_code",
     label: "کد پستی",
     type: "text",
-  },
-  {
-    name: "password",
-    label: "رمز عبور جدید",
-    type: "password",
-  },
-  {
-    name: "confirm_password",
-    label: "تکرار رمز عبور جدید",
-    type: "password",
-  },
+  }
 ];
 
 export const contactusFormFields = [
