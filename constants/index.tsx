@@ -332,7 +332,7 @@ export const dashboardTabs = [
 
 export const dashboardAdminTabs = [
   {
-    name: "افزودن محصول",
+    name: "محصولات",
     dashName: "add_product",
     icon: <FaBox className="w-5 h-5" />,
   },

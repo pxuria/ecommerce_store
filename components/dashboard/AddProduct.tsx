@@ -18,7 +18,6 @@ import InputField from "./InputField";
 import ColorSection from "./ColorSection";
 import { ProductFormValues } from "@/types";
 import SelectField from "../ui/SelectField";
-import { Switch } from "../ui/switch";
 
 const AddProduct = () => {
   const [loading, setLoading] = useState<boolean>(false);

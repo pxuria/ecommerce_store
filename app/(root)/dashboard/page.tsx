@@ -17,7 +17,18 @@ import Brands from "@/components/dashboard/brand/Brands";
 import Countries from "@/components/dashboard/country/Countries";
 import { toast } from "react-toastify";
 
-const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-pink_500 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
+const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-secondary-700 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
+
+const tabContents = [
+  { value: 'profile', component: <Profile /> },
+  { value: 'orders', component: <Orders /> },
+  { value: 'bookmarks', component: <Bookmarks /> },
+  { value: 'add_product', component: <AddProduct /> },
+  { value: 'product_category', component: <AddCategory /> },
+  { value: 'colors', component: <Colors /> },
+  { value: 'countries', component: <Countries /> },
+  { value: 'brands', component: <Brands /> }
+];
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -28,9 +39,7 @@ const Page = () => {
   );
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.replace("/")
-    }
+    if (status === "unauthenticated") router.replace("/")
   }, [status, router])
 
   useEffect(
@@ -38,7 +47,6 @@ const Page = () => {
     [activeTab, router]
   );
 
-  console.log(session)
   return (
     <section className="px-10 mt-12">
       <Tabs
@@ -84,30 +92,11 @@ const Page = () => {
           </button>
         </TabsList>
 
-        <TabsContent value="profile" className="w-full md:w-3/4 !mt-0">
-          <Profile />
-        </TabsContent>
-        <TabsContent value="orders" className="w-full md:w-3/4 !mt-0">
-          <Orders />
-        </TabsContent>
-        <TabsContent value="bookmarks" className="w-full md:w-3/4 !mt-0">
-          <Bookmarks />
-        </TabsContent>
-        <TabsContent value="add_product" className="w-full md:w-3/4 !mt-0">
-          <AddProduct />
-        </TabsContent>
-        <TabsContent value="product_category" className="w-full md:w-3/4 !mt-0">
-          <AddCategory />
-        </TabsContent>
-        <TabsContent value="colors" className="w-full md:w-3/4 !mt-0">
-          <Colors />
-        </TabsContent>
-        <TabsContent value="countries" className="w-full md:w-3/4 !mt-0">
-          <Countries />
-        </TabsContent>
-        <TabsContent value="brands" className="w-full md:w-3/4 !mt-0">
-          <Brands />
-        </TabsContent>
+        {tabContents.map(item => (
+          <TabsContent key={item.value} value={item.value} className="w-full md:w-3/4 !mt-0">
+            {activeTab === item.value && item.component}
+          </TabsContent>
+        ))}
       </Tabs>
     </section>
   );
