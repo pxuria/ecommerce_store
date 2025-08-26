@@ -4,14 +4,7 @@ import { useState } from "react";
 import { productSchema } from "@/utils/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import axiosInstance from "@/lib/axiosInstance";
 import ImageUploading from "../ui/ImageUploading";
 import InputField from "./InputField";
@@ -118,18 +111,12 @@ const AddProduct = () => {
         />
 
         {/* category Field */}
-        <FormField
-          control={form.control}
+        <SelectField
+          url="category"
           name="category"
-          render={({ field }) => (
-            <FormItem className="w-full sm:w-[calc(50%-8px)]">
-              <FormLabel className="form_label">دسته بندی</FormLabel>
-              <FormControl>
-                <SelectField field={field} />
-              </FormControl>
-              <FormMessage className="form_item_error" dir="rtl" />
-            </FormItem>
-          )}
+          label="دسته بندی"
+          control={form.control}
+          toastErrorText="دسته بندی یافت نشد"
         />
 
         {/* stock Field */}

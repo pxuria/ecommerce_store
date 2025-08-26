@@ -9,68 +9,87 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import axiosInstance from "@/lib/axiosInstance";
-import { ICategory } from "@/types";
-import { ControllerRenderProps } from "react-hook-form";
+import { Control, FieldValues, Path } from "react-hook-form";
+import { toast } from "react-toastify";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form";
 
-interface FormValues {
-  category: string;
+type SelectFieldProps<T extends FieldValues> = {
+  name: Path<T>;
+  control: Control<T>;
+  url: string;
+  label: string;
+  toastErrorText: string;
 }
 
-interface SelectFieldProps {
-  field: ControllerRenderProps<FormValues, "category">;
+interface Option {
+  id: string;
+  name: string;
 }
 
-const SelectField = ({ field }: SelectFieldProps) => {
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(false);
+const SelectField = <T extends FieldValues>({ control, label, name, url, toastErrorText }: SelectFieldProps<T>) => {
+  const [items, setItems] = useState<Option[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      setLoadingCategories(true);
+      setLoading(true);
       try {
-        const { data } = await axiosInstance.get("/category"); // Adjust API endpoint
-        setCategories(data.categories); // Assuming the response is { categories: [{ id, name }] }
+        const { data } = await axiosInstance.get(`/${url}`);
+        setItems(data.categories);
       } catch (error) {
+        toast.error(toastErrorText)
         console.error("Failed to fetch categories:", error);
       } finally {
-        setLoadingCategories(false);
+        setLoading(false);
       }
     };
 
     fetchCategories();
-  }, []);
-  if (loadingCategories) return <p>loading</p>;
+  }, [url, toastErrorText]);
+
+  if (loading) return <p>loading</p>;
+
   return (
-    <Select
-      onValueChange={field.onChange}
-      defaultValue={field.value}
-      disabled={loadingCategories}
-    >
-      <SelectTrigger className="form_input">
-        <SelectValue
-          placeholder={
-            loadingCategories ? "در حال دریافت..." : "یک دسته انتخاب کنید"
-          }
-        />
-      </SelectTrigger>
-      <SelectContent className="bg-white">
-        {categories.length > 0 ? (
-          categories.map((category) => (
-            <SelectItem
-              key={category._id}
-              value={category._id}
-              className="hover:bg-light_muted cursor-pointer text-right flex justify-end"
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="w-full sm:w-[calc(50%-8px)]">
+          <FormLabel className="form_label">{label}</FormLabel>
+          <FormControl>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={loading}
             >
-              {category.name}
-            </SelectItem>
-          ))
-        ) : (
-          <SelectItem value="" disabled>
-            دسته‌ای یافت نشد
-          </SelectItem>
-        )}
-      </SelectContent>
-    </Select>
+              <SelectTrigger className="form_input">
+                <SelectValue
+                  placeholder={loading ? "در حال دریافت..." : "یک مورد انتخاب کنید"}
+                />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {items.length > 0 ? (
+                  items.map(item => (
+                    <SelectItem
+                      key={item.id}
+                      value={item.id}
+                      className="hover:bg-light_muted cursor-pointer text-right flex justify-end"
+                    >
+                      {item.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="" disabled>
+                    موردی یافت نشد
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage className="form_item_error" dir="rtl" />
+        </FormItem>
+      )}
+    />
   );
 };
 

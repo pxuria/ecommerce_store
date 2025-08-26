@@ -7,9 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axiosInstance";
 import { Form } from "@/components/ui/form";
 import { IProduct } from "@/types/model";
+import ImageUploading from "@/components/ui/ImageUploading";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
-import ImageUploading from "@/components/ui/ImageUploading";
 
 interface Props {
     item?: IProduct;
@@ -22,7 +22,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
 
     const defaultValues = {
         name: item?.name || '',
-        image: item?.image || '',
+        images: item?.images || '',
     }
 
     const form = useForm<productValues>({
@@ -73,7 +73,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
 
                 <ImageUploading
                     setValue={(value) =>
-                        form.setValue("image", value, { shouldValidate: true })
+                        form.setValue("images", value, { shouldValidate: true })
                     }
                     disabled={loading}
                 />

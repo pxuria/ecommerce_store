@@ -1,4 +1,4 @@
-import { Control, Path } from "react-hook-form";
+import { Control, FieldValues, Path } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -7,19 +7,18 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { ProductFormValues } from "@/types";
 
-type InputFieldProps<T extends string> = {
-  name: T;
+type InputFieldProps<T extends FieldValues> = {
+  name: Path<T>;
+  control: Control<T>;
   itemClass?: string;
   label: string;
   type?: string;
   placeholder?: string;
-  control: Control<ProductFormValues>;
   loading?: boolean;
 };
 
-const InputField = <T extends Path<ProductFormValues>>({
+const InputField = <T extends FieldValues>({
   name,
   label,
   placeholder,

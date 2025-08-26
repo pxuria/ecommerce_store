@@ -34,9 +34,7 @@ const Page = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [activeTab, setActiveTab] = useState(
-    searchParams.get("tab") || "profile"
-  );
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "profile");
 
   useEffect(() => {
     if (status === "unauthenticated") router.replace("/")
