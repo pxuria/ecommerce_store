@@ -8,7 +8,6 @@ import { FaSignOutAlt } from "react-icons/fa";
 import Orders from "@/components/dashboard/Orders";
 import Profile from "@/components/dashboard/Profile";
 import Bookmarks from "@/components/dashboard/Bookmarks";
-import AddCategory from "@/components/dashboard/AddCategory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardAdminTabs, dashboardTabs } from "@/constants";
 import Colors from "@/components/dashboard/colors/Colors";
