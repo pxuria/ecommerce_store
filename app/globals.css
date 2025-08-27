@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  @font-face {
+    font-family: "IranYekan";
+    font-style: normal;
+    src: url("./fonts/iran-yekan/IRANYekanWebRegular.woff2") format("woff2");
+  }
+
   :root {
     --black: #1a1a1a;
     --white: #fefefe;
@@ -194,6 +200,7 @@ body {
 
 body {
   background: var(--white);
+  font-family: "IranYekan";
   overflow: hidden !important;
 }
 
