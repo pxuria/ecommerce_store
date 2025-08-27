@@ -8,6 +8,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { Form } from "@/components/ui/form";
 import { ICategory } from "@/types/model";
 import InputField from "../InputField";
+import FormButtons from "../FormButtons";
 
 interface Props {
     item?: ICategory;
@@ -36,14 +37,14 @@ const CategoryForm = ({ item, onClose, onUpdated }: Props) => {
         setLoading(true);
         try {
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`category/${item?.id}`, {
+                const { data } = await axiosInstance.put(`categories/${item?.id}`, {
                     name: values.name,
                     slug: values.slug
                 });
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("category", {
+                const { data } = await axiosInstance.post("categories", {
                     name: values.name,
                     slug: values.slug
                 });
@@ -74,28 +75,16 @@ const CategoryForm = ({ item, onClose, onUpdated }: Props) => {
                 {/* category slug Field */}
                 <InputField
                     name="slug"
-                    label="slug"
+                    label="دسته بندی (نشانی کوتاه)"
                     control={form.control}
                     loading={loading}
                 />
 
-                <div className="flex_center gap-4 flex-wrap lg:flex-nowrap">
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="bg-secondary-500 text-white py-2 rounded-md w-full lg:w-[calc(50%-16px)] disabled:bg-secondary-400 disabled:cursor-not-allowed"
-                    >
-                        {loading ? "در حال ارسال ..." : "افزودن دسته بندی"}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        disabled={loading}
-                        className="bg-red-700 text-white py-2 rounded-md w-full lg:w-[calc(50%-16px)] disabled:bg-red-400 disabled:cursor-not-allowed"
-                    >
-                        انصراف
-                    </button>
-                </div>
+                <FormButtons
+                    loading={loading}
+                    onClose={onClose}
+                    submitTitle={onUpdated ? "ویرایش دسته بندی" : "افزودن دسته بندی"}
+                />
             </form>
         </Form>
     );
