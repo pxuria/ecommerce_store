@@ -16,6 +16,7 @@ import Countries from "@/components/dashboard/country/Countries";
 import { toast } from "react-toastify";
 import Products from "@/components/dashboard/products/Products";
 import Categories from "@/components/dashboard/category/Categories";
+import Users from "@/components/dashboard/users/Users";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-secondary-700 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
@@ -27,7 +28,8 @@ const tabContents = [
   { value: 'product_category', component: <Categories /> },
   { value: 'colors', component: <Colors /> },
   { value: 'countries', component: <Countries /> },
-  { value: 'brands', component: <Brands /> }
+  { value: 'brands', component: <Brands /> },
+  { value: 'users-list', component: <Users /> }
 ];
 
 const Page = () => {
