@@ -110,7 +110,7 @@ const Colors = () => {
                                                 <TableCell>{color.hex}</TableCell>
                                                 <TableCell>
                                                     <div
-                                                        className={`w-8 h-8 rounded border flex_center font-bold ${!color.hex && "bg-gray-200"}`}
+                                                        className={`w-8 h-8 rounded border border-[#b7b1b1] flex_center font-bold ${!color.hex && "bg-gray-200"}`}
                                                         style={{ backgroundColor: color.hex || "#fff" }}
                                                     >
                                                         {!color.hex && '?'}

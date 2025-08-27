@@ -136,19 +136,6 @@ const Brands = () => {
                             </DashboardTable>
                         </div>
 
-                        {/* <div className="flex items-start justify-start gap-4 flex-wrap">
-                            {brands.length > 0 && brands.map((item) => (
-                                <div
-                                    key={item.id as string}
-                                    onClick={() => selectChannelHandler(item)}
-                                    className={`w-full sm:w-[calc(50%-16px)] min-h-[80px] rounded-xl bg-hoverBlack border-2 p-4 cursor-pointer ${selectedBrand?.id === item.id ? "border-lightPurple" : "border-white"}`} >
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="text-white text-base font-medium">{item.name}</h3>
-                                    </div>
-                                </div>
-                            ))}
-                        </div> */}
-
                         <ConfirmBox
                             title="حذف برند"
                             onOk={handleDelete}

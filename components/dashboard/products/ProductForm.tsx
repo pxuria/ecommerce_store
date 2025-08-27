@@ -10,6 +10,7 @@ import { IProduct } from "@/types/model";
 import ImageUploading from "@/components/ui/ImageUploading";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
+import SelectField from "@/components/ui/SelectField";
 
 interface Props {
     item?: IProduct;
@@ -22,7 +23,15 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
 
     const defaultValues = {
         name: item?.name || '',
+        slug: item?.slug || '',
+        pricePerMeter: item?.pricePerMeter || '',
+        discountPercent: item?.discountPercent || '',
+        stockMeters: item?.stockMeters || '',
+        categoryId: item?.categoryId || '',
+        brandId: item?.brandId || '',
+        countryId: item?.countryId || '',
         images: item?.images || '',
+
     }
 
     const form = useForm<productValues>({
@@ -66,9 +75,69 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                 {/* product name Field */}
                 <InputField
                     name="name"
+                    loading={loading}
                     label="نام محصول"
                     control={form.control}
+                />
+
+                {/* product slug Field */}
+                <InputField
+                    name="slug"
+                    label="محصول (نشانی کوتاه)"
                     loading={loading}
+                    control={form.control}
+                />
+
+                {/* product pricePerMeter Field */}
+                <InputField
+                    name="pricePerMeter"
+                    label="قیمت هر متر"
+                    loading={loading}
+                    control={form.control}
+                />
+
+                {/* product discountPercent Field */}
+                <InputField
+                    name="discountPercent"
+                    label="درصد تخفیف"
+                    loading={loading}
+                    control={form.control}
+                />
+
+                {/* product stockMeters Field */}
+                <InputField
+                    name="stockMeters"
+                    label="موجودی براساس متر"
+                    loading={loading}
+                    control={form.control}
+                />
+
+
+                {/* category Field */}
+                <SelectField
+                    url="categories"
+                    name="categoryId"
+                    label="دسته بندی"
+                    control={form.control}
+                    toastErrorText="دسته بندی یافت نشد"
+                />
+
+                {/* brand Field */}
+                <SelectField
+                    url="brands"
+                    name="brandId"
+                    label="برند"
+                    control={form.control}
+                    toastErrorText="برندی یافت نشد"
+                />
+
+                {/* country Field */}
+                <SelectField
+                    url="countries"
+                    name="countryId"
+                    label="کشور ساخت"
+                    control={form.control}
+                    toastErrorText="کشوری یافت نشد"
                 />
 
                 <ImageUploading
@@ -78,7 +147,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     disabled={loading}
                 />
 
-                <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش کشور" : "افزودن کشور"} onClose={onClose} />
+                <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش محصول" : "افزودن محصول"} onClose={onClose} />
             </form>
         </Form>
     )

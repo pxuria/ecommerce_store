@@ -8,7 +8,6 @@ import { FaSignOutAlt } from "react-icons/fa";
 import Orders from "@/components/dashboard/Orders";
 import Profile from "@/components/dashboard/Profile";
 import Bookmarks from "@/components/dashboard/Bookmarks";
-import AddProduct from "@/components/dashboard/AddProduct";
 import AddCategory from "@/components/dashboard/AddCategory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardAdminTabs, dashboardTabs } from "@/constants";
@@ -16,6 +15,8 @@ import Colors from "@/components/dashboard/colors/Colors";
 import Brands from "@/components/dashboard/brand/Brands";
 import Countries from "@/components/dashboard/country/Countries";
 import { toast } from "react-toastify";
+import Products from "@/components/dashboard/products/Products";
+import Categories from "@/components/dashboard/category/Categories";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-secondary-700 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
@@ -23,8 +24,8 @@ const tabContents = [
   { value: 'profile', component: <Profile /> },
   { value: 'orders', component: <Orders /> },
   { value: 'bookmarks', component: <Bookmarks /> },
-  { value: 'add_product', component: <AddProduct /> },
-  { value: 'product_category', component: <AddCategory /> },
+  { value: 'add_product', component: <Products /> },
+  { value: 'product_category', component: <Categories /> },
   { value: 'colors', component: <Colors /> },
   { value: 'countries', component: <Countries /> },
   { value: 'brands', component: <Brands /> }
