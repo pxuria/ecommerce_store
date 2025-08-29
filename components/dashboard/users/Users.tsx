@@ -23,7 +23,7 @@ const Users = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isAdminDialogOpen, setIsAdminDialogOpen] = useState(false);
     const [users, setUsers] = useState<IUser[]>([]);
-    const [selectedUser, setSelectedUser] = useState<IUser | null>();
+    const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchUsers = async () => {
@@ -76,10 +76,9 @@ const Users = () => {
                 handleShowToast("خطا در تغییر نقش کاربر.", "error");
             }
         } finally {
-            setIsDeleteDialogOpen(false);
+            setIsAdminDialogOpen(false);
         }
     }
-
 
     return (
         <section>
@@ -99,6 +98,7 @@ const Users = () => {
                                         <Button
                                             className="bg-secondary-500 text-white !text-xs lg:text-base"
                                             onClick={() => {
+                                                console.log(user)
                                                 setSelectedUser(user);
                                                 setIsAdminDialogOpen(true);
                                             }}
@@ -136,10 +136,12 @@ const Users = () => {
                 onCancel={() => setIsAdminDialogOpen(false)}
                 isDialogOpen={isAdminDialogOpen}
                 setIsDialogOpen={setIsAdminDialogOpen}
+                okClass="bg-secondary-600 hover:bg-secondary-700"
+                cancelClass="bg-red-600 hover:bg-red-700"
                 content={
                     <p className="text-sm md:text-md text-black">
                         آیا مطمئن هستید که می‌خواهید نقش کاربر{" "}
-                        <span className="font-bold text-base md:text-md">{setSelectedUser?.name}</span>{" "}
+                        <span className="font-bold text-base md:text-md">{selectedUser?.firstName} {selectedUser?.lastName}</span>{" "}
                         را تغییر دهید؟
                     </p>
                 }
@@ -156,7 +158,7 @@ const Users = () => {
                 content={
                     <p className="text-sm md:text-md text-black">
                         آیا مطمئن هستید که می‌خواهید کاربر{" "}
-                        <span className="font-bold text-base md:text-md">{setSelectedUser?.name}</span>{" "}
+                        <span className="font-bold text-base md:text-md">{selectedUser?.firstName} {selectedUser?.lastName}</span>{" "}
                         را حذف کنید؟
                     </p>
                 }
