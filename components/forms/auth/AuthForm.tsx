@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState, useCallback } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,38 +22,19 @@ interface Props {
 const AuthForm = ({ onOpen, open }: Props) => {
   const [form, setForm] = useState<"login" | "signup">("login");
 
-  const handleTabChange = useCallback((tab: "login" | "signup") => {
-    setForm(tab);
-  }, []);
-
   return (
     <Dialog onOpenChange={onOpen} open={open}>
       <DialogContent className="bg-white min-h-[450px] overflow-hidden !rounded-2xl auth_dialog w-[90%] mx-auto">
         <DialogHeader>
           <DialogTitle className="text-nowrap w-fit text-[32px] font-bold mx-auto mb-4">
-            Marin
+            Arshian Baft
           </DialogTitle>
-
-          {/* Login/Signup Tabs */}
-          <div className="flex items-center gap-4 justify-around mb-4">
-            {["login", "signup"].map((tab) => (
-              <button
-                key={tab}
-                className={`cursor-pointer font-semibold text-lg w-full text-center rounded-lg py-2 transition-all text-black bg-white duration-200 ${
-                  form === tab && "!bg-yellow"
-                } shadow-lg`}
-                onClick={() => handleTabChange(tab as "login" | "signup")}
-              >
-                {tab === "login" ? "ورود" : "ثبت نام"}
-              </button>
-            ))}
-          </div>
         </DialogHeader>
 
         {form === "login" ? (
-          <Login setOpen={onOpen} />
+          <Login setOpen={onOpen} setForm={setForm} />
         ) : (
-          <Signup setOpen={onOpen} />
+          <Signup setOpen={onOpen} setForm={setForm} />
         )}
 
         <DialogFooter className="!flex-col !gap-4">

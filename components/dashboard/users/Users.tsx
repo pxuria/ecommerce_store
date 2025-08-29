@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { FaRegTrashCan, FaUserSecret } from "react-icons/fa6";
 
 const COLUMNS = [
     { title: 'نام', className: 'text-right' },
@@ -21,6 +21,7 @@ const COLUMNS = [
 
 const Users = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isAdminDialogOpen, setIsAdminDialogOpen] = useState(false);
     const [users, setUsers] = useState<IUser[]>([]);
     const [selectedUser, setSelectedUser] = useState<IUser | null>();
     const [loading, setLoading] = useState(true);
@@ -59,6 +60,27 @@ const Users = () => {
         }
     }
 
+    const handleAdministration = async () => {
+        if (!selectedUser?.id) return;
+        try {
+            await axiosInstance.put('admin/administration', {
+                userId: selectedUser.id
+            });
+            handleShowToast("تغییر نقش کاربر با موفقیت انجام شد", "success");
+            setSelectedUser(null);
+            await fetchUsers();
+        } catch (error) {
+            if (error instanceof Error) {
+                handleShowToast(error.message, "error");
+            } else {
+                handleShowToast("خطا در تغییر نقش کاربر.", "error");
+            }
+        } finally {
+            setIsDeleteDialogOpen(false);
+        }
+    }
+
+
     return (
         <section>
             <div className="rounded-md border">
@@ -74,6 +96,15 @@ const Users = () => {
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>{user.role === 'ADMIN' ? 'ادمین' : 'کاربر'}</TableCell>
                                     <TableCell className="flex_center gap-2">
+                                        <Button
+                                            className="bg-secondary-500 text-white !text-xs lg:text-base"
+                                            onClick={() => {
+                                                setSelectedUser(user);
+                                                setIsAdminDialogOpen(true);
+                                            }}
+                                        >
+                                            <FaUserSecret className="mr-1" /> تغییر نقش کاربر
+                                        </Button>
                                         <Button
                                             className="bg-red-700 text-white !text-xs lg:text-base"
                                             onClick={() => {
@@ -96,6 +127,23 @@ const Users = () => {
                     }
                 </DashboardTable>
             </div>
+
+            <ConfirmBox
+                title="تغییر نقش کاربر"
+                onOk={handleAdministration}
+                onOkText="تغییر نقش کاربر"
+                onCancelText="انصراف"
+                onCancel={() => setIsAdminDialogOpen(false)}
+                isDialogOpen={isAdminDialogOpen}
+                setIsDialogOpen={setIsAdminDialogOpen}
+                content={
+                    <p className="text-sm md:text-md text-black">
+                        آیا مطمئن هستید که می‌خواهید نقش کاربر{" "}
+                        <span className="font-bold text-base md:text-md">{setSelectedUser?.name}</span>{" "}
+                        را تغییر دهید؟
+                    </p>
+                }
+            />
 
             <ConfirmBox
                 title="حذف کاربر"

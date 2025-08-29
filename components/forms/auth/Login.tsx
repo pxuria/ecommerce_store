@@ -13,9 +13,10 @@ import InputField from "@/components/dashboard/InputField";
 
 interface Props {
   setOpen: (val: boolean) => void;
+  setForm: (val: "login" | "signup") => void;
 }
 
-const Login = ({ setOpen }: Props) => {
+const Login = ({ setOpen, setForm }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<loginValues>({
@@ -75,6 +76,13 @@ const Login = ({ setOpen }: Props) => {
           loading={loading}
           control={form.control}
         />
+
+        <div className="flex items-center justify-start gap-2 mt-3">
+          <span className="font-medium text-milky text-sm">حساب کاربری ندارید؟</span>
+          <span onClick={() => setForm('signup')} className="font-bold text-[#00a5f0] text-sm cursor-pointer">
+            ثبت نام
+          </span>
+        </div>
       </form>
     </Form>
   );

@@ -32,6 +32,7 @@ export const authOptions: NextAuthOptions = {
           where: { phone },
         })
         if (!user) return null
+        console.log(parsed)
 
         const valid = await bcrypt.compare(parsed.data.password, user.password)
         if (!valid) return null

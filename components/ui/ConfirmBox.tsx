@@ -9,8 +9,8 @@ interface Props {
     onOkText: string;
     loadingText?: string;
     loading?: boolean;
-    onOkClass?: string;
-    onCancelClass?: string;
+    okClass?: string;
+    cancelClass?: string;
     onCancelText?: string;
     content: ReactNode;
     onOk: () => void;
@@ -20,7 +20,7 @@ interface Props {
 
 }
 
-const ConfirmBox = ({ title, content, loading = false, loadingText = "در حال بارگذاری...", onOk, onCancel, onOkClass, onCancelClass, onOkText, onCancelText = "انصراف", isDialogOpen, setIsDialogOpen }: Props) => {
+const ConfirmBox = ({ title, content, loading = false, loadingText = "در حال بارگذاری...", onOk, onCancel, okClass, cancelClass, onOkText, onCancelText = "انصراف", isDialogOpen, setIsDialogOpen }: Props) => {
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className='bg-white' closeDialog={false}>
@@ -33,7 +33,7 @@ const ConfirmBox = ({ title, content, loading = false, loadingText = "در حا�
                         onClick={onOk}
                         disabled={loading}
                         variant="destructive"
-                        className={`w-[calc(50%-16px)] text-sm md:text-base bg-red-600 text-white hover:bg-red-700 ${onOkClass}`}
+                        className={`w-[calc(50%-16px)] text-sm md:text-base bg-red-600 text-white hover:bg-red-700 ${okClass}`}
                     >
                         {loading ? loadingText : onOkText}
                     </Button>
@@ -41,7 +41,7 @@ const ConfirmBox = ({ title, content, loading = false, loadingText = "در حا�
                     <DialogClose asChild>
                         <Button
                             onClick={onCancel}
-                            className={`w-[calc(50%-16px)] text-sm md:text-base bg-secondary-600 text-white hover:bg-secondary-700 ${onCancelClass}`}>{onCancelText}</Button>
+                            className={`w-[calc(50%-16px)] text-sm md:text-base bg-secondary-600 text-white hover:bg-secondary-700 ${cancelClass}`}>{onCancelText}</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>
