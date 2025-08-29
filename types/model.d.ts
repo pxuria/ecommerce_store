@@ -82,3 +82,16 @@ export interface IUser {
 export interface FileWithPreview extends File {
     preview: string;
 }
+
+export interface IBlog {
+    id: string;
+    title: string;
+    slug: string;
+    content: string;
+    coverImage: string;
+    estimatedTimeToRead: number;
+    metaTitle?: string;
+    metaDescription?: string;
+    metaKeywords?: string;
+    isPublished: boolean;
+}

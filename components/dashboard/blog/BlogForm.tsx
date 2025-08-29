@@ -9,29 +9,40 @@ import {
     FormField,
     FormItem,
     FormLabel,
-    FormMessage,
+    FormMessage
 } from "@/components/ui/form";
 import axiosInstance from "@/lib/axiosInstance";
 import { blogSchema, blogValues } from "@/utils/validations/blog.schema";
 import { FileWithPreview } from "@/types";
-import { Input } from "@/components/ui/input";
 import ImageUploading from "@/components/ui/ImageUploading";
-import { Button } from "@/components/ui/button";
 import { uploadImage } from "@/utils/helpers";
 import TextEditor from "@/components/ui/TextEditor";
 import { handleShowToast } from "@/lib/toast";
+import { IBlog } from "@/types/model";
+import FormButtons from "../FormButtons";
+import InputField from "../InputField";
+import { Editor } from "@/components/blocks/editor-00/editor";
 
-const BlogForm = ({ userId }: { userId: string }) => {
+interface Props {
+    item?: IBlog;
+    onClose: () => void;
+    onUpdated?: () => void;
+}
+
+const BlogForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState<FileWithPreview | null>(null);
 
     const defaultValues = {
-        title: "",
-        content: "",
-        wallpaper: undefined,
-        estimatedTimeToRead: 0,
-        metaTitle: "",
-        metaDescription: "",
+        title: item?.title || "",
+        slug: item?.slug || "",
+        content: item?.content || "",
+        coverImage: item?.coverImage || undefined,
+        estimatedTimeToRead: item?.estimatedTimeToRead || 0,
+        metaTitle: item?.metaTitle || "",
+        metaDescription: item?.metaDescription || "",
+        metaKeywords: item?.metaKeywords || "",
+        isPublished: item?.isPublished || false
     };
 
     const form = useForm<blogValues>({
@@ -39,24 +50,22 @@ const BlogForm = ({ userId }: { userId: string }) => {
         defaultValues
     });
 
+    const { control, reset, handleSubmit, formState, setValue, trigger } = form;
+
     const submitHandler = async (values: blogValues) => {
-        if (!(await form.trigger())) {
+        if (!(await trigger())) {
             handleShowToast("اطلاعات فرم را تکمیل نمایید.", "error")
-            console.error("Validation failed:", form.formState.errors);
+            console.error("Validation failed:", formState.errors);
             return;
         }
 
         setLoading(true);
         try {
             let uploadedImage = "";
+            if (values.coverImage) uploadedImage = await uploadImage(image as File);
 
-            if (values.wallpaper) {
-                uploadedImage = await uploadImage(image as File);
-            }
-
-            const { data } = await axiosInstance.post("blog", {
+            const { data } = await axiosInstance.post("blogs", {
                 ...values,
-                author: userId,
                 wallpaper: uploadedImage,
             });
             console.log(data);
@@ -64,7 +73,7 @@ const BlogForm = ({ userId }: { userId: string }) => {
             console.log(error);
         } finally {
             setLoading(false);
-            form.reset();
+            reset();
         }
     };
 
@@ -73,55 +82,78 @@ const BlogForm = ({ userId }: { userId: string }) => {
             <form
                 id="blog"
                 className="flex items-start flex-wrap gap-4"
-                onSubmit={form.handleSubmit(submitHandler)}
+                onSubmit={handleSubmit(submitHandler)}
             >
                 {/* title */}
-                <FormField
+                <InputField
                     name="title"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem className="w-full md:w-[calc(50%-8px)]">
-                            <FormLabel className="form_label">تیتر</FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    disabled={loading}
-                                    placeholder="تیتر"
-                                    className="form_input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    label="تیتر"
+                    loading={loading}
+                    control={control}
+                />
+
+                {/* slug */}
+                <InputField
+                    name="slug"
+                    label="بلاگ (نشانی کوتاه)"
+                    loading={loading}
+                    control={control}
                 />
 
                 {/* estimatedTimeToRead */}
-                <FormField
+                <InputField
+                    label="مدت زمان مطالعه (دقیقه)"
                     name="estimatedTimeToRead"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem className="w-full md:w-[calc(50%-8px)]">
-                            <FormLabel className="form_label">
-                                مدت زمان مطالعه (دقیقه)
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    type="number"
-                                    placeholder="12"
-                                    disabled={loading}
-                                    className="form_input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    placeholder="12"
+                    type="number"
+                    loading={loading}
+                    control={control}
                 />
+
+                {/* metaTitle */}
+                <InputField
+                    name="metaTitle"
+                    label="تیتر متا"
+                    loading={loading}
+                    control={control}
+                />
+
+                {/* metaDescription */}
+                <InputField
+                    name="metaDescription"
+                    label="توضیحات متا"
+                    loading={loading}
+                    control={control}
+                />
+
+                {/* metaKeywords */}
+                <InputField
+                    name="metaKeywords"
+                    label="کلمات کلیدی متا"
+                    loading={loading}
+                    control={control}
+                />
+
+                <div className="w-full mt-8">
+                    <FormLabel className="form_label">عکس بلاگ</FormLabel>
+                    <ImageUploading
+                        setValue={(value) =>
+                            setValue("coverImage", value as FileWithPreview, {
+                                shouldValidate: true,
+                            })
+                        }
+                        file={image}
+                        setFile={setImage}
+                        disabled={loading}
+                    />
+                </div>
+
+                <Editor />
 
                 {/* content */}
                 <FormField
                     name="content"
-                    control={form.control}
+                    control={control}
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="form_label">متن</FormLabel>
@@ -133,77 +165,7 @@ const BlogForm = ({ userId }: { userId: string }) => {
                     )}
                 />
 
-                {/* metaTitle */}
-                <FormField
-                    name="metaTitle"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem className="w-full md:w-[calc(50%-8px)]">
-                            <FormLabel className="form_label">تیتر متا</FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    disabled={loading}
-                                    placeholder="تیتر متا"
-                                    className="form_input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                {/* metaDescription */}
-                <FormField
-                    name="metaDescription"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem className="w-full md:w-[calc(50%-8px)]">
-                            <FormLabel className="form_label">توضیحات متا</FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    disabled={loading}
-                                    placeholder="توضیحات متا"
-                                    className="form_input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <div className="w-full mt-8">
-                    <FormLabel className="form_label">عکس بلاگ</FormLabel>
-                    <ImageUploading
-                        setValue={(value) =>
-                            form.setValue("wallpaper", value as FileWithPreview, {
-                                shouldValidate: true,
-                            })
-                        }
-                        file={image}
-                        setFile={setImage}
-                        disabled={loading}
-                    />
-                </div>
-
-                {/* Submit Button */}
-                <Button
-                    type="submit"
-                    disabled={loading}
-                    className="w-[calc(50%-8px)] text-white bg-lightPurple"
-                >
-                    {loading ? "در حال ارسال..." : "ثبت بلاگ"}
-                </Button>
-
-                <Button
-                    type="reset"
-                    disabled={loading}
-                    onClick={() => form.reset()}
-                    className="bg-red text-white w-[calc(50%-8px)]"
-                >
-                    انصراف
-                </Button>
+                <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش بلاگ" : "افزودن بلاگ"} onClose={onClose} />
             </form>
         </Form>
     );
