@@ -28,7 +28,7 @@ export async function GET(req: Request) {
                 page,
                 limit,
                 totalPages: Math.ceil(total / limit),
-            },
+            }
         }, { status: 200 });
     } catch (error) {
         console.error(error);
