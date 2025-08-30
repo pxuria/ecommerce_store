@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
@@ -11,6 +12,7 @@ import BrandForm from "./BrandForm";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { FaRegTrashCan } from "react-icons/fa6";
+import CustomPagination from "@/components/shared/CustomPagination";
 
 const COLUMNS = [
     { title: 'نام برند', className: 'text-right' },
@@ -24,22 +26,36 @@ const Brands = () => {
     const [brands, setBrands] = useState<IBrand[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<IBrand | null>();
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({
+        total: 0,
+        currentPage: 1,
+        totalPages: 1
+    });
 
-    const fetchBrands = async () => {
+    const searchParams = useSearchParams();
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = 10;
+
+    const fetchBrands = useCallback(async () => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get('brands');
-            setBrands(data);
+            const { data } = await axiosInstance.get(`brands?page=${page}&limit=${limit}`);
+            setBrands(data.data);
+            setPagination({
+                total: data.pagination.total,
+                currentPage: data.pagination.page,
+                totalPages: data.pagination.totalPages
+            });
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, limit]);
 
     useEffect(() => {
         fetchBrands();
-    }, [])
+    }, [fetchBrands])
 
     const handleDelete = async () => {
         if (!selectedBrand?.id) return;
@@ -135,6 +151,8 @@ const Brands = () => {
                                 }
                             </DashboardTable>
                         </div>
+
+                        <CustomPagination pagination={pagination} />
 
                         <ConfirmBox
                             title="حذف برند"

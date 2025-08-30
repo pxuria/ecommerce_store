@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { TableCell, TableRow } from "@/components/ui/table"
@@ -12,7 +13,6 @@ import { IColor } from "@/types/model";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import ColorForm from "./ColorForm";
 import CustomPagination from "@/components/shared/CustomPagination";
-import { useSearchParams } from "next/navigation";
 
 const COLUMNS = [
     { title: 'نام رنگ', className: 'text-right' },
@@ -29,8 +29,8 @@ const Colors = () => {
     const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState({
         total: 0,
-        pages: 0,
         currentPage: 1,
+        totalPages: 1
     });
 
     const searchParams = useSearchParams();
@@ -42,7 +42,11 @@ const Colors = () => {
             setLoading(true);
             const { data } = await axiosInstance.get(`colors?page=${page}&limit=${limit}`);
             setColors(data.data);
-            setPagination(data.pagination);
+            setPagination({
+                total: data.pagination.total,
+                currentPage: data.pagination.page,
+                totalPages: data.pagination.totalPages
+            });
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
@@ -158,6 +162,8 @@ const Colors = () => {
                             </DashboardTable>
                         </div>
 
+                        <CustomPagination pagination={pagination} />
+
                         <ConfirmBox
                             title="حذف رنگ"
                             onOk={handleDelete}
@@ -177,7 +183,6 @@ const Colors = () => {
                     </>
                 )}
 
-            <CustomPagination pagination={pagination} />
         </section>
     )
 }

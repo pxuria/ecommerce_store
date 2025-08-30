@@ -3,12 +3,33 @@ export const runtime = 'nodejs';
 import prisma, { connectDB } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(req: Request) {
     await connectDB();
 
     try {
-        const brands = await prisma.productBrand.findMany({ orderBy: { id: 'asc' }, });
-        return NextResponse.json(brands);
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const limit = parseInt(searchParams.get("limit") || "20", 20);
+
+        const skip = (page - 1) * limit;
+
+        const brands = await prisma.productBrand.findMany({
+            skip,
+            take: limit,
+            orderBy: { id: 'asc' }
+        });
+
+        const total = await prisma.productColor.count();
+
+        return NextResponse.json({
+            data: brands,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        }, { status: 200 });
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
