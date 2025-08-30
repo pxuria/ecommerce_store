@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { TableCell, TableRow } from "@/components/ui/table"
@@ -11,6 +11,8 @@ import { handleShowToast } from "@/lib/toast";
 import { IColor } from "@/types/model";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import ColorForm from "./ColorForm";
+import CustomPagination from "@/components/shared/CustomPagination";
+import { useSearchParams } from "next/navigation";
 
 const COLUMNS = [
     { title: 'نام رنگ', className: 'text-right' },
@@ -25,22 +27,32 @@ const Colors = () => {
     const [colors, setColors] = useState<IColor[]>([]);
     const [selectedColor, setSelectedColor] = useState<IColor | null>(null);
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({
+        total: 0,
+        pages: 0,
+        currentPage: 1,
+    });
 
-    const fetchColors = async () => {
+    const searchParams = useSearchParams();
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = 10;
+
+    const fetchColors = useCallback(async () => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get('colors');
-            setColors(data);
+            const { data } = await axiosInstance.get(`colors?page=${page}&limit=${limit}`);
+            setColors(data.data);
+            setPagination(data.pagination);
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, limit]);
 
     useEffect(() => {
         fetchColors();
-    }, [])
+    }, [fetchColors])
 
     const handleDelete = async () => {
         if (!selectedColor?.id) return;
@@ -164,6 +176,8 @@ const Colors = () => {
                         />
                     </>
                 )}
+
+            <CustomPagination pagination={pagination} />
         </section>
     )
 }

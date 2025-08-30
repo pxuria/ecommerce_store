@@ -13,15 +13,15 @@ import {
 
 interface Props {
   pagination: {
-    totalProducts: number;
-    totalPages: number;
+    total: number;
+    pages: number;
     currentPage: number;
   };
 }
 
 const CustomPagination = ({ pagination }: Props) => {
-  const { totalPages, currentPage } = pagination;
-  const pagesArray = [...Array(totalPages)].map((_, i) => i + 1);
+  const { pages, currentPage } = pagination;
+  const pagesArray = [...Array(pages)].map((_, i) => i + 1);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -37,7 +37,7 @@ const CustomPagination = ({ pagination }: Props) => {
       <Pagination>
         <PaginationContent>
           {/* next page */}
-          {currentPage !== totalPages && (
+          {currentPage !== pages && (
             <PaginationItem>
               <PaginationNext href={createPageUrl(currentPage + 1)} />
             </PaginationItem>
@@ -46,7 +46,7 @@ const CustomPagination = ({ pagination }: Props) => {
           {pagesArray.reverse().map((page) => {
             if (
               page === 1 ||
-              page === totalPages ||
+              page === pages ||
               (page >= currentPage - 1 && page <= currentPage + 1)
             ) {
               return (
@@ -54,11 +54,10 @@ const CustomPagination = ({ pagination }: Props) => {
                   <PaginationLink
                     href={createPageUrl(page)}
                     isActive={page === currentPage}
-                    className={`${
-                      page === currentPage
+                    className={`${page === currentPage
                         ? "bg-pink_500 text-white"
                         : "bg-light_muted hover:bg-muted text-black transition-all ease-in"
-                    } flex_center rounded w-8 h-8`}
+                      } flex_center rounded w-8 h-8`}
                   >
                     {page}
                   </PaginationLink>
@@ -74,7 +73,7 @@ const CustomPagination = ({ pagination }: Props) => {
               );
             }
 
-            if (page === totalPages - 1 && currentPage < totalPages - 2) {
+            if (page === pages - 1 && currentPage < pages - 2) {
               return (
                 <PaginationItem key="ellipsis-end">
                   <PaginationEllipsis />
