@@ -6,6 +6,8 @@ import ConnectDB from "@/config/db";
 import { isAdmin } from "../auth";
 import User from "@/models/User.model";
 import { asyncHandler } from "@/utils/helpers";
+import { connectDB } from "../db";
+// import { IBlog } from "@/types/model";
 // import { blogsRedis } from "@/constants/redis-keys";
 // import { IBlogUser } from "@/types";
 
@@ -21,13 +23,13 @@ type Blog = {
 
 export async function getBlogs() {
     return asyncHandler(async () => {
-        await ConnectDB();
+        await connectDB();
 
         // const cacheKey = blogsRedis.all;
         // const cachedBlogs = await redis.get(cacheKey);
         // if (cachedBlogs) return JSON.parse(cachedBlogs);
 
-        // const blogs: IBlogUser[] = await Blog.find()
+        // const blogs: IBlog[] = await Blog.find()
         //     .sort({ createdAt: -1 })
         //     .populate("author", "first_name last_name");
 

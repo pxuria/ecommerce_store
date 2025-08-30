@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import { getBlogs } from "@/lib/actions/blog.action";
 import BlogCard from "@/components/shared/blogs/BlogCard";
-import { IBlogUser } from "@/types";
+import { IBlog } from "@/types";
+import CustomPagination from "@/components/shared/CustomPagination";
 
 export const metadata: Metadata = {
     title: "مقالات آموزشی ترید | تحلیل و آموزش مبانی بازار | وبلاگ Daylight",
@@ -41,13 +41,16 @@ export const metadata: Metadata = {
 };
 
 const page = async () => {
-    const blogs = await getBlogs();
+    const res = await fetch('/api/blogs', {
+        cache: 'no-store'
+    });
+    const blogs = await res.json();
 
     return (
         <section className="container mx-auto px-10 mt-12">
             <div className="flex flex-wrap gap-4">
-                {Array.isArray(blogs) &&
-                    blogs.map((item: IBlogUser) => (
+                {Array.isArray(blogs.data as IBlog) &&
+                    blogs.data.map((item: IBlog) => (
                         <BlogCard
                             key={item._id as string}
                             image={item.wallpaper}
@@ -60,6 +63,8 @@ const page = async () => {
                         />
                     ))}
             </div>
+
+            <CustomPagination pagination={blogs.pagination} />
         </section>
     );
 };
