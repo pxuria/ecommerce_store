@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
 import { IUser } from "@/types/model";
@@ -9,6 +10,7 @@ import ConfirmBox from "@/components/ui/ConfirmBox";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { FaRegTrashCan, FaUserSecret } from "react-icons/fa6";
+import CustomPagination from "@/components/shared/CustomPagination";
 
 const COLUMNS = [
     { title: 'نام', className: 'text-right' },
@@ -25,22 +27,36 @@ const Users = () => {
     const [users, setUsers] = useState<IUser[]>([]);
     const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({
+        total: 0,
+        currentPage: 1,
+        totalPages: 1
+    });
 
-    const fetchUsers = async () => {
+    const searchParams = useSearchParams();
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = 10;
+
+    const fetchUsers = useCallback(async () => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get('users');
+            const { data } = await axiosInstance.get(`users?page=${page}&limit=${limit}`);
             setUsers(data);
+            setPagination({
+                total: data.pagination.total,
+                currentPage: data.pagination.page,
+                totalPages: data.pagination.totalPages
+            });
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, limit]);
 
     useEffect(() => {
         fetchUsers();
-    }, [])
+    }, [fetchUsers])
 
     const handleDelete = async () => {
         if (!selectedUser?.id) return;
@@ -127,6 +143,8 @@ const Users = () => {
                     }
                 </DashboardTable>
             </div>
+
+            <CustomPagination pagination={pagination} />
 
             <ConfirmBox
                 title="تغییر نقش کاربر"
