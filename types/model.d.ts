@@ -94,4 +94,5 @@ export interface IBlog {
     metaDescription?: string;
     metaKeywords?: string;
     isPublished: boolean;
+    createdAt: Date;
 }

@@ -21,7 +21,6 @@ import { handleShowToast } from "@/lib/toast";
 import { IBlog } from "@/types/model";
 import FormButtons from "../FormButtons";
 import InputField from "../InputField";
-import { Editor } from "@/components/blocks/editor-00/editor";
 
 interface Props {
     item?: IBlog;
@@ -147,8 +146,6 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
                         disabled={loading}
                     />
                 </div>
-
-                <Editor />
 
                 {/* content */}
                 <FormField

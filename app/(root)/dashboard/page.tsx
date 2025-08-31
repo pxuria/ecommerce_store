@@ -25,7 +25,7 @@ const tabContents = [
   { value: 'profile', component: <Profile /> },
   { value: 'orders', component: <Orders /> },
   { value: 'bookmarks', component: <Bookmarks /> },
-  { value: 'add_product', component: <Products /> },
+  { value: 'products', component: <Products /> },
   { value: 'product_category', component: <Categories /> },
   { value: 'blogs', component: <Blogs /> },
   { value: 'colors', component: <Colors /> },

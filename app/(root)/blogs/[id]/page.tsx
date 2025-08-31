@@ -3,9 +3,10 @@ import Image from "next/image";
 import BlogPageSidebar from "@/components/shared/blogs/BlogPageSidebar";
 import { formatDate } from "@/utils/helpers";
 import { getBlogById } from "@/lib/actions/blog.action";
+import { IBlog } from "@/types/model";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const blog = await getBlogById(params.id);
+  const blog: IBlog = await getBlogById(params.id);
 
   if (!blog || "error" in blog || "message" in blog) {
     return {
@@ -20,13 +21,13 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     openGraph: {
       title: blog.metaTitle || blog.title,
       description: blog.metaDescription || blog.content?.slice(0, 160),
-      images: [blog.wallpaper],
+      images: [blog.coverImage],
     },
   };
 }
 
 const page = async ({ params }: { params: { id: string } }) => {
-  const blog = await getBlogById(params.id)
+  const blog: IBlog = await getBlogById(params.id)
 
   return (
     <section className="md:container md:mx-auto mt-16">
@@ -36,9 +37,9 @@ const page = async ({ params }: { params: { id: string } }) => {
 
           <div className="flex flex-wrap justify-between items-center my-4">
             <div className="flex items-center justify-start flex-nowrap gap-2">
-              <span className="text-sm text-white font-medium">
+              {/* <span className="text-sm text-white font-medium">
                 {blog.author?.first_name} {blog.author?.last_name}
-              </span>
+              </span> */}
               {blog.createdAt && (
                 <span className="text-sm text-[#818181] font-medium">
                   {formatDate(blog.createdAt.toString())}
@@ -53,7 +54,7 @@ const page = async ({ params }: { params: { id: string } }) => {
           </div>
 
           <Image
-            src={blog.wallpaper || "assets/images/candles.svg"}
+            src={blog.coverImage || "assets/images/candles.svg"}
             alt={blog.title}
             width={450}
             height={200}
