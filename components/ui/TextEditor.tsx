@@ -1,7 +1,6 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import type { Editor as TinyMCEEditor } from "tinymce";
-import type { EditorEvent } from "@tinymce/tinymce-react/lib/cjs/main/ts/TinyMCE";
+import type { EditorEvent, Editor as TinyMCEEditor } from "tinymce";
 import { uploadImage } from "@/utils/helpers";
 
 interface TextEditorProps {
@@ -12,21 +11,21 @@ interface TextEditorProps {
 const TextEditor = ({ value, onChange }: TextEditorProps) => {
     const editorRef = useRef<TinyMCEEditor | null>(null);
 
-    useEffect(() => {
-        if (editorRef.current && value !== editorRef.current.getContent()) {
-            editorRef.current.setContent(value || "");
-        }
-    }, [value]);
+    // useEffect(() => {
+    //     if (editorRef.current && value !== editorRef.current.getContent()) {
+    //         editorRef.current.setContent(value || "");
+    //     }
+    // }, [value]);
 
     return (
         <Editor
             apiKey={process.env.NEXT_PUBLIC_TINYMCE_API}
-            onInit={(evt: EditorEvent<"init">, editor: TinyMCEEditor) =>
-                (editorRef.current = editor)
-            }
-            initialValue="<p>This is the initial content of the editor.</p>"
+            onInit={(_evt: EditorEvent<"init">, editor: TinyMCEEditor) => {
+                editorRef.current = editor;
+            }}
             value={value}
-            onEditorChange={onChange}
+            initialValue="<p>This is the initial content of the editor.</p>"
+            onEditorChange={(content) => onChange(content)}
             init={{
                 height: 500,
                 menubar: false,
@@ -66,20 +65,16 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
                 //   "removeformat | help",
                 content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                images_upload_handler: async (
-                    blobInfo,
-                    success,
-                    failure,
-                    _progress
-                ) => {
+                images_upload_handler: async (blobInfo, success, failure) => {
                     try {
                         const file = blobInfo.blob();
                         const url = await uploadImage(file);
                         if (!url) throw new Error("No URL returned from upload");
                         success(url);
                     } catch (error) {
+                        const message = error instanceof Error ? error.message : "Unknown error";
                         console.error("TinyMCE image upload failed:", error);
-                        failure("Image upload failed: " + error.message);
+                        failure("Image upload failed: " + message);
                     }
                 },
             }}

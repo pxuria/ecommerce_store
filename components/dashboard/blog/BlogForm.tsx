@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Form,
@@ -36,16 +36,16 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
         title: item?.title || "",
         slug: item?.slug || "",
         content: item?.content || "",
-        coverImage: item?.coverImage || undefined,
-        estimatedTimeToRead: item?.estimatedTimeToRead || 0,
+        coverImage: undefined,
+        estimatedTimeToRead: item?.estimatedTimeToRead || 1,
         metaTitle: item?.metaTitle || "",
         metaDescription: item?.metaDescription || "",
         metaKeywords: item?.metaKeywords || "",
-        isPublished: item?.isPublished || false
+        isPublished: item?.isPublished ?? false
     };
 
     const form = useForm<blogValues>({
-        resolver: zodResolver(blogSchema),
+        resolver: zodResolver(blogSchema) as Resolver<blogValues>,
         defaultValues
     });
 
