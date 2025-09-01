@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import type { EditorEvent, Editor as TinyMCEEditor } from "tinymce";
+import type { Editor as TinyMCEEditor, BlobInfo } from "tinymce";
 import { uploadImage } from "@/utils/helpers";
 
 interface TextEditorProps {
@@ -17,12 +17,28 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
     //     }
     // }, [value]);
 
+
+    const handleImage = async (blobInfo: BlobInfo) => {
+        try {
+            // const file = blobInfo.blob();
+            // const url = await uploadImage(file);
+
+            const file = new File([blobInfo.blob()], blobInfo.filename(), { type: blobInfo.blob().type });
+            const url = await uploadImage(file);
+            if (!url) throw new Error("No URL returned from upload");
+
+            return url;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Unknown error";
+            console.error("TinyMCE image upload failed:", message);
+            throw error;
+        }
+    };
+
     return (
         <Editor
             apiKey={process.env.NEXT_PUBLIC_TINYMCE_API}
-            onInit={(_evt: EditorEvent<"init">, editor: TinyMCEEditor) => {
-                editorRef.current = editor;
-            }}
+            onInit={(_evt, editor) => editorRef.current = editor}
             value={value}
             initialValue="<p>This is the initial content of the editor.</p>"
             onEditorChange={(content) => onChange(content)}
@@ -32,51 +48,15 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
                 plugins: [
                     "advlist autolink lists link image charmap preview anchor",
                     "searchreplace visualblocks code fullscreen",
-                    "insertdatetime media table code help wordcount",
+                    "insertdatetime media table help wordcount",
                 ],
-                // plugins: [
-                //   "advlist autolink lists link image charmap preview anchor",
-                //   "autolink",
-                //   "lists",
-                //   "link",
-                //   "image",
-                //   "charmap",
-                //   "preview",
-                //   "anchor",
-                //   "searchreplace",
-                //   "visualblocks",
-                //   "code",
-                //   "fullscreen",
-                //   "insertdatetime",
-                //   "media",
-                //   "table",
-                //   "code",
-                //   "help",
-                //   "wordcount",
-                // ],
                 toolbar:
                     "undo redo | blocks | bold italic forecolor | " +
                     "alignleft aligncenter alignright alignjustify | " +
                     "bullist numlist outdent indent | removeformat | image | help",
-                // toolbar:
-                //   "undo redo | blocks | image" +
-                //   "bold italic forecolor | alignleft aligncenter image" +
-                //   "alignright alignjustify | bullist numlist outdent indent | " +
-                //   "removeformat | help",
                 content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                images_upload_handler: async (blobInfo, success, failure) => {
-                    try {
-                        const file = blobInfo.blob();
-                        const url = await uploadImage(file);
-                        if (!url) throw new Error("No URL returned from upload");
-                        success(url);
-                    } catch (error) {
-                        const message = error instanceof Error ? error.message : "Unknown error";
-                        console.error("TinyMCE image upload failed:", error);
-                        failure("Image upload failed: " + message);
-                    }
-                },
+                images_upload_handler: handleImage
             }}
         />
     );
