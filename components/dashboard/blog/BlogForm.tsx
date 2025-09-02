@@ -60,12 +60,17 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
 
         setLoading(true);
         try {
-            let uploadedImage = '';
-            if (image) uploadedImage = await uploadImage(image as File);
+            let uploadedImage: string[] = [];
+            if (image) uploadedImage = await uploadImage([image] as File[]);
+            console.log(uploadImage)
+            console.log({
+                ...values,
+                coverImage: uploadedImage[0]
+            })
 
             const { data } = await axiosInstance.post("blogs", {
                 ...values,
-                coverImage: uploadedImage
+                coverImage: uploadedImage[0]
             });
             console.log(data);
         } catch (error) {

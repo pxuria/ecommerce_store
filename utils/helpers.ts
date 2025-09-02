@@ -63,18 +63,21 @@ export function getFinalPrice(pricePerMeter: Decimal, discountPercent?: Decimal)
   return pricePerMeter.mul(discountMultiplier);
 }
 
-export const uploadImage = async (file: File | Blob): Promise<string> => {
+export const uploadImage = async (files: (File | Blob)[]): Promise<string[]> => {
   const formData = new FormData();
-  formData.append("file", file);
+  files.forEach((file, i) => {
+    formData.append(`file-${i + 1}`, file);
+  });
 
   try {
     const { data } = await axiosInstance.post("storage/upload", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    return data.url;
+    console.log(data)
+    return data.urls || [];
   } catch (error) {
     console.error("Image upload failed:", error);
-    return "";
+    return [""];
   }
 };

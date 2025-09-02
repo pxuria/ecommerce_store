@@ -33,7 +33,7 @@ const Blogs = () => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get('blogs');
-            setBlogs(data);
+            setBlogs(data.data);
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
@@ -111,10 +111,11 @@ const Blogs = () => {
                                                 <TableCell>{blog.title}</TableCell>
                                                 <TableCell>
                                                     <Image
+                                                        width={120}
+                                                        height={80}
                                                         alt={blog.title}
                                                         src={blog.coverImage}
-                                                        width={36}
-                                                        height={36}
+                                                        className="rounded-lg object-cover"
                                                     />
                                                 </TableCell>
                                                 <TableCell>{blog.slug}</TableCell>
