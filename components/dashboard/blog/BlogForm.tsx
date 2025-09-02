@@ -36,7 +36,7 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
         title: item?.title || "",
         slug: item?.slug || "",
         content: item?.content || "",
-        coverImage: undefined,
+        coverImage: [],
         estimatedTimeToRead: item?.estimatedTimeToRead || 1,
         metaTitle: item?.metaTitle || "",
         metaDescription: item?.metaDescription || "",
@@ -60,12 +60,12 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
 
         setLoading(true);
         try {
-            let uploadedImage = "";
-            if (values.coverImage) uploadedImage = await uploadImage(image as File);
+            let uploadedImage = '';
+            if (image) uploadedImage = await uploadImage(image as File);
 
             const { data } = await axiosInstance.post("blogs", {
                 ...values,
-                wallpaper: uploadedImage,
+                coverImage: uploadedImage
             });
             console.log(data);
         } catch (error) {
@@ -137,12 +137,10 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
                     <FormLabel className="form_label">عکس بلاگ</FormLabel>
                     <ImageUploading
                         setValue={(value) =>
-                            setValue("coverImage", value as FileWithPreview, {
-                                shouldValidate: true,
-                            })
+                            setValue("coverImage", value as FileWithPreview, { shouldValidate: true })
                         }
-                        file={image}
-                        setFile={setImage}
+                        files={image}
+                        setFiles={setImage}
                         disabled={loading}
                     />
                 </div>

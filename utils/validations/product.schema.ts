@@ -1,21 +1,31 @@
 import { z } from "zod";
 
+export const productColorVariantSchema = z.object({
+    colorId: z
+        .union([z.string(), z.number()])
+        .refine((val) => val !== "" && val !== null, {
+            message: "انتخاب رنگ الزامی است",
+        }),
+    pricePerMeter: z.coerce.number().positive({
+        message: "قیمت هر متر باید بزرگ‌تر از ۰ باشد",
+    }),
+    discountPercent: z.coerce
+        .number()
+        .min(0, { message: "نمی‌تواند منفی باشد" })
+        .max(100, { message: "حداکثر 100%" })
+        .optional(),
+    stockMeters: z.coerce
+        .number()
+        .min(0, { message: "موجودی نمی‌تواند منفی باشد" }),
+});
+
 export const productSchema = z.object({
     name: z.string().min(1, "Name is required"),
     slug: z.string().min(1, "Slug is required"),
     description: z.string().optional(),
-    pricePerMeter: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid price"),
-    discountPercent: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid discount").optional(),
-    // discountPercent: z.union([z.string(), z.number()]).optional(),
-    stockMeters: z.string().regex(/^\d+(\.\d{1,3})?$/, "Invalid stock").default("0"),
-    // stockMeters: z.union([z.string(), z.number()], {
-    //     required_error: "Stock in meters is required",
-    // }),
-
-    categoryId: z.number({ required_error: "Category is required" }),
-    brandId: z.number().optional(),
-    countryId: z.number().optional(),
-    colors: z.array(z.number()).optional(),
+    categoryId: z.union([z.string(), z.number()]).optional(),
+    brandId: z.union([z.string(), z.number()]).optional(),
+    countryId: z.union([z.string(), z.number()]).optional(),
 
     images: z
         .array(
@@ -33,6 +43,9 @@ export const productSchema = z.object({
             })
         )
         .optional(),
+    colorVariants: z
+        .array(productColorVariantSchema)
+        .min(1, "حداقل یک رنگ و قیمت باید ثبت شود"),
     isActive: z.boolean().default(true)
 });
 

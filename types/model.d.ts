@@ -45,7 +45,7 @@ export interface IProductAttribute {
 export interface IProductColorVariant {
     id: number;
     productId: number;
-    colorId: number;
+    colorId: string;
     pricePerMeter: number;
     discountPercent?: number;
     stockMeters: number;
@@ -59,15 +59,15 @@ export interface IProduct {
     name: string;
     slug: string;
     description?: string;
-    categoryId?: number;
+    categoryId?: string;
     category?: ICategory;
-    countryId?: number;
+    countryId?: string;
     country?: ICountry;
-    brandId?: number;
+    brandId?: string;
     brand?: IBrand;
     images?: IProductImage[];
     attributes?: IProductAttribute[];
-    colors?: IProductColorVariant[];
+    colorVariants?: IProductColorVariant[];
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -86,10 +86,6 @@ export interface IUser {
     address?: string;
     city?: string;
     postalCode?: string;
-}
-
-export interface FileWithPreview extends File {
-    preview: string;
 }
 
 export interface IBlog {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { productSchema, productValues } from "@/utils/validations/product.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axiosInstance";
@@ -11,6 +11,8 @@ import ImageUploading from "@/components/ui/ImageUploading";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
 import SelectField from "@/components/ui/SelectField";
+import { Button } from "@/components/ui/button";
+import { FileWithPreview } from "@/types";
 
 interface Props {
     item?: IProduct;
@@ -20,23 +22,28 @@ interface Props {
 
 const ProductForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
+    const [image, setImage] = useState<FileWithPreview | null>(null);
 
-    const defaultValues = {
+    const defaultValues: productValues = {
         name: item?.name || '',
         slug: item?.slug || '',
-        pricePerMeter: item?.pricePerMeter || '',
-        discountPercent: item?.discountPercent || '',
-        stockMeters: item?.stockMeters || '',
         categoryId: item?.categoryId || '',
         brandId: item?.brandId || '',
         countryId: item?.countryId || '',
-        images: item?.images || '',
+        images: undefined,
+        colorVariants: item?.colorVariants || [],
+        isActive: item?.isActive || false
 
     }
 
     const form = useForm<productValues>({
-        resolver: zodResolver(productSchema),
+        resolver: zodResolver(productSchema) as Resolver<productValues>,
         defaultValues
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control: form.control,
+        name: "colorVariants"
     });
 
     const submitHandler = async (values: productValues) => {
@@ -47,15 +54,11 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         setLoading(true);
         try {
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`countries/${item?.id}`, {
-                    name: values.name
-                });
+                const { data } = await axiosInstance.put(`products/${item?.id}`, values);
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("countries", {
-                    name: values.name
-                });
+                const { data } = await axiosInstance.post("products", values);
                 console.log(data);
             }
         } catch (error) {
@@ -88,31 +91,6 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     control={form.control}
                 />
 
-                {/* product pricePerMeter Field */}
-                <InputField
-                    name="pricePerMeter"
-                    label="قیمت هر متر"
-                    loading={loading}
-                    control={form.control}
-                />
-
-                {/* product discountPercent Field */}
-                <InputField
-                    name="discountPercent"
-                    label="درصد تخفیف"
-                    loading={loading}
-                    control={form.control}
-                />
-
-                {/* product stockMeters Field */}
-                <InputField
-                    name="stockMeters"
-                    label="موجودی براساس متر"
-                    loading={loading}
-                    control={form.control}
-                />
-
-
                 {/* category Field */}
                 <SelectField
                     url="categories"
@@ -140,10 +118,71 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     toastErrorText="کشوری یافت نشد"
                 />
 
+                {/* 🔥 Color Variants */}
+                <div className="flex flex-col gap-4">
+                    <h3 className="font-bold text-lg">رنگ‌ها و قیمت‌ها</h3>
+                    {fields.map((field, index) => (
+                        <div
+                            key={field.id}
+                            className="grid grid-cols-4 gap-4 items-end border p-4 rounded-lg"
+                        >
+                            <SelectField
+                                url="colors"
+                                name={`colorVariants.${index}.colorId`}
+                                label="رنگ"
+                                control={form.control}
+                                toastErrorText="رنگ یافت نشد"
+                            />
+
+                            <InputField
+                                name={`colorVariants.${index}.pricePerMeter`}
+                                label="قیمت هر متر"
+                                control={form.control}
+                                loading={loading}
+                            />
+
+                            <InputField
+                                name={`colorVariants.${index}.discountPercent`}
+                                label="درصد تخفیف"
+                                control={form.control}
+                                loading={loading}
+                            />
+
+                            <InputField
+                                name={`colorVariants.${index}.stockMeters`}
+                                label="موجودی (متر)"
+                                control={form.control}
+                                loading={loading}
+                            />
+
+                            <button
+                                type="button"
+                                className="text-red-500 text-sm"
+                                onClick={() => remove(index)}
+                            >
+                                حذف
+                            </button>
+                        </div>
+                    ))}
+
+                    <Button
+                        type="button"
+                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                        onClick={() =>
+                            append({ colorId: "", pricePerMeter: 0, discountPercent: 0, stockMeters: 0 })
+                        }
+                    >
+                        افزودن رنگ
+                    </Button>
+                </div>
+
                 <ImageUploading
                     setValue={(value) =>
-                        form.setValue("images", value, { shouldValidate: true })
+                        form.setValue("images", value as FileWithPreview, { shouldValidate: true })
                     }
+                    file={image}
+                    multiple={true}
+                    setFile={setImage}
                     disabled={loading}
                 />
 
