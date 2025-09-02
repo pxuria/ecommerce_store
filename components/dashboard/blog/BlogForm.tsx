@@ -36,7 +36,7 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
         title: item?.title || "",
         slug: item?.slug || "",
         content: item?.content || "",
-        coverImage: [],
+        coverImage: item?.coverImage || null,
         estimatedTimeToRead: item?.estimatedTimeToRead || 1,
         metaTitle: item?.metaTitle || "",
         metaDescription: item?.metaDescription || "",
@@ -140,7 +140,7 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
                             setValue("coverImage", value as FileWithPreview, { shouldValidate: true })
                         }
                         files={image}
-                        setFiles={setImage}
+                        setFiles={file => setImage(file && !Array.isArray(file) ? file : null)}
                         disabled={loading}
                     />
                 </div>
