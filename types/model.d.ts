@@ -2,28 +2,28 @@ export interface IColor {
     id: string;
     name: string;
     hex?: string;
-    products?: Product[];
+    variants?: IProductColorVariant[];
 }
 
 export interface IBrand {
     id: string;
     name: string;
     slug: string;
-    products?: Product[];
+    products?: IProduct[];
 }
 
 export interface ICountry {
     id: string;
     name: string;
     slug: string;
-    products?: Product[];
+    products?: IProduct[];
 }
 
 export interface ICategory {
     id: string;
     name: string;
     slug: string;
-    products?: Product[];
+    products?: IProduct[];
 }
 
 export interface IProductImage {
@@ -31,7 +31,7 @@ export interface IProductImage {
     url: string;
     alt?: string;
     productId: number;
-    product?: Product;
+    product?: IProduct;
 }
 
 export interface IProductAttribute {
@@ -39,7 +39,19 @@ export interface IProductAttribute {
     key: string;
     value: string;
     productId: number;
-    product?: Product;
+    product?: IProduct;
+}
+
+export interface IProductColorVariant {
+    id: number;
+    productId: number;
+    colorId: number;
+    pricePerMeter: number;
+    discountPercent?: number;
+    stockMeters: number;
+
+    product?: IProduct;
+    color?: IColor;
 }
 
 export interface IProduct {
@@ -47,22 +59,19 @@ export interface IProduct {
     name: string;
     slug: string;
     description?: string;
-    pricePerMeter: string;
-    discountPercent?: string;
-    stockMeters: string;
-    countryOfOrigin?: string;
-    categoryId: number;
-    category?: ProductCategory;
+    categoryId?: number;
+    category?: ICategory;
     countryId?: number;
-    country?: ProductCountry;
+    country?: ICountry;
     brandId?: number;
-    brand?: ProductBrand;
-    images?: ProductImage[];
-    attributes?: ProductAttribute[];
-    colors?: ProductColor[];
+    brand?: IBrand;
+    images?: IProductImage[];
+    attributes?: IProductAttribute[];
+    colors?: IProductColorVariant[];
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
+    deletedAt: null | Date;
 }
 
 export interface IUser {

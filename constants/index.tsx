@@ -6,7 +6,6 @@ import {
   FaWhatsapp,
   FaTag,
   FaBoxes,
-  FaBox,
   FaBookmark,
   FaUser,
   FaUsers,
@@ -332,11 +331,6 @@ export const dashboardTabs = [
 
 export const dashboardAdminTabs = [
   {
-    name: "محصولات",
-    dashName: "add_product",
-    icon: <FaBox className="w-5 h-5" />,
-  },
-  {
     name: "بلاگ ها",
     dashName: "blogs",
     icon: <FaNewspaper className="w-5 h-5" />,
@@ -345,6 +339,11 @@ export const dashboardAdminTabs = [
     name: "محصولات",
     dashName: "products",
     icon: <FaBoxes className="w-5 h-5" />,
+  },
+  {
+    name: "دسته بندی محصولات",
+    dashName: "product_category",
+    icon: <FaBoxesPacking className="w-5 h-5" />,
   },
   {
     name: "رنگ ها",
@@ -365,11 +364,6 @@ export const dashboardAdminTabs = [
     name: "لیست کاربران",
     dashName: "users-list",
     icon: <FaUsers className="w-5 h-5" />,
-  },
-  {
-    name: "دسته بندی محصولات",
-    dashName: "product_category",
-    icon: <FaBoxesPacking className="w-5 h-5" />,
   }
 ]
 

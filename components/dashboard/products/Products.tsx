@@ -1,21 +1,26 @@
 'use client';
 
-import axiosInstance from "@/lib/axiosInstance";
-import { handleShowToast } from "@/lib/toast";
-import { IProduct } from "@/types/model";
 import { useEffect, useState } from "react";
-import ProductForm from "./ProductForm";
-import { Button } from "@/components/ui/button";
 import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
-import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
-import { TableCell, TableRow } from "@/components/ui/table";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { handleShowToast } from "@/lib/toast";
+import axiosInstance from "@/lib/axiosInstance";
+import { IProduct } from "@/types/model";
+import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
+import ProductForm from "./ProductForm";
 
 
 const COLUMNS = [
     { title: 'نام محصول', className: 'text-right' },
     { title: 'محصول (نشانی کوتاه)', className: 'text-right' },
+    { title: '', className: 'text-right' },
+    { title: '', className: 'text-right' },
+    { title: '', className: 'text-right' },
+    { title: '', className: 'text-right' },
+    { title: '', className: 'text-right' },
     { title: 'عملیات', className: 'text-center' }
 ];
 
@@ -136,19 +141,6 @@ const Products = () => {
                                 }
                             </DashboardTable>
                         </div>
-
-                        {/* <div className="flex items-start justify-start gap-4 flex-wrap">
-                            {brands.length > 0 && brands.map((item) => (
-                                <div
-                                    key={item.id as string}
-                                    onClick={() => selectChannelHandler(item)}
-                                    className={`w-full sm:w-[calc(50%-16px)] min-h-[80px] rounded-xl bg-hoverBlack border-2 p-4 cursor-pointer ${selectedBrand?.id === item.id ? "border-lightPurple" : "border-white"}`} >
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="text-white text-base font-medium">{item.name}</h3>
-                                    </div>
-                                </div>
-                            ))}
-                        </div> */}
 
                         <ConfirmBox
                             title="حذف محصول"
