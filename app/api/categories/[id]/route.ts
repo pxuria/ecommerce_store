@@ -1,11 +1,10 @@
 export const runtime = 'nodejs';
 
-import prisma, { connectDB } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import prisma, { connectDB } from '@/lib/db';
+import { ParamsType } from '@/types';
 
-type Params = { params: { id: string } };
-
-export async function GET(_req: Request, { params }: Params) {
+export async function GET(_req: Request, { params }: ParamsType) {
     await connectDB();
 
     try {
@@ -18,7 +17,7 @@ export async function GET(_req: Request, { params }: Params) {
     }
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: Request, { params }: ParamsType) {
     await connectDB();
 
     try {
@@ -31,7 +30,7 @@ export async function PUT(req: Request, { params }: Params) {
     }
 }
 
-export async function DELETE(_req: Request, { params }: Params) {
+export async function DELETE(_req: Request, { params }: ParamsType) {
     await connectDB();
 
     try {

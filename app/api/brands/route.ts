@@ -19,7 +19,7 @@ export async function GET(req: Request) {
             orderBy: { id: 'asc' }
         });
 
-        const total = await prisma.productColor.count();
+        const total = await prisma.productBrand.count();
 
         return NextResponse.json({
             data: brands,

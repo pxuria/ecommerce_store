@@ -136,3 +136,5 @@ export interface ISideBlogs {
   author: { _id: string; first_name: string; last_name: string };
   createdAt: string;
 }
+
+export type ParamsType = { params: { id: string } };
