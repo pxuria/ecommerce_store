@@ -22,7 +22,7 @@ interface Props {
 
 const ProductForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [image, setImage] = useState<FileWithPreview | null>(null);
+    const [images, setImages] = useState<FileWithPreview[] | null>(null);
 
     const defaultValues: productValues = {
         name: item?.name || '',
@@ -178,12 +178,12 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
 
                 <ImageUploading
                     setValue={(value) =>
-                        form.setValue("images", value as FileWithPreview, { shouldValidate: true })
+                        form.setValue("images", value && Array.isArray(value) ? value : undefined, { shouldValidate: true })
                     }
-                    file={image}
+                    files={images}
                     multiple={true}
-                    setFile={setImage}
                     disabled={loading}
+                    setFiles={files => setImages(files && Array.isArray(files) ? files : null)}
                 />
 
                 <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش محصول" : "افزودن محصول"} onClose={onClose} />

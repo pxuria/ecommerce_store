@@ -29,10 +29,11 @@ export const productSchema = z.object({
 
     images: z
         .array(
-            z.object({
-                url: z.string().url("Invalid image URL"),
-                alt: z.string().optional()
-            })
+            z.union([
+                z.instanceof(File),
+                z.string().url("Invalid image URL").optional(),
+                z.null()
+            ])
         )
         .optional(),
     attributes: z
