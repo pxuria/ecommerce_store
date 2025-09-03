@@ -37,7 +37,6 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, itemCla
       setLoading(true);
       try {
         const { data } = await axiosInstance.get(`/${url}`);
-        console.log(url, data);
         setItems(data.data);
       } catch (error) {
         toast.error(toastErrorText)

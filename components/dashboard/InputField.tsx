@@ -16,6 +16,9 @@ type InputFieldProps<T extends FieldValues> = {
   type?: string;
   placeholder?: string;
   loading?: boolean;
+  maxLength?: number;
+  isPrice?: boolean;
+  isPercent?: boolean;
 };
 
 const InputField = <T extends FieldValues>({
@@ -25,7 +28,10 @@ const InputField = <T extends FieldValues>({
   type = "text",
   itemClass = "w-full sm:w-[calc(50%-8px)]",
   control,
+  maxLength,
   loading,
+  isPrice = false,
+  isPercent = false
 }: InputFieldProps<T>) => (
   <FormField
     control={control}
@@ -38,11 +44,33 @@ const InputField = <T extends FieldValues>({
             type={type}
             placeholder={placeholder || label}
             {...field}
+            // value={
+            //   typeof field.value === "string" || typeof field.value === "number"
+            //     ? field.value
+            //     : ""
+            // }
             value={
-              typeof field.value === "string" || typeof field.value === "number"
-                ? field.value
-                : ""
+              isPrice && field.value
+                ? new Intl.NumberFormat().format(Number(field.value))
+                : field.value ?? ""
             }
+            onChange={(e) => {
+              let value = e.target.value.replace(/,/g, ""); // remove commas
+
+              // ✅ only allow numbers
+              if (isPrice && value !== "" && !/^\d+$/.test(value)) return;
+
+              // ✅ enforce percent range
+              if (isPercent) {
+                let num = Number(value);
+                if (num > 100) num = 100;
+                if (num < 0) num = 0;
+                value = String(num);
+              }
+
+              field.onChange(value);
+            }}
+            maxLength={maxLength}
             className="form_input"
             disabled={loading}
           />

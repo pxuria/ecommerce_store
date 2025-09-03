@@ -64,7 +64,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         } catch (error) {
             console.log(error);
         } finally {
-            form.reset();
+            // form.reset();
             setLoading(false);
         }
     };
@@ -142,6 +142,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                                 label="قیمت هر متر"
                                 control={form.control}
                                 loading={loading}
+                                isPrice
                             />
 
                             <InputField
@@ -150,6 +151,8 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                                 label="درصد تخفیف"
                                 control={form.control}
                                 loading={loading}
+                                maxLength={3}
+                                isPercent
                             />
 
                             <InputField

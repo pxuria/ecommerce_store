@@ -1,76 +1,125 @@
-import { Types } from "mongoose";
 import { NextResponse } from "next/server";
-import Product from "@/models/Products.model";
-import Category from "@/models/Category.model";
-import ConnectDB from "@/config/db";
 import { isAdmin } from "@/lib/auth";
-import { ProductFilter } from "@/types";
+import prisma, { connectDB } from '@/lib/db';
 
 export const GET = async (req: Request) => {
   try {
-    await ConnectDB();
+    await connectDB();
 
     const { searchParams } = new URL(req.url);
+
     const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = 12;
-    const searchQuery = (searchParams.get("search") || "").trim();
-    const stockQuery = (searchParams.get("stock") || "").trim();
-    const categoryName = (searchParams.get("category") || "").trim();
-    const minPrice = parseFloat(searchParams.get("minPrice") || "0");
-    const maxPrice = parseFloat(searchParams.get("maxPrice") || "20000000");
+    const limit = parseInt(searchParams.get("limit") || "20", 20);
+    const skip = (page - 1) * limit;
 
-    const filter: ProductFilter = {};
+    const filters = {};
 
-    if (searchQuery) filter.name = { $regex: searchQuery, $options: "i" };
+    if (searchParams.get("category")) filters.category = Number(searchParams.get("category")?.trim());
+    if (searchParams.get("brand")) filters.brand = Number(searchParams.get("brand"));
+    if (searchParams.get("name")) {
+      filters.name = {
+        contains: searchParams.get("name") || "",
+        mode: "insensitive",
+      };
+    }
+    const minPrice = searchParams.get("min_price");
+    const maxPrice = searchParams.get("max_price");
+    const stock = searchParams.get("stock");
+    const colorId = searchParams.get("colorId");
 
-    if (stockQuery) filter.stock = stockQuery;
+    const where = {
+      ...filters,
+      colorVariants: {
+        some: {
+          ...(minPrice ? { pricePerMeter: { gte: Number(minPrice) } } : {}),
+          ...(maxPrice ? { pricePerMeter: { lte: Number(maxPrice) } } : {}),
+          ...(stock ? { stockMeters: { gte: Number(stock) } } : {}),
+          ...(colorId ? { colorId: Number(colorId) } : {}),
+        },
+      },
+    };
 
-    if (categoryName) {
-      const category = await Category.findOne({
-        name: decodeURIComponent(categoryName),
-      });
+    // const searchQuery = (searchParams.get("search") || "").trim();
+    // const stockQuery = (searchParams.get("stock") || "").trim();
+    // const categoryQuery = (searchParams.get("category") || "").trim();
+    // const brandQuery = (searchParams.get("category") || "").trim();
+    // const minPrice = parseFloat(searchParams.get("minPrice") || "0");
+    // const maxPrice = parseFloat(searchParams.get("maxPrice") || "1000000000");
 
-      if (category) {
-        console.log("Categoty :" + category);
-        filter.category = new Types.ObjectId(category._id).toHexString();
-      } else {
-        return NextResponse.json(
-          {
-            success: true,
-            message: "no product found",
-            pagination: {
-              totalProducts: 0,
-              totalPages: 0,
-              currentPage: page,
+
+    // const filter: ProductFilter = {};
+
+    // if (searchQuery) filter.name = { $regex: searchQuery, $options: "i" };
+    // if (stockQuery) filter.stock = stockQuery;
+    // if (brandQuery) filter.brand = brandQuery;
+
+    // if (categoryQuery) {
+    //   const category = await Category.findOne({
+    //     name: decodeURIComponent(categoryQuery),
+    //   });
+
+    //   if (category) {
+    //     console.log("Categoty :" + category);
+    //     filter.category = new Types.ObjectId(category._id).toHexString();
+    //   } else {
+    //     return NextResponse.json(
+    //       {
+    //         success: true,
+    //         message: "no product found",
+    //         pagination: {
+    //           totalProducts: 0,
+    //           totalPages: 0,
+    //           currentPage: page,
+    //         },
+    //       },
+    //       { status: 404 }
+    //     );
+    //   }
+    // }
+
+    // if (minPrice >= 0 || maxPrice >= 0) {
+    //   filter.basePrice = {};
+    //   if (minPrice >= 0) filter.basePrice.$gte = minPrice;
+    //   if (maxPrice >= 0) filter.basePrice.$lte = maxPrice;
+    // }
+
+    // console.log("FILTER :", filter);
+    // const totalProducts = await Product.countDocuments(filter);
+    // const products = await Product.find(filter)
+    //   .populate("category")
+    //   .skip((page - 1) * limit)
+    //   .limit(limit);
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        include: {
+          brand: true,
+          category: true,
+          country: true,
+          images: true,
+          colorVariants: {
+            include: {
+              color: true,
             },
           },
-          { status: 404 }
-        );
-      }
-    }
-
-    if (minPrice >= 0 || maxPrice >= 0) {
-      filter.basePrice = {};
-      if (minPrice >= 0) filter.basePrice.$gte = minPrice;
-      if (maxPrice >= 0) filter.basePrice.$lte = maxPrice;
-    }
-
-    console.log("FILTER :", filter);
-    const totalProducts = await Product.countDocuments(filter);
-    const products = await Product.find(filter)
-      .populate("category")
-      .skip((page - 1) * limit)
-      .limit(limit);
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.product.count({ where }),
+    ]);
 
     return NextResponse.json(
       {
-        success: true,
         data: products,
         pagination: {
-          totalProducts,
-          totalPages: Math.ceil(totalProducts / limit),
-          currentPage: page,
-        },
+          total,
+          page,
+          limit,
+          pages: Math.ceil(total / limit),
+        }
       },
       { status: 200 }
     );
@@ -89,7 +138,7 @@ export const GET = async (req: Request) => {
 };
 
 export async function POST(req: Request) {
-  await ConnectDB();
+  await connectDB();
 
   if (!(await isAdmin())) {
     return NextResponse.json("Access denied: Unauthorized", { status: 403 });
@@ -97,8 +146,35 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const product = await Product.create(body);
-    return NextResponse.json({ success: true, data: product }, { status: 201 });
+
+    const product = await prisma.product.create({
+      data: {
+        name: body.name,
+        slug: body.slug,
+        description: body.description,
+        categoryId: body.categoryId,
+        brandId: body.brandId,
+        countryId: body.countryId,
+        isActive: body.isActive ?? true,
+        images: {
+          create: body.images?.map((img: { url: string; alt?: string }) => ({
+            url: img.url,
+            alt: img.alt,
+          })),
+        },
+        colorVariants: {
+          create: body.colorVariants?.map((cv) => ({
+            colorId: cv.colorId,
+            pricePerMeter: cv.pricePerMeter,
+            discountPercent: cv.discountPercent,
+            stockMeters: cv.stockMeters,
+          })),
+        },
+      },
+    });
+
+    // const product = await Product.create(body);
+    return NextResponse.json({ data: product }, { status: 201 });
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json(
