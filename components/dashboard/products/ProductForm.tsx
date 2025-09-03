@@ -5,7 +5,7 @@ import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { productSchema, productValues } from "@/utils/validations/product.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axiosInstance";
-import { Form } from "@/components/ui/form";
+import { Form, FormLabel } from "@/components/ui/form";
 import { IProduct } from "@/types/model";
 import ImageUploading from "@/components/ui/ImageUploading";
 import InputField from "../InputField";
@@ -118,13 +118,15 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     toastErrorText="کشوری یافت نشد"
                 />
 
+                <div className="w-0 lg:w-[calc(50%-16px)]" />
+
                 {/* 🔥 Color Variants */}
-                <div className="flex flex-col gap-4">
-                    <h3 className="font-bold text-lg">رنگ‌ها و قیمت‌ها</h3>
+                <div className="flex flex-col gap-2 w-full">
+                    <FormLabel htmlFor="colorvariants" className="form_label">رنگ‌ها و قیمت‌ها</FormLabel>
                     {fields.map((field, index) => (
                         <div
                             key={field.id}
-                            className="grid grid-cols-4 gap-4 items-end border p-4 rounded-lg"
+                            className="flex gap-4 items-end border p-4 rounded-lg flex-wrap"
                         >
                             <SelectField
                                 url="colors"
@@ -135,6 +137,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                             />
 
                             <InputField
+                                itemClass="w-full lg:w-[calc(50%-16px)]"
                                 name={`colorVariants.${index}.pricePerMeter`}
                                 label="قیمت هر متر"
                                 control={form.control}
@@ -142,6 +145,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                             />
 
                             <InputField
+                                itemClass="w-full lg:w-[calc(50%-16px)]"
                                 name={`colorVariants.${index}.discountPercent`}
                                 label="درصد تخفیف"
                                 control={form.control}
@@ -149,19 +153,20 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                             />
 
                             <InputField
+                                itemClass="w-full lg:w-[calc(50%-16px)]"
                                 name={`colorVariants.${index}.stockMeters`}
                                 label="موجودی (متر)"
                                 control={form.control}
                                 loading={loading}
                             />
 
-                            <button
+                            <Button
                                 type="button"
-                                className="text-red-500 text-sm"
+                                className="bg-red-500 text-white text-sm"
                                 onClick={() => remove(index)}
                             >
                                 حذف
-                            </button>
+                            </Button>
                         </div>
                     ))}
 
@@ -177,6 +182,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                 </div>
 
                 <ImageUploading
+                    className="w-full"
                     setValue={(value) =>
                         form.setValue("images", value && Array.isArray(value) ? value : undefined, { shouldValidate: true })
                     }

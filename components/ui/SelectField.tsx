@@ -12,6 +12,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { toast } from "react-toastify";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form";
+import { Skeleton } from "./skeleton";
 
 type SelectFieldProps<T extends FieldValues> = {
   name: Path<T>;
@@ -19,6 +20,7 @@ type SelectFieldProps<T extends FieldValues> = {
   url: string;
   label: string;
   toastErrorText: string;
+  itemClass?: string;
 }
 
 interface Option {
@@ -26,7 +28,7 @@ interface Option {
   name: string;
 }
 
-const SelectField = <T extends FieldValues>({ control, label, name, url, toastErrorText }: SelectFieldProps<T>) => {
+const SelectField = <T extends FieldValues>({ control, label, name, url, itemClass = "w-full sm:w-[calc(50%-8px)]", toastErrorText }: SelectFieldProps<T>) => {
   const [items, setItems] = useState<Option[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +38,7 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, toastEr
       try {
         const { data } = await axiosInstance.get(`/${url}`);
         console.log(url, data);
-        setItems(data);
+        setItems(data.data);
       } catch (error) {
         toast.error(toastErrorText)
         console.error("Failed to fetch categories:", error);
@@ -48,44 +50,43 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, toastEr
     fetchCategories();
   }, [url, toastErrorText]);
 
-  if (loading) return <p>loading</p>;
-
   return (
     <FormField
-      control={control}
       name={name}
+      control={control}
       render={({ field }) => (
-        <FormItem className="w-full sm:w-[calc(50%-8px)]">
+        <FormItem className={itemClass}>
           <FormLabel className="form_label">{label}</FormLabel>
           <FormControl>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              disabled={loading}
-            >
-              <SelectTrigger className="form_input">
-                <SelectValue
-                  placeholder={loading ? "در حال دریافت..." : "یک مورد انتخاب کنید"}
-                />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                {items.length > 0 ? (
-                  items.map(item => (
-                    <SelectItem
-                      key={item.id}
-                      value={item.id}
-                      className="hover:bg-light_muted cursor-pointer text-right flex justify-end"
-                    >
-                      {item.name}
+            {loading ? <Skeleton className="h-10 w-full rounded-md" /> :
+              (<Select
+                value={field.value ?? ""}
+                onValueChange={field.onChange}
+                disabled={loading}
+              >
+                <SelectTrigger className="form_input">
+                  <SelectValue
+                    placeholder={loading ? "در حال دریافت..." : "یک مورد انتخاب کنید"}
+                  />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  {items.length > 0 ? (
+                    items.map(item => (
+                      <SelectItem
+                        key={item.id}
+                        value={item.id.toString()}
+                        className="hover:bg-light_muted cursor-pointer text-right flex justify-end"
+                      >
+                        {item.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="" disabled>
+                      موردی یافت نشد
                     </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="" disabled>
-                    موردی یافت نشد
-                  </SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+                  )}
+                </SelectContent>
+              </Select>)}
           </FormControl>
           <FormMessage className="form_item_error" dir="rtl" />
         </FormItem>

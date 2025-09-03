@@ -12,6 +12,7 @@ interface ImageUploadingProps {
   files: FileWithPreview[] | FileWithPreview | null;
   existingImageUrls?: string[] | string | null;
   setExistingImageUrls?: (val: string[] | string | null) => void;
+  className?: string;
   disabled: boolean;
   multiple?: boolean;
 }
@@ -23,6 +24,7 @@ const ImageUploading = ({
   setFiles,
   existingImageUrls,
   setExistingImageUrls,
+  className = '',
   multiple = false
 }: ImageUploadingProps) => {
   const { getRootProps, getInputProps } = useDropzone({
@@ -112,7 +114,7 @@ const ImageUploading = ({
     ];
 
   return (
-    <div className="mt-2">
+    <div className={`mt-2 ${className}`}>
       <div
         {...getRootProps()}
         className={`border-2 border-dashed p-6 text-center transition-all ${disabled
