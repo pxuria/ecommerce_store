@@ -9,10 +9,10 @@ import "../shared/carousel/embla.css";
 
 const OPTIONS: EmblaOptionsType = { loop: true }
 const SLIDES = [
-    { image: '/assets/images/banner.jpg', alt: 'banner1' },
-    { image: '/assets/images/banner3.jpg', alt: 'banner2' },
-    { image: '/assets/images/banner4.jpg', alt: 'banner3' },
-    { image: '/assets/images/banner5.png', alt: 'banner4' },
+    { image: '/assets/images/bg-1.png', alt: 'banner1' },
+    { image: '/assets/images/bg-2.png', alt: 'banner2' },
+    { image: '/assets/images/bg-3.png', alt: 'banner3' },
+    { image: '/assets/images/bg-4.png', alt: 'banner4' },
 ]
 
 const HeroSlider = () => {

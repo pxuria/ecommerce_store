@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "فروشگاه آنلاین | صفحه اصلی",
     description: "فروشگاه آنلاین با بهترین محصولات و قیمت‌های مناسب",
-    images: [{ url: "/assets/images/banner.jpg" }],
+    images: [{ url: "/assets/images/bg-1.jpg" }],
   },
 };
 
