@@ -7,15 +7,15 @@ import ContactusText from "@/components/shared/ContactusText";
 import { enBrandName } from "@/constants";
 
 export const metadata: Metadata = {
-  title: "تماس با مارین | ارتباط با فروشگاه آنلاین پوشاک زنانه | Contact Marin",
-  description:
-    "با ما در ارتباط باشید - پشتیبانی ۲۴/۷ فروشگاه مارین، متخصص در ارائه پوشاک زنانه و دخترانه | Contact Marin - 24/7 Support for Women's Fashion Store",
-  keywords:
-    "تماس با مارین, پشتیبانی مارین, ارتباط با ما, خرید لباس آنلاین, فروشگاه لباس زنانه, contact marin, marin support",
+  // title: "تماس با مارین | ارتباط با فروشگاه آنلاین پوشاک زنانه | Contact Marin",
+  // description:
+  //   "با ما در ارتباط باشید - پشتیبانی ۲۴/۷ فروشگاه مارین، متخصص در ارائه پوشاک زنانه و دخترانه | Contact Marin - 24/7 Support for Women's Fashion Store",
+  // keywords:
+  //   "تماس با مارین, پشتیبانی مارین, ارتباط با ما, خرید لباس آنلاین, فروشگاه لباس زنانه, contact marin, marin support",
   openGraph: {
-    title: "تماس با مارین | ارتباط با فروشگاه آنلاین پوشاک زنانه",
-    description:
-      "با ما در ارتباط باشید - پشتیبانی ۲۴/۷ فروشگاه مارین، متخصص در ارائه پوشاک زنانه و دخترانه",
+    // title: "تماس با مارین | ارتباط با فروشگاه آنلاین پوشاک زنانه",
+    // description:
+    //   "با ما در ارتباط باشید - پشتیبانی ۲۴/۷ فروشگاه مارین، متخصص در ارائه پوشاک زنانه و دخترانه",
     images: [
       {
         url: "/assets/images/pic5.jpg",

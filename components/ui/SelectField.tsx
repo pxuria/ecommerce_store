@@ -33,7 +33,7 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, itemCla
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
         const { data } = await axiosInstance.get(`/${url}`);
@@ -46,7 +46,7 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, itemCla
       }
     };
 
-    fetchCategories();
+    fetchData();
   }, [url, toastErrorText]);
 
   return (

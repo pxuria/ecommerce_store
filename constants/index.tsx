@@ -21,7 +21,7 @@ import payLottie from "../public/assets/lotties/pay.json";
 import { FaBoxesPacking, FaNewspaper } from "react-icons/fa6";
 
 
-export const brandName = 'مارین';
+export const brandName = 'ارشیان بافت';
 export const enBrandName = 'marin';
 
 export const navbarLinks = [
