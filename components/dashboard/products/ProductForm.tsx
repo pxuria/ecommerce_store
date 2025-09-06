@@ -5,7 +5,7 @@ import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { productSchema, productValues } from "@/utils/validations/product.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axiosInstance";
-import { Form, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { IProduct } from "@/types/model";
 import ImageUploading from "@/components/ui/ImageUploading";
 import InputField from "../InputField";
@@ -13,6 +13,7 @@ import FormButtons from "../FormButtons";
 import SelectField from "@/components/ui/SelectField";
 import { Button } from "@/components/ui/button";
 import { FileWithPreview } from "@/types";
+import TextEditor from "@/components/ui/TextEditor";
 
 interface Props {
     item?: IProduct;
@@ -30,10 +31,10 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         categoryId: item?.categoryId || '',
         brandId: item?.brandId || '',
         countryId: item?.countryId || '',
+        description: item?.description || '',
         images: undefined,
         colorVariants: item?.colorVariants || [],
         isActive: item?.isActive || false
-
     }
 
     const form = useForm<productValues>({
@@ -193,6 +194,21 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     multiple={true}
                     disabled={loading}
                     setFiles={files => setImages(files && Array.isArray(files) ? files : null)}
+                />
+
+                {/* content */}
+                <FormField
+                    name="description"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem className="w-full">
+                            <FormLabel className="form_label">توضیحات</FormLabel>
+                            <FormControl>
+                                <TextEditor value={field.value || ''} onChange={field.onChange} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
                 />
 
                 <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش محصول" : "افزودن محصول"} onClose={onClose} />
