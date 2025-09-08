@@ -11,16 +11,20 @@ import axiosInstance from "@/lib/axiosInstance";
 import { IProduct } from "@/types/model";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import ProductForm from "./ProductForm";
+import Image from "next/image";
+import { toJalaliDate } from "@/utils/helpers";
 
 
 const COLUMNS = [
     { title: 'نام محصول', className: 'text-right' },
+    { title: 'عکس محصول', className: 'text-right' },
     { title: 'محصول (نشانی کوتاه)', className: 'text-right' },
-    { title: '', className: 'text-right' },
-    { title: '', className: 'text-right' },
-    { title: '', className: 'text-right' },
-    { title: '', className: 'text-right' },
-    { title: '', className: 'text-right' },
+    { title: 'دسته بندی محصول', className: 'text-right' },
+    { title: 'برند محصول', className: 'text-right' },
+    { title: 'کشور محصول', className: 'text-right' },
+    { title: 'تاریخ ایجاد', className: 'text-right' },
+    { title: 'تاریخ حذف', className: 'text-right' },
+    { title: 'وضعیت محصول', className: 'text-right' },
     { title: 'عملیات', className: 'text-center' }
 ];
 
@@ -30,12 +34,13 @@ const Products = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [selectedPrduct, setSelectedProduct] = useState<IProduct | null>();
     const [loading, setLoading] = useState(true);
+    const dateFormat = 'jYYYY/jMM/jDD';
 
     const fetchProducts = async () => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get('products');
-            setProducts(data);
+            setProducts(data.data);
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
@@ -108,21 +113,36 @@ const Products = () => {
                                 {loading
                                     ? renderSkeletonRows(3, COLUMNS)
                                     : products.length > 0
-                                        ? products.map((brand) => (
-                                            <TableRow key={brand.id}>
-                                                <TableCell>{brand.name}</TableCell>
-                                                <TableCell>{brand.slug}</TableCell>
+                                        ? products.map(product => (
+                                            <TableRow key={product.id}>
+                                                <TableCell>{product.name}</TableCell>
+                                                <TableCell>
+                                                    <Image
+                                                        width={120}
+                                                        height={80}
+                                                        alt={product?.images[0]?.alt}
+                                                        src={product?.images[0]?.url}
+                                                        className="rounded-lg object-cover"
+                                                    />
+                                                </TableCell>
+                                                <TableCell>{product.slug}</TableCell>
+                                                <TableCell>{product.category.name}</TableCell>
+                                                <TableCell>{product.brand.name}</TableCell>
+                                                <TableCell>{product.country.name}</TableCell>
+                                                <TableCell>{toJalaliDate(product.createdAt, dateFormat)}</TableCell>
+                                                <TableCell className={!product.deletedAt && "text-center"}>{toJalaliDate(product.deletedAt, dateFormat) || '-'}</TableCell>
+                                                <TableCell>{product.isActive ? 'فعال' : 'غیرفعال'}</TableCell>
                                                 <TableCell className="flex_center gap-2">
                                                     <Button
                                                         className="bg-primary-500 text-black !text-xs lg:text-base"
-                                                        onClick={() => handleEdit(brand)}
+                                                        onClick={() => handleEdit(product)}
                                                     >
                                                         <FaRegEdit className="mr-1" /> ویرایش
                                                     </Button>
                                                     <Button
                                                         className="bg-red-700 text-white !text-xs lg:text-base"
                                                         onClick={() => {
-                                                            setSelectedProduct(brand);
+                                                            setSelectedProduct(product);
                                                             setIsDeleteDialogOpen(true);
                                                         }}
                                                     >

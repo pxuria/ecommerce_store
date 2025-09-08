@@ -152,19 +152,25 @@ export async function POST(req: Request) {
         name: body.name,
         slug: body.slug,
         description: body.description,
-        categoryId: body.categoryId,
-        brandId: body.brandId,
-        countryId: body.countryId,
+        categoryId: parseInt(body.categoryId),
+        brandId: parseInt(body.brandId),
+        countryId: parseInt(body.countryId),
         isActive: body.isActive ?? true,
         images: {
-          create: body.images?.map((img: { url: string; alt?: string }) => ({
-            url: img.url,
-            alt: img.alt,
+          create: body.images?.map((url: string, index: number) => ({
+            url,
+            alt: `${body.name}-${index + 1}`
           })),
+        },
+        attributes: {
+          create: body.attributes?.map((attr) => ({
+            key: attr.key,
+            value: attr.value,
+          }))
         },
         colorVariants: {
           create: body.colorVariants?.map((cv) => ({
-            colorId: cv.colorId,
+            colorId: parseInt(cv.colorId),
             pricePerMeter: cv.pricePerMeter,
             discountPercent: cv.discountPercent,
             stockMeters: cv.stockMeters,

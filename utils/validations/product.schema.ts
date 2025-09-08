@@ -27,22 +27,20 @@ export const productSchema = z.object({
     brandId: z.union([z.string(), z.number()]).optional(),
     countryId: z.union([z.string(), z.number()]).optional(),
 
-    images: z
-        .array(
-            z.union([
-                z.instanceof(File),
-                z.string().url("Invalid image URL").optional(),
-                z.null()
-            ])
-        )
+    images: z.array(
+        z.union([
+            z.instanceof(File),
+            z.string().url("Invalid image URL").optional(),
+            z.null()
+        ])
+    )
         .optional(),
-    attributes: z
-        .array(
-            z.object({
-                key: z.string().min(1),
-                value: z.string().min(1),
-            })
-        )
+    attributes: z.array(
+        z.object({
+            key: z.string().min(1, "کلید الزامی است"),
+            value: z.string().min(1, "مقدار الزامی است"),
+        })
+    )
         .optional(),
     colorVariants: z
         .array(productColorVariantSchema)

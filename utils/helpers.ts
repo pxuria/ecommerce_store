@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import moment from "moment-jalaali";
 import axiosInstance from "@/lib/axiosInstance";
 import { CartItem } from "@/types";
 
@@ -80,4 +81,12 @@ export const uploadImage = async (files: (File | Blob)[]): Promise<string[]> => 
     console.error("Image upload failed:", error);
     return [""];
   }
+};
+
+export const toJalaliDate = (
+  isoDate: string | Date,
+  format: string = "jYYYY/jMM/jDD HH:mm"
+): string => {
+  if (!isoDate) return "";
+  return moment(isoDate).format(format);
 };

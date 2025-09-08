@@ -14,6 +14,8 @@ import SelectField from "@/components/ui/SelectField";
 import { Button } from "@/components/ui/button";
 import { FileWithPreview } from "@/types";
 import TextEditor from "@/components/ui/TextEditor";
+import { uploadImage } from "@/utils/helpers";
+import { Switch } from "@/components/ui/switch";
 
 interface Props {
     item?: IProduct;
@@ -34,6 +36,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         description: item?.description || '',
         images: undefined,
         colorVariants: item?.colorVariants || [],
+        attributes: item?.attributes || [],
         isActive: item?.isActive || false
     }
 
@@ -47,6 +50,11 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         name: "colorVariants"
     });
 
+    const { fields: attrFields, append: appendAttr, remove: removeAttr } = useFieldArray({
+        control: form.control,
+        name: "attributes"
+    });
+
     const submitHandler = async (values: productValues) => {
         if (!(await form.trigger())) {
             console.error("Validation failed:", form.formState.errors);
@@ -54,12 +62,21 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         }
         setLoading(true);
         try {
+            let uploadedImages: string[] = [];
+            if (images) uploadedImages = await uploadImage(images as File[]);
+
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`products/${item?.id}`, values);
+                const { data } = await axiosInstance.put(`products/${item?.id}`, {
+                    ...values,
+                    images: uploadedImages
+                });
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("products", values);
+                const { data } = await axiosInstance.post("products", {
+                    ...values,
+                    images: uploadedImages
+                });
                 console.log(data);
             }
         } catch (error) {
@@ -119,7 +136,25 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     toastErrorText="کشوری یافت نشد"
                 />
 
-                <div className="w-0 lg:w-[calc(50%-16px)]" />
+                <FormField
+                    control={form.control}
+                    name="isActive"
+                    render={({ field }) => (
+                        <FormItem className="w-full lg:w-[calc(50%-18px)]">
+                            <FormLabel className="form_label">وضعیت محصول (فعال)</FormLabel>
+                            <FormControl>
+                                <Switch
+                                    className="block"
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    disabled={loading}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+
+                {/* <div className="w-0 lg:w-[calc(50%-16px)]" /> */}
 
                 {/* 🔥 Color Variants */}
                 <div className="flex flex-col gap-2 w-full">
@@ -210,6 +245,48 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                         </FormItem>
                     )}
                 />
+
+                <div className="flex flex-col gap-2 w-full">
+                    <FormLabel className="form_label">ویژگی‌ها</FormLabel>
+                    {attrFields.map((field, index) => (
+                        <div
+                            key={field.id}
+                            className="flex gap-4 items-end border p-4 rounded-lg flex-wrap"
+                        >
+                            <InputField
+                                itemClass="w-full lg:w-[calc(50%-16px)]"
+                                name={`attributes.${index}.key`}
+                                label="کلید"
+                                control={form.control}
+                                loading={loading}
+                            />
+
+                            <InputField
+                                itemClass="w-full lg:w-[calc(50%-16px)]"
+                                name={`attributes.${index}.value`}
+                                label="مقدار"
+                                control={form.control}
+                                loading={loading}
+                            />
+
+                            <Button
+                                type="button"
+                                className="bg-red-500 text-white text-sm"
+                                onClick={() => removeAttr(index)}
+                            >
+                                حذف
+                            </Button>
+                        </div>
+                    ))}
+
+                    <Button
+                        type="button"
+                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                        onClick={() => appendAttr({ key: "", value: "" })}
+                    >
+                        افزودن ویژگی
+                    </Button>
+                </div>
 
                 <FormButtons loading={loading} submitTitle={onUpdated ? "ویرایش محصول" : "افزودن محصول"} onClose={onClose} />
             </form>
