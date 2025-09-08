@@ -163,13 +163,13 @@ export async function POST(req: Request) {
           })),
         },
         attributes: {
-          create: body.attributes?.map((attr) => ({
+          create: body.attributes?.map((attr: { key: string; value: string }) => ({
             key: attr.key,
             value: attr.value,
           }))
         },
         colorVariants: {
-          create: body.colorVariants?.map((cv) => ({
+          create: body.colorVariants?.map((cv: { colorId: string; pricePerMeter: number; discountPercent: number; stockMeters: number }) => ({
             colorId: parseInt(cv.colorId),
             pricePerMeter: cv.pricePerMeter,
             discountPercent: cv.discountPercent,

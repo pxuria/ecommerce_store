@@ -12,6 +12,7 @@ import { handleShowToast } from '@/lib/toast';
 import axiosInstance from '@/lib/axiosInstance';
 import { IBlog } from '@/types/model';
 import Image from 'next/image';
+import CustomPagination from '@/components/shared/CustomPagination';
 
 const COLUMNS = [
     { title: 'تیتر بلاگ', className: 'text-right' },
@@ -28,12 +29,22 @@ const Blogs = () => {
     const [blogs, setBlogs] = useState<IBlog[]>([]);
     const [selectedBlog, setSelectedBlog] = useState<IBlog | null>();
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({
+        total: 0,
+        currentPage: 1,
+        totalPages: 1
+    });
 
     const fetchBlogs = async () => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get('blogs');
             setBlogs(data.data);
+            setPagination({
+                total: data.pagination.total,
+                currentPage: data.pagination.page,
+                totalPages: data.pagination.totalPages
+            });
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
@@ -150,6 +161,8 @@ const Blogs = () => {
                                 }
                             </DashboardTable>
                         </div>
+
+                        <CustomPagination pagination={pagination} />
 
                         <ConfirmBox
                             title="حذف بلاگ"

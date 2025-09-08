@@ -13,6 +13,7 @@ import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import ProductForm from "./ProductForm";
 import Image from "next/image";
 import { toJalaliDate } from "@/utils/helpers";
+import CustomPagination from "@/components/shared/CustomPagination";
 
 
 const COLUMNS = [
@@ -22,9 +23,9 @@ const COLUMNS = [
     { title: 'دسته بندی محصول', className: 'text-right' },
     { title: 'برند محصول', className: 'text-right' },
     { title: 'کشور محصول', className: 'text-right' },
+    { title: 'وضعیت محصول', className: 'text-right' },
     { title: 'تاریخ ایجاد', className: 'text-right' },
     { title: 'تاریخ حذف', className: 'text-right' },
-    { title: 'وضعیت محصول', className: 'text-right' },
     { title: 'عملیات', className: 'text-center' }
 ];
 
@@ -34,6 +35,12 @@ const Products = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [selectedPrduct, setSelectedProduct] = useState<IProduct | null>();
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({
+        total: 0,
+        currentPage: 1,
+        totalPages: 1
+    });
+
     const dateFormat = 'jYYYY/jMM/jDD';
 
     const fetchProducts = async () => {
@@ -41,6 +48,11 @@ const Products = () => {
             setLoading(true);
             const { data } = await axiosInstance.get('products');
             setProducts(data.data);
+            setPagination({
+                total: data.pagination.total,
+                currentPage: data.pagination.page,
+                totalPages: data.pagination.totalPages
+            });
         } catch (error) {
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
@@ -120,18 +132,20 @@ const Products = () => {
                                                     <Image
                                                         width={120}
                                                         height={80}
-                                                        alt={product?.images[0]?.alt}
-                                                        src={product?.images[0]?.url}
+                                                        alt={product?.images?.[0]?.alt ?? product.name}
+                                                        src={product?.images?.[0]?.url ?? "/assets/images/placeholder.webp"}
                                                         className="rounded-lg object-cover"
                                                     />
                                                 </TableCell>
                                                 <TableCell>{product.slug}</TableCell>
-                                                <TableCell>{product.category.name}</TableCell>
-                                                <TableCell>{product.brand.name}</TableCell>
-                                                <TableCell>{product.country.name}</TableCell>
-                                                <TableCell>{toJalaliDate(product.createdAt, dateFormat)}</TableCell>
-                                                <TableCell className={!product.deletedAt && "text-center"}>{toJalaliDate(product.deletedAt, dateFormat) || '-'}</TableCell>
+                                                <TableCell>{product!.category!.name}</TableCell>
+                                                <TableCell>{product!.brand!.name}</TableCell>
+                                                <TableCell>{product!.country!.name}</TableCell>
                                                 <TableCell>{product.isActive ? 'فعال' : 'غیرفعال'}</TableCell>
+                                                <TableCell>{toJalaliDate(product.createdAt, dateFormat)}</TableCell>
+                                                <TableCell className={`${!product.deletedAt && "text-center"}`}>
+                                                    {toJalaliDate(product.deletedAt as Date, dateFormat) || '-'}
+                                                </TableCell>
                                                 <TableCell className="flex_center gap-2">
                                                     <Button
                                                         className="bg-primary-500 text-black !text-xs lg:text-base"
@@ -161,6 +175,8 @@ const Products = () => {
                                 }
                             </DashboardTable>
                         </div>
+
+                        <CustomPagination pagination={pagination} />
 
                         <ConfirmBox
                             title="حذف محصول"

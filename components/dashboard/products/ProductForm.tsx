@@ -4,18 +4,18 @@ import { useState } from "react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { productSchema, productValues } from "@/utils/validations/product.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axiosInstance from "@/lib/axiosInstance";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { IProduct } from "@/types/model";
 import ImageUploading from "@/components/ui/ImageUploading";
-import InputField from "../InputField";
-import FormButtons from "../FormButtons";
 import SelectField from "@/components/ui/SelectField";
 import { Button } from "@/components/ui/button";
-import { FileWithPreview } from "@/types";
 import TextEditor from "@/components/ui/TextEditor";
-import { uploadImage } from "@/utils/helpers";
 import { Switch } from "@/components/ui/switch";
+import { uploadImage } from "@/utils/helpers";
+import axiosInstance from "@/lib/axiosInstance";
+import { IProduct } from "@/types/model";
+import { FileWithPreview } from "@/types";
+import InputField from "../InputField";
+import FormButtons from "../FormButtons";
 
 interface Props {
     item?: IProduct;
@@ -26,6 +26,7 @@ interface Props {
 const ProductForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [images, setImages] = useState<FileWithPreview[] | null>(null);
+    console.log(item);
 
     const defaultValues: productValues = {
         name: item?.name || '',
@@ -63,25 +64,31 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         setLoading(true);
         try {
             let uploadedImages: string[] = [];
-            if (images) uploadedImages = await uploadImage(images as File[]);
+            if (images && images.length > 0) uploadedImages = await uploadImage(images as File[]);
+
+            const payload = {
+                ...values,
+                categoryId: values.categoryId || null,
+                brandId: values.brandId || null,
+                countryId: values.countryId || null,
+                images: uploadedImages,
+                attributes: values.attributes ?? [],
+                colorVariants: values.colorVariants ?? [],
+            };
 
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`products/${item?.id}`, {
-                    ...values,
-                    images: uploadedImages
-                });
+                const { data } = await axiosInstance.put(`products/${item?.id}`, payload);
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("products", {
-                    ...values,
-                    images: uploadedImages
-                });
+                const { data } = await axiosInstance.post("products", payload);
                 console.log(data);
             }
+
         } catch (error) {
             console.log(error);
         } finally {
+            onUpdated?.();
             // form.reset();
             setLoading(false);
         }
