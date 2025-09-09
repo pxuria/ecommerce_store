@@ -100,9 +100,7 @@ export interface IUser extends Document {
 
 export type ProductFormValues = z.infer<typeof productSchema>;
 
-export interface FileWithPreview extends File {
-  preview: string;
-}
+export type FileWithPreview = File & { preview: string };
 
 export interface IBlog extends Document {
   title: string;

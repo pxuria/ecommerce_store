@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { uploadImage } from "@/utils/helpers";
 import axiosInstance from "@/lib/axiosInstance";
 import { IProduct } from "@/types/model";
+import { FileWithPreview } from "@/types";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
 
@@ -23,8 +24,8 @@ interface Props {
 }
 
 const ProductForm = ({ item, onClose, onUpdated }: Props) => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [images, setImages] = useState<File[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [images, setImages] = useState<FileWithPreview[]>([]);
     console.log(item);
 
     const defaultValues: productValues = {
@@ -63,15 +64,17 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
             console.error("Validation failed:", form.formState.errors);
             return;
         }
+
         setLoading(true);
+
         try {
             let uploadedImages: string[] = [];
             if (images.length > 0) uploadedImages = await uploadImage(images);
 
 
             const finalImages = [
-                ...(values.images ?? []),   // existing urls user kept
-                ...uploadedImages           // new urls from upload
+                ...(values.images ?? []),
+                ...uploadedImages
             ];
 
             const payload = {
