@@ -13,7 +13,6 @@ import { Switch } from "@/components/ui/switch";
 import { uploadImage } from "@/utils/helpers";
 import axiosInstance from "@/lib/axiosInstance";
 import { IProduct } from "@/types/model";
-import { FileWithPreview } from "@/types";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
 
@@ -25,18 +24,21 @@ interface Props {
 
 const ProductForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [images, setImages] = useState<FileWithPreview[] | null>(null);
+    const [images, setImages] = useState<File[]>([]);
     console.log(item);
 
     const defaultValues: productValues = {
         name: item?.name || '',
         slug: item?.slug || '',
-        categoryId: item?.categoryId || '',
-        brandId: item?.brandId || '',
-        countryId: item?.countryId || '',
+        categoryId: item?.categoryId ? String(item.categoryId) : undefined,
+        brandId: item?.brandId ? String(item.brandId) : undefined,
+        countryId: item?.countryId ? String(item.countryId) : undefined,
         description: item?.description || '',
-        images: undefined,
-        colorVariants: item?.colorVariants || [],
+        images: item?.images?.map(img => img.url) || [],
+        colorVariants: item?.colorVariants?.map(cv => ({
+            ...cv,
+            colorId: cv.colorId ? String(cv.colorId) : '',
+        })) || [],
         attributes: item?.attributes || [],
         isActive: item?.isActive || false
     }
@@ -64,16 +66,22 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         setLoading(true);
         try {
             let uploadedImages: string[] = [];
-            if (images && images.length > 0) uploadedImages = await uploadImage(images as File[]);
+            if (images.length > 0) uploadedImages = await uploadImage(images);
+
+
+            const finalImages = [
+                ...(values.images ?? []),   // existing urls user kept
+                ...uploadedImages           // new urls from upload
+            ];
 
             const payload = {
                 ...values,
                 categoryId: values.categoryId || null,
                 brandId: values.brandId || null,
                 countryId: values.countryId || null,
-                images: uploadedImages,
+                images: finalImages,
                 attributes: values.attributes ?? [],
-                colorVariants: values.colorVariants ?? [],
+                colorVariants: values.colorVariants ?? []
             };
 
             if (onUpdated) {
@@ -147,7 +155,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     control={form.control}
                     name="isActive"
                     render={({ field }) => (
-                        <FormItem className="w-full lg:w-[calc(50%-18px)]">
+                        <FormItem className="w-full sm:w-[calc(50%-8px)]">
                             <FormLabel className="form_label">وضعیت محصول (فعال)</FormLabel>
                             <FormControl>
                                 <Switch
@@ -161,8 +169,6 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     )}
                 />
 
-                {/* <div className="w-0 lg:w-[calc(50%-16px)]" /> */}
-
                 {/* 🔥 Color Variants */}
                 <div className="flex flex-col gap-2 w-full">
                     <FormLabel htmlFor="colorvariants" className="form_label">رنگ‌ها و قیمت‌ها</FormLabel>
@@ -174,6 +180,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                             <SelectField
                                 url="colors"
                                 name={`colorVariants.${index}.colorId`}
+                                itemClass="w-full lg:w-[calc(50%-16px)]"
                                 label="رنگ"
                                 control={form.control}
                                 toastErrorText="رنگ یافت نشد"
@@ -229,13 +236,20 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
 
                 <ImageUploading
                     className="w-full"
-                    setValue={(value) =>
-                        form.setValue("images", value && Array.isArray(value) ? value : undefined, { shouldValidate: true })
+                    setValue={value =>
+                        form.setValue(
+                            "images",
+                            value && Array.isArray(value) ? value : [],
+                            { shouldValidate: true })
                     }
                     files={images}
                     multiple={true}
                     disabled={loading}
-                    setFiles={files => setImages(files && Array.isArray(files) ? files : null)}
+                    setFiles={files => setImages(files && Array.isArray(files) ? files : [])}
+                    existingImageUrls={item?.images?.map((img) => img.url) || []}
+                    setExistingImageUrls={(urls) =>
+                        form.setValue("images", urls && Array.isArray(urls) ? urls : undefined)
+                    }
                 />
 
                 {/* content */}
@@ -246,7 +260,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                         <FormItem className="w-full">
                             <FormLabel className="form_label">توضیحات</FormLabel>
                             <FormControl>
-                                <TextEditor value={field.value || ''} onChange={field.onChange} />
+                                <TextEditor value={field.value ?? ''} onChange={field.onChange} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -301,7 +315,4 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
     )
 }
 
-export default ProductForm
-
-
-
+export default ProductForm;

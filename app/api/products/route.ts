@@ -98,6 +98,7 @@ export const GET = async (req: Request) => {
           category: true,
           country: true,
           images: true,
+          attributes: true,
           colorVariants: {
             include: {
               color: true,
