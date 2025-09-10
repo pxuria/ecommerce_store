@@ -257,56 +257,6 @@ export const products = [
   },
 ];
 
-export const categories = [
-  {
-    name: "شلوارک",
-    enName: "pants",
-    icon: "/assets/images/pants.svg",
-    bg: "var(--primary-300)",
-  },
-  {
-    name: "کاپشن",
-    enName: "puffer-jacket",
-    icon: "/assets/images/puffer-jacket.svg",
-    bg: "var(--primary-300)",
-  },
-  {
-    name: "جوراب",
-    enName: "socks",
-    icon: "/assets/images/socks.svg",
-    bg: "var(--primary-300)",
-  },
-  {
-    name: "عینک",
-    enName: "glasses",
-    icon: "/assets/images/glasses.svg",
-    bg: "var(--primary-400)",
-  },
-  {
-    name: "تیشرت",
-    enName: "tshirt",
-    icon: "/assets/images/tshirt.svg",
-    bg: "var(--primary-500)",
-  },
-  {
-    name: "کراپ تاپ",
-    enName: "crop-top",
-    icon: "/assets/images/socks.svg",
-    bg: "var(--primary-300)",
-  },
-  {
-    name: "کلاه",
-    enName: "hat",
-    icon: "/assets/images/cap.svg",
-    bg: "var(--primary-300)",
-  },
-  {
-    name: "هودی",
-    enName: "hoodie",
-    icon: "/assets/images/hoodie.svg",
-    bg: "var(--primary-300)",
-  },
-];
 
 export const sizes = ["sm", "md", "lg", "xl", "2xl", "3xl"];
 export const colors = ["red", "blue", "black", "purple"];

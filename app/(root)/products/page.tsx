@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import CustomPagination from "@/components/shared/CustomPagination";
 import ProductCard from "@/components/shared/ProductCard";
 import Filter from "@/components/shared/Filter";
-import axiosInstance from "@/lib/axiosInstance";
 import ProductsFilters from "@/components/shared/ProductsFilters";
 import { IProduct } from "@/types";
 import NoProduct from "@/components/shared/NoProduct";
@@ -21,7 +20,8 @@ async function fetchProducts(searchParams: Record<string, string | undefined>) {
     );
 
     const query = new URLSearchParams(filteredParams).toString();
-    const { data } = await axiosInstance.get(`products?${query}`);
+    const res = await fetch(`/api/products`);
+    const data = await res.json();
     return data;
   } catch (error) {
     console.log("Error fetching products:", error);
@@ -42,7 +42,7 @@ const page = async ({
   console.log(loadedProducts);
 
   return (
-    <section className="px-4 sm:px-8 mt-10 min-h-[85vh] flex-column items-center justify-between">
+    <section className="md:px-4 px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
       <div className="w-full flex items-start justify-center gap-4 flex-nowrap">
         {showFilters && (
           <div className="w-1/4">
@@ -51,20 +51,18 @@ const page = async ({
         )}
 
         <div
-          className={`flex items-center justify-end gap-4 flex-wrap ${
-            showFilters ? "w-3/4" : "w-full"
-          }`}
+          className={`flex items-center justify-end gap-4 flex-wrap ${showFilters ? "w-3/4" : "w-full"
+            }`}
         >
           <ProductsFilters />
 
           {loadedProducts.length ? (
             loadedProducts?.map((item: IProduct) => (
               <div
-                className={`w-[calc(50%-16px)] ${
-                  showFilters
-                    ? "md:w-[calc(33%-16px)]"
-                    : "min-[900px]:w-[calc(33%-16px)] xl:w-[calc(25%-16px)]"
-                }`}
+                className={`w-[calc(50%-16px)] ${showFilters
+                  ? "md:w-[calc(33%-16px)]"
+                  : "min-[900px]:w-[calc(33%-16px)] xl:w-[calc(25%-16px)]"
+                  }`}
                 key={item._id}
               >
                 <ProductCard

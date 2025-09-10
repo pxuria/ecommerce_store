@@ -37,7 +37,7 @@ const ProductsFilters = () => {
     <div className="flex items-center gap-2 w-full">
       <button
         type="button"
-        className="text-nowrap text-white bg-purple-500 px-4 py-2 rounded-lg"
+        className="text-nowrap text-white bg-secondary-600 hover:bg-secondary-700 px-4 py-2 rounded-lg"
         onClick={toggleFilters}
       >
         فیلتر ها

@@ -1,10 +1,8 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import Image from "next/image";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import RangeSlider from "react-range-slider-input";
-import { categories } from "@/constants";
 import "react-range-slider-input/dist/style.css";
 
 const Filter = () => {
@@ -76,33 +74,6 @@ const Filter = () => {
       {/* Categories */}
       <div className="mt-4">
         <h5 className="text-base font-medium select-none">دسته بندی ها</h5>
-        <div className="overflow-y-hidden overflow-x-auto flex_center flex-wrap gap-4 my-2 py-2">
-          {categories.map((item) => {
-            const isActive = searchParams.get("category") === item.enName;
-            return (
-              <button
-                key={item.name}
-                type="button"
-                onClick={() => handleCategorySelect(item.enName)}
-                className={`rounded-full min-w-20 h-20 flex_center flex-col group ${
-                  isActive ? "ring-2 ring-black" : ""
-                }`}
-                style={{ backgroundColor: item.bg }}
-              >
-                <Image
-                  src={item.icon}
-                  alt={item.enName}
-                  className="group-hover:scale-110 primary_transition"
-                  width={35}
-                  height={35}
-                />
-                <span className="text-sm text-black font-medium">
-                  {item.name}
-                </span>
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       {/* Price Range */}
