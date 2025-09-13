@@ -1,11 +1,38 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
+import CollapsibleMenu from "../ui/CollapsibleMenu";
 
 const Filter = () => {
+  const [brands, setBrands] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [filterLoading, setFilterLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      setFilterLoading(true);
+      try {
+        const res = await fetch("/api/filters", { cache: 'no-store' });
+        const data = await res.json();
+        setBrands(data.brands);
+        setCategories(data.categories);
+        setCountries(data.countries);
+        setColors(data.colors);
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setFilterLoading(false);
+      }
+    };
+
+    fetchFilters();
+  }, []);
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -71,10 +98,10 @@ const Filter = () => {
 
   return (
     <div className="rounded-xl border border-muted px-4 py-3 bg-[#fff]">
-      {/* Categories */}
-      <div className="mt-4">
-        <h5 className="text-base font-medium select-none">دسته بندی ها</h5>
-      </div>
+      <CollapsibleMenu title="دسته بندی ها" loading={filterLoading} items={categories} />
+      <CollapsibleMenu title="کشور ها" loading={filterLoading} items={countries} />
+      <CollapsibleMenu title="برند ها" loading={filterLoading} items={brands} />
+      <CollapsibleMenu title="رنگ ها" loading={filterLoading} items={colors} />
 
       {/* Price Range */}
       <div className="mt-4">

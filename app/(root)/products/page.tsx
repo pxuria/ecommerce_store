@@ -50,10 +50,7 @@ const page = async ({
           </div>
         )}
 
-        <div
-          className={`flex items-center justify-end gap-4 flex-wrap ${showFilters ? "w-3/4" : "w-full"
-            }`}
-        >
+        <div className={`flex items-center justify-end gap-4 flex-wrap ${showFilters ? "w-3/4" : "w-full"}`}>
           <ProductsFilters />
 
           {loadedProducts.length ? (
@@ -77,9 +74,7 @@ const page = async ({
                 />
               </div>
             ))
-          ) : (
-            <NoProduct />
-          )}
+          ) : <NoProduct />}
         </div>
       </div>
 

@@ -178,9 +178,16 @@ export async function POST(req: Request) {
           })),
         },
       },
+      include: {
+        images: true,
+        attributes: true,
+        colorVariants: { include: { color: true } },
+        category: true,
+        brand: true,
+        country: true,
+      }
     });
 
-    // const product = await Product.create(body);
     return NextResponse.json({ data: product }, { status: 201 });
   } catch (error: unknown) {
     if (error instanceof Error) {

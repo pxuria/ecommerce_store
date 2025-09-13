@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 
 interface Props {
   size?: "small" | "medium" | "large";
-  color?: "primary" | "white" | "black";
+  color?: "secondary" | "white" | "black";
 }
 
-const LoadingSpinner = ({ size = "medium", color = "primary" }: Props) => {
+const LoadingSpinner = ({ size = "medium", color = "secondary" }: Props) => {
   const sizeClasses = {
     small: "w-5 h-5",
     medium: "w-8 h-8",
@@ -13,7 +13,7 @@ const LoadingSpinner = ({ size = "medium", color = "primary" }: Props) => {
   };
 
   const colorClasses = {
-    primary: "border-primary",
+    secondary: "border-secondary-700",
     white: "border-white",
     black: "border-black",
   };
