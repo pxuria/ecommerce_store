@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/prisma'
-import bcrypt from 'bcrypt'
+import { compare } from "bcryptjs";
 import { z } from 'zod'
 
 const credentialsSchema = z.object({
@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
         if (!user) return null
         console.log(parsed)
 
-        const valid = await bcrypt.compare(parsed.data.password, user.password)
+        const valid = await compare(parsed.data.password, user.password)
         if (!valid) return null
 
         // remove password before returning

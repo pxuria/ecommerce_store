@@ -5,7 +5,7 @@ import ConnectDB from "@/config/db";
 // import Blog from "@/models/Blog.model";
 import { isAdmin } from "../auth";
 import User from "@/models/User.model";
-import { asyncHandler } from "@/utils/helpers";
+import { asyncHandler2 } from "@/utils/helpers";
 import { connectDB } from "../db";
 // import { IBlog } from "@/types/model";
 // import { blogsRedis } from "@/constants/redis-keys";
@@ -22,7 +22,7 @@ type Blog = {
 }
 
 export async function getBlogs() {
-    return asyncHandler(async () => {
+    return asyncHandler2(async () => {
         await connectDB();
 
         // const cacheKey = blogsRedis.all;
@@ -40,7 +40,7 @@ export async function getBlogs() {
 }
 
 export async function addBlog({ title, content, author, wallpaper, estimatedTimeToRead, metaTitle, metaDescription }: Blog) {
-    return asyncHandler(async () => {
+    return asyncHandler2(async () => {
         await ConnectDB();
 
         if (!(await isAdmin())) return { error: "Access denied: Unauthorized" }
@@ -68,7 +68,7 @@ export async function addBlog({ title, content, author, wallpaper, estimatedTime
 }
 
 export async function getBlogById(id: string) {
-    return asyncHandler(async () => {
+    return asyncHandler2(async () => {
         await ConnectDB();
         // const cacheKey = `${blogsRedis.byId}${id}`;
 
@@ -89,7 +89,7 @@ export async function getBlogById(id: string) {
 }
 
 export async function updateBlog(id: string, data: Blog) {
-    return asyncHandler(async () => {
+    return asyncHandler2(async () => {
         await ConnectDB();
         if (!(await isAdmin())) return { error: "Access denied: Unauthorized" }
 
@@ -106,7 +106,7 @@ export async function updateBlog(id: string, data: Blog) {
 }
 
 export async function deleteBlog(id: string) {
-    return asyncHandler(async () => {
+    return asyncHandler2(async () => {
         await ConnectDB();
         if (!(await isAdmin())) return { error: "Access denied: Unauthorized" }
 
@@ -121,7 +121,7 @@ export async function deleteBlog(id: string) {
 }
 
 export async function getLatestBlogs() {
-    return asyncHandler(async () => {
+    return asyncHandler2(async () => {
         await ConnectDB();
         // const cacheKey = blogsRedis.latest;
 

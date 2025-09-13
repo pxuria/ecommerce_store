@@ -1,43 +1,22 @@
 export const runtime = 'nodejs';
 
-import { NextResponse } from 'next/server';
-import prisma, { connectDB } from '@/lib/db';
+import prisma from '@/lib/db';
 import { ParamsType } from '@/types';
+import { asyncHandler, HttpError } from '@/utils/helpers';
 
-export async function GET(_req: Request, { params }: ParamsType) {
-    await connectDB();
+export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
+    const brand = await prisma.productBrand.findUnique({ where: { id: parseInt(params.id) } });
+    if (!brand) throw new HttpError("Brand not found", 404);
+    return { data: brand };
+});
 
-    try {
-        const brand = await prisma.productBrand.findUnique({ where: { id: parseInt(params.id) } });
-        if (!brand) return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
-        return NextResponse.json(brand);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
+export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(async () => {
+    const data = await req.json();
+    const brand = await prisma.productBrand.update({ where: { id: parseInt(params.id) }, data });
+    return { data: brand };
+})
 
-export async function PUT(req: Request, { params }: ParamsType) {
-    await connectDB();
-
-    try {
-        const data = await req.json();
-        const brand = await prisma.productBrand.update({ where: { id: parseInt(params.id) }, data });
-        return NextResponse.json(brand);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
-    }
-}
-
-export async function DELETE(_req: Request, { params }: ParamsType) {
-    await connectDB();
-
-    try {
-        await prisma.productBrand.delete({ where: { id: parseInt(params.id) } });
-        return NextResponse.json({ message: 'Brand deleted' });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
-    }
-}
+export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHandler(async () => {
+    await prisma.productBrand.delete({ where: { id: parseInt(params.id) } });
+    return { message: 'Brand deleted' };
+});

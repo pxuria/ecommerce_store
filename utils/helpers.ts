@@ -2,8 +2,16 @@ import Decimal from "decimal.js";
 import moment from "moment-jalaali";
 import axiosInstance from "@/lib/axiosInstance";
 import { CartItem } from "@/types";
+import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/db";
+import { isAdmin } from "@/lib/auth";
 
-type ActionFn<T> = () => Promise<T>;
+type ActionFn<T> = () => Promise<T> | T;
+interface AsyncHandlerOptions {
+  auth?: boolean;
+  successStatus?: number;
+  errorMsg?: string;
+}
 
 export const getCartItemQuantity = (
   cartItems: CartItem[],
@@ -47,7 +55,48 @@ export function formatDate(dateString: string, fx?: boolean) {
   return `${year}/${month}/${day}`;
 }
 
-export async function asyncHandler<T>(actionFn: ActionFn<T>, errorMsg: string): Promise<T | { error: string }> {
+export async function asyncHandler<T>(
+  actionFn: ActionFn<T>,
+  options: AsyncHandlerOptions = {}
+): Promise<ReturnType<typeof NextResponse.json>> {
+  try {
+    await connectDB();
+
+    if (options.auth) {
+      if (!(await isAdmin())) {
+        return NextResponse.json({ success: false, error: "Access denied: Unauthorized" }, { status: 403 });
+      }
+    }
+
+    const data = await actionFn();
+
+    return NextResponse.json({ success: true, ...data }, { status: options.successStatus || 200 });
+  } catch (error: unknown) {
+    console.error(options.errorMsg ?? "Server Error:", error);
+
+    let message = options.errorMsg ?? "Unknown error";
+    let status = 500;
+
+    if (error instanceof HttpError) {
+      message = error.message;
+      status = error.status;
+    } else if (error instanceof Error) {
+      message = error.message;
+    }
+
+    return NextResponse.json({ success: false, error: message }, { status });
+  }
+}
+
+export class HttpError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export async function asyncHandler2<T>(actionFn: ActionFn<T>, errorMsg: string): Promise<T | { error: string }> {
   try {
     return await actionFn();
   } catch (error) {

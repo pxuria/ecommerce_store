@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import { hash } from "bcryptjs";
 import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -67,7 +67,7 @@ export async function PUT(
     if (postalCode) updateData.postalCode = postalCode;
 
     if (role && authUser.role === "ADMIN") updateData.role = role;
-    if (password) updateData.password = await bcrypt.hash(password, 12);
+    if (password) updateData.password = await hash(password, 12);
 
     const user = await prisma.user.update({
       where: { id },

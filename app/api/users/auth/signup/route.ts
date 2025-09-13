@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
         const existing = await prisma.user.findFirst({ where: { OR: [{ email }, { phone }] } })
         if (existing) return NextResponse.json({ error: "اطلاعات وارد شده تکراری است." }, { status: 409 })
 
-        const hashed = await bcrypt.hash(password, 12)
+        const hashed = await hash(password, 12)
 
         const user = await prisma.user.create({
             data: {

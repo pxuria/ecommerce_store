@@ -1,52 +1,33 @@
 export const runtime = 'nodejs';
 
-import prisma, { connectDB } from '@/lib/db';
-import { NextResponse } from 'next/server';
+import prisma from '@/lib/db';
+import { asyncHandler, HttpError } from '@/utils/helpers';
 
-export async function GET(req: Request) {
-    await connectDB();
+export const GET = async (req: Request) => asyncHandler(async () => {
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "20", 20);
 
-    try {
-        const { searchParams } = new URL(req.url);
-        const page = parseInt(searchParams.get("page") || "1", 10);
-        const limit = parseInt(searchParams.get("limit") || "20", 20);
+    const skip = (page - 1) * limit;
+    const brands = await prisma.productBrand.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
 
-        const skip = (page - 1) * limit;
+    const total = await prisma.productBrand.count();
 
-        const brands = await prisma.productBrand.findMany({
-            skip,
-            take: limit,
-            orderBy: { id: 'asc' }
-        });
+    return {
+        data: brands,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        }
+    };
+});
 
-        const total = await prisma.productBrand.count();
+export const POST = async (request: Request) => asyncHandler(async () => {
+    const { name, slug } = await request.json();
+    if (!name || !slug) throw new HttpError('brand name or slug is required', 400);
 
-        return NextResponse.json({
-            data: brands,
-            pagination: {
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            }
-        }, { status: 200 });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
-
-export async function POST(request: Request) {
-    await connectDB();
-
-    try {
-        const { name, slug } = await request.json();
-        if (!name || !slug) return NextResponse.json({ error: 'brand name or slug is required' }, { status: 400 });
-
-        const brand = await prisma.productBrand.create({ data: { name, slug } });
-        return NextResponse.json(brand, { status: 201 });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
+    const brand = await prisma.productBrand.create({ data: { name, slug } });
+    return { data: brand };
+}, { successStatus: 201, auth: true });
