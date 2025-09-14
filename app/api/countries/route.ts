@@ -1,52 +1,37 @@
 export const runtime = 'nodejs';
 
-import prisma, { connectDB } from '@/lib/db';
-import { NextResponse } from 'next/server';
+import prisma from '@/lib/db';
+import { asyncHandler, HttpError } from '@/utils/helpers';
 
-export async function GET(req: Request) {
-    await connectDB();
+export const GET = async (req: Request) => asyncHandler(async () => {
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "20", 20);
 
-    try {
-        const { searchParams } = new URL(req.url);
-        const page = parseInt(searchParams.get("page") || "1", 10);
-        const limit = parseInt(searchParams.get("limit") || "20", 20);
+    const skip = (page - 1) * limit;
 
-        const skip = (page - 1) * limit;
+    const countries = await prisma.productCountry.findMany({
+        skip,
+        take: limit,
+        orderBy: { id: 'asc' }
+    });
 
-        const countries = await prisma.productCountry.findMany({
-            skip,
-            take: limit,
-            orderBy: { id: 'asc' }
-        });
+    const total = await prisma.productColor.count();
 
-        const total = await prisma.productColor.count();
+    return {
+        data: countries,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        }
+    };
+});
 
-        return NextResponse.json({
-            data: countries,
-            pagination: {
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            }
-        }, { status: 200 });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
-
-export async function POST(request: Request) {
-    await connectDB();
-
-    try {
-        const { name, slug } = await request.json();
-        if (!name || !slug) return NextResponse.json({ error: 'country name or slug is required' }, { status: 400 });
-
-        const country = await prisma.productCountry.create({ data: { name, slug } });
-        return NextResponse.json(country, { status: 201 });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
+export const POST = async (request: Request) => asyncHandler(async () => {
+    const { name, slug } = await request.json();
+    if (!name || !slug) throw new HttpError('country name or slug is required', 400);
+    const country = await prisma.productCountry.create({ data: { name, slug } });
+    return { data: country };
+});

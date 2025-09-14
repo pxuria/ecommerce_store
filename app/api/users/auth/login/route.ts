@@ -1,33 +1,25 @@
-import { NextResponse } from "next/server";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { asyncHandler, HttpError } from "@/utils/helpers";
 
-export async function POST(req: Request) {
-    try {
-        const { phone, password } = await req.json();
+export const POST = async (req: Request) => asyncHandler(async () => {
+    const { phone, password } = await req.json();
+    if (!phone || !password) throw new HttpError("تلفن همراه و رمز عبور الزامی است", 400);
 
-        if (!phone || !password) return NextResponse.json({ error: "تلفن همراه و رمز عبور الزامی است" }, { status: 400 });
+    const user = await prisma.user.findUnique({ where: { phone } });
+    if (!user) throw new HttpError("تلفن همراه و رمز عبور نامعتبر است", 401);
 
-        const user = await prisma.user.findUnique({ where: { phone } });
-        if (!user) return NextResponse.json({ error: "تلفن همراه و رمز عبور نامعتبر است" }, { status: 401 });
+    const isValid = await compare(password, user.password);
+    if (!isValid) throw new HttpError("رمز عبور نامعتبر است", 401);
 
-        const isValid = await compare(password, user.password);
-        if (!isValid) return NextResponse.json({ error: "رمز عبور نامعتبر است" }, { status: 401 });
-
-        return NextResponse.json({
-            success: true,
-            message: "Login successful",
-            user: {
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                phone: user.phone,
-                email: user.email,
-                role: user.role,
-            },
-        });
-    } catch (error) {
-        console.log(error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-    }
-}
+    return {
+        user: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            email: user.email,
+            role: user.role,
+        }
+    };
+});

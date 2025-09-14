@@ -1,32 +1,24 @@
-import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { asyncHandler, HttpError } from "@/utils/helpers";
 
-export async function POST(req: Request) {
-    try {
-        const { first_name, last_name, phone, email, password } = await req.json();
+export const POST = async (req: Request) => asyncHandler(async () => {
+    const { first_name, last_name, phone, email, password } = await req.json();
+    if (!first_name || !last_name || !email || !phone || !password) throw new HttpError("اطلاعات ارسالی ناقص است.", 400);
 
-        if (!first_name || !last_name || !email || !phone || !password)
-            return NextResponse.json({ error: "اطلاعات ارسالی ناقص است." }, { status: 400 })
+    const existing = await prisma.user.findFirst({ where: { OR: [{ email }, { phone }] } })
+    if (existing) throw new HttpError("اطلاعات وارد شده تکراری است.", 409);
 
-        const existing = await prisma.user.findFirst({ where: { OR: [{ email }, { phone }] } })
-        if (existing) return NextResponse.json({ error: "اطلاعات وارد شده تکراری است." }, { status: 409 })
+    const hashed = await hash(password, 12)
+    const user = await prisma.user.create({
+        data: {
+            firstName: first_name,
+            lastName: last_name,
+            email,
+            phone,
+            password: hashed,
+        },
+    })
 
-        const hashed = await hash(password, 12)
-
-        const user = await prisma.user.create({
-            data: {
-                firstName: first_name,
-                lastName: last_name,
-                email,
-                phone,
-                password: hashed,
-            },
-        })
-
-        return NextResponse.json({ success: true, user }, { status: 201 });
-    } catch (error) {
-        console.log(error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-    }
-}
+    return { data: user };
+}, { successStatus: 201 });

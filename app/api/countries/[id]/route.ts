@@ -1,43 +1,22 @@
 export const runtime = 'nodejs';
 
-import { NextResponse } from 'next/server';
-import prisma, { connectDB } from '@/lib/db';
+import prisma from '@/lib/db';
 import { ParamsType } from '@/types';
+import { asyncHandler, HttpError } from '@/utils/helpers';
 
-export async function GET(_req: Request, { params }: ParamsType) {
-    await connectDB();
+export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
+    const country = await prisma.productCountry.findUnique({ where: { id: parseInt(params.id) } });
+    if (!country) throw new HttpError("Country not found", 404);
+    return { data: country };
+});
 
-    try {
-        const country = await prisma.productCountry.findUnique({ where: { id: parseInt(params.id) } });
-        if (!country) return NextResponse.json({ error: 'Country not found' }, { status: 404 });
-        return NextResponse.json(country);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
+export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(async () => {
+    const data = await req.json();
+    const country = await prisma.productCountry.update({ where: { id: parseInt(params.id) }, data });
+    return { data: country };
+});
 
-export async function PUT(req: Request, { params }: ParamsType) {
-    await connectDB();
-
-    try {
-        const data = await req.json();
-        const country = await prisma.productCountry.update({ where: { id: parseInt(params.id) }, data });
-        return NextResponse.json(country);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Country not found' }, { status: 404 });
-    }
-}
-
-export async function DELETE(_req: Request, { params }: ParamsType) {
-    await connectDB();
-
-    try {
-        await prisma.productCountry.delete({ where: { id: parseInt(params.id) } });
-        return NextResponse.json({ message: 'Country deleted' });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Country not found' }, { status: 404 });
-    }
-}
+export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHandler(async () => {
+    await prisma.productCountry.delete({ where: { id: parseInt(params.id) } });
+    return { message: 'Country deleted' };
+});
