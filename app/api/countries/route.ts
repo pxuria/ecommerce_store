@@ -34,4 +34,4 @@ export const POST = async (request: Request) => asyncHandler(async () => {
     if (!name || !slug) throw new HttpError('country name or slug is required', 400);
     const country = await prisma.productCountry.create({ data: { name, slug } });
     return { data: country };
-});
+}, { auth: true });

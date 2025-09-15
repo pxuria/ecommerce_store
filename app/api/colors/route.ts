@@ -32,4 +32,4 @@ export const POST = async (request: Request) => asyncHandler(async () => {
     const color = await prisma.productColor.create({ data: { name, hex: hex ?? null } });
 
     return { data: color };
-});
+}, { auth: true });

@@ -15,9 +15,9 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
     const data = await req.json();
     const color = await prisma.productColor.update({ where: { id: parseInt(params.id) }, data });
     return { data: color };
-});
+}, { auth: true });
 
 export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHandler(async () => {
     await prisma.productColor.delete({ where: { id: parseInt(params.id) } });
     return { message: 'Color deleted' };
-});
+}, { auth: true });
