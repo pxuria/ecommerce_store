@@ -10,7 +10,7 @@ import SelectField from "@/components/ui/SelectField";
 import { Button } from "@/components/ui/button";
 import TextEditor from "@/components/ui/TextEditor";
 import { Switch } from "@/components/ui/switch";
-import { uploadImage } from "@/utils/helpers";
+import { getChangedFields, uploadImage } from "@/utils/helpers";
 import axiosInstance from "@/lib/axiosInstance";
 import { IProduct } from "@/types/model";
 import { FileWithPreview } from "@/types";
@@ -37,11 +37,13 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         description: item?.description || '',
         images: item?.images?.map(img => img.url) || [],
         colorVariants: item?.colorVariants?.map(cv => ({
-            ...cv,
-            colorId: cv.colorId ? String(cv.colorId) : '',
-        })) || [],
-        attributes: item?.attributes || [],
-        isActive: item?.isActive || false
+            colorId: cv.colorId != null ? String(cv.colorId) : "",
+            pricePerMeter: Number(cv.pricePerMeter ?? 0),
+            discountPercent: Number(cv.discountPercent ?? 0),
+            stockMeters: Number(cv.stockMeters ?? 0),
+        })) ?? [],
+        attributes: item?.attributes?.map(a => ({ key: a.key, value: a.value })) ?? [],
+        isActive: !!item?.isActive
     }
 
     const form = useForm<productValues>({
@@ -88,7 +90,14 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
             };
 
             if (onUpdated) {
-                const { data } = await axiosInstance.put(`products/${item?.id}`, payload);
+                const changed = getChangedFields(defaultValues, payload);
+
+                if (Object.keys(changed).length === 0) {
+                    console.log("⚡ No changes detected, skipping update.");
+                    return;
+                }
+
+                const { data } = await axiosInstance.put(`products/${item?.id}`, changed);
                 console.log(data);
             }
             else {

@@ -1,3 +1,5 @@
+import { UserRole } from "@prisma/client";
+
 export interface IColor {
     id: string;
     name: string;
@@ -81,7 +83,7 @@ export interface IUser {
     email: string;
     phone: string;
     password: string;
-    role: "USER" | "ADMIN";
+    role: UserRole;
     // bookmarks: Schema.Types.ObjectId[];
     address?: string;
     city?: string;

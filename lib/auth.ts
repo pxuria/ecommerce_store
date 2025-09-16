@@ -1,10 +1,11 @@
 import { authOptions } from "@/utils/authOptions";
+import { UserRole } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 
 export async function isAdmin(): Promise<boolean> {
   const session = await getServerSession(authOptions);
 
-  if (!session || session.user.role !== "ADMIN") {
+  if (!session || session.user.role !== UserRole.ADMIN) {
     return false;
   }
 

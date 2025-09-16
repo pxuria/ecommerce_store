@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import moment from "moment-jalaali";
 import axiosInstance from "@/lib/axiosInstance";
-import { CartItem } from "@/types";
+import { CartItem, ParamsType } from "@/types";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { isAdmin } from "@/lib/auth";
@@ -95,6 +95,41 @@ export class HttpError extends Error {
     this.status = status;
   }
 }
+
+export function parseId(params: ParamsType["params"]) {
+  const id = Number(params.id);
+  if (isNaN(id)) throw new HttpError("Invalid product ID", 400);
+  return id;
+}
+
+export function getChangedFields(original: { [x: string]: unknown; }, updated: { [x: string]: unknown; }) {
+  const changes: Record<string, unknown> = {};
+
+  for (const key in updated) {
+    const originalValue = original?.[key];
+    const updatedValue = updated[key];
+
+    // ✅ Handle arrays (e.g., images, colorVariants, attributes)
+    if (Array.isArray(originalValue) || Array.isArray(updatedValue)) {
+      if (JSON.stringify(originalValue) !== JSON.stringify(updatedValue)) {
+        changes[key] = updatedValue;
+      }
+    }
+    // ✅ Handle objects (deep compare if needed)
+    else if (typeof originalValue === "object" && typeof updatedValue === "object") {
+      if (JSON.stringify(originalValue) !== JSON.stringify(updatedValue)) {
+        changes[key] = updatedValue;
+      }
+    }
+    // ✅ Handle primitives
+    else if (originalValue !== updatedValue) {
+      changes[key] = updatedValue;
+    }
+  }
+
+  return changes;
+}
+
 
 export async function asyncHandler2<T>(actionFn: ActionFn<T>, errorMsg: string): Promise<T | { error: string }> {
   try {

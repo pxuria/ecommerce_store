@@ -39,7 +39,7 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
   if (!authUser) throw new HttpError("ابتدا وارد حساب کاربری شوید", 401);
 
   const id = parseInt(params.id);
-  if (authUser.id !== id && authUser.role !== "ADMIN") throw new HttpError("شما دسترسی به این کاربر ندارید", 403);
+  if (authUser.id !== id && authUser.role !== UserRole.ADMIN) throw new HttpError("شما دسترسی به این کاربر ندارید", 403);
 
   const { firstName, lastName, email, phone, password, role, address, city, postalCode } = await req.json();
 

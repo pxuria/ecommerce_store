@@ -18,6 +18,7 @@ import Products from "@/components/dashboard/products/Products";
 import Categories from "@/components/dashboard/category/Categories";
 import Users from "@/components/dashboard/users/Users";
 import Blogs from "@/components/dashboard/blog/Blogs";
+import { UserRole } from "@prisma/client";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-secondary-700 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
@@ -69,7 +70,7 @@ const Page = () => {
             </TabsTrigger>
           ))}
 
-          {session?.user.role === "ADMIN" && (
+          {session?.user.role === UserRole.ADMIN && (
             dashboardAdminTabs.map(item => (
               <TabsTrigger
                 key={item.dashName}
