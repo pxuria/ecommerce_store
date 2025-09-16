@@ -80,6 +80,6 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
 
 export const DELETE = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
   const id = parseId(params);
-  await prisma.product.update({ where: { id }, data: { deletedAt: new Date() }, });
+  await prisma.product.delete({ where: { id } });
   return { message: "Product deleted successfully" };
 }, { auth: true });
