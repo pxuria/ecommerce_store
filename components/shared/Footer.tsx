@@ -43,34 +43,11 @@ const Footer = () => {
               ))}
             </ul>
             <div className="flex items-center gap-4 justify-end mt-auto">
-              {/* <Image
-                src="/assets/images/enamad.svg"
-                alt="enamad"
-                width={48}
-                height={48}
-                className=""
-              /> */}
               <div
                 dangerouslySetInnerHTML={{
-                  __html: `<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=583681&Code=VbL7Z2YeMOOggCMlAGvrJ5IdG12EiKT8'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=583681&Code=VbL7Z2YeMOOggCMlAGvrJ5IdG12EiKT8' class='w-8 h-8' alt='enamad' style='cursor:pointer' code='VbL7Z2YeMOOggCMlAGvrJ5IdG12EiKT8'></a>`,
+                  __html: `<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=647497&Code=MM6TkbvEyvYFNeElexjjqHOIsm5PF8QW'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=647497&Code=MM6TkbvEyvYFNeElexjjqHOIsm5PF8QW' alt='' style='cursor:pointer' code='MM6TkbvEyvYFNeElexjjqHOIsm5PF8QW'></a>`,
                 }}
               />
-              {/* <a
-                referrerPolicy="origin"
-                target="_blank"
-                href="https://trustseal.enamad.ir/?id=583681&Code=VbL7Z2YeMOOggCMlAGvrJ5IdG12EiKT8"
-              >
-                <Image
-                  referrerPolicy="origin"
-                  src="https://trustseal.enamad.ir/logo.aspx?id=583681&Code=VbL7Z2YeMOOggCMlAGvrJ5IdG12EiKT8"
-                  className="w-8 h-8"
-                  width={30}
-                  height={30}
-                  alt="enamad"
-                  style={{ cursor: "pointer" }}
-                  code="VbL7Z2YeMOOggCMlAGvrJ5IdG12EiKT8"
-                />
-              </a> */}
 
               <Image
                 src="/assets/images/zarinpal.svg"
