@@ -10,104 +10,68 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const limit = parseInt(searchParams.get("limit") || "20", 20);
   const skip = (page - 1) * limit;
 
-  const filters = {};
+  const name = searchParams.get("name") || undefined;
+  const categoryId = searchParams.get("categoryId") || undefined;
+  const brandId = searchParams.get("brandId") || undefined;
+  const countryId = searchParams.get("countryId") || undefined;
+  const isActive = searchParams.get("isActive") != null
+    ? searchParams.get("isActive") === "true"
+    : undefined;
 
-  if (searchParams.get("category")) filters.category = Number(searchParams.get("category")?.trim());
-  if (searchParams.get("brand")) filters.brand = Number(searchParams.get("brand"));
-  if (searchParams.get("name")) {
-    filters.name = {
-      contains: searchParams.get("name") || "",
-      mode: "insensitive",
+  const minPrice = searchParams.get("minPrice");
+  const maxPrice = searchParams.get("maxPrice");
+
+  const sortBy = searchParams.get("sortBy") || "createdAt";
+  const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc";
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: any = {};
+
+  if (name) where.name = { contains: name, mode: "insensitive" };
+  if (categoryId) where.categoryId = parseInt(categoryId);
+  if (brandId) where.brandId = parseInt(brandId);
+  if (countryId) where.countryId = parseInt(countryId);
+  if (isActive !== undefined) where.isActive = isActive;
+
+  if (minPrice || maxPrice) {
+    where.colorVariants = {
+      some: {
+        pricePerMeter: {
+          gte: minPrice ? Number(minPrice) : undefined,
+          lte: maxPrice ? Number(maxPrice) : undefined,
+        },
+      },
     };
   }
-  const minPrice = searchParams.get("min_price");
-  const maxPrice = searchParams.get("max_price");
-  const stock = searchParams.get("stock");
-  const colorId = searchParams.get("colorId");
 
-  const where = {
-    ...filters,
-    colorVariants: {
-      some: {
-        ...(minPrice ? { pricePerMeter: { gte: Number(minPrice) } } : {}),
-        ...(maxPrice ? { pricePerMeter: { lte: Number(maxPrice) } } : {}),
-        ...(stock ? { stockMeters: { gte: Number(stock) } } : {}),
-        ...(colorId ? { colorId: Number(colorId) } : {}),
-      },
-    },
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let orderBy: any = { createdAt: "desc" };
 
-  // const searchQuery = (searchParams.get("search") || "").trim();
-  // const stockQuery = (searchParams.get("stock") || "").trim();
-  // const categoryQuery = (searchParams.get("category") || "").trim();
-  // const brandQuery = (searchParams.get("category") || "").trim();
-  // const minPrice = parseFloat(searchParams.get("minPrice") || "0");
-  // const maxPrice = parseFloat(searchParams.get("maxPrice") || "1000000000");
+  if (sortBy === "price" && sortOrder === "asc") {
+    orderBy = { colorVariants: { _min: { pricePerMeter: "asc" } } };
+  } else if (sortBy === "price" && sortOrder === "desc") {
+    orderBy = { colorVariants: { _max: { pricePerMeter: "desc" } } };
+  } else if (sortBy === "createdAt") {
+    orderBy = { createdAt: sortOrder };
+  }
 
-
-  // const filter: ProductFilter = {};
-
-  // if (searchQuery) filter.name = { $regex: searchQuery, $options: "i" };
-  // if (stockQuery) filter.stock = stockQuery;
-  // if (brandQuery) filter.brand = brandQuery;
-
-  // if (categoryQuery) {
-  //   const category = await Category.findOne({
-  //     name: decodeURIComponent(categoryQuery),
-  //   });
-
-  //   if (category) {
-  //     console.log("Categoty :" + category);
-  //     filter.category = new Types.ObjectId(category._id).toHexString();
-  //   } else {
-  //     return NextResponse.json(
-  //       {
-  //         success: true,
-  //         message: "no product found",
-  //         pagination: {
-  //           totalProducts: 0,
-  //           totalPages: 0,
-  //           currentPage: page,
-  //         },
-  //       },
-  //       { status: 404 }
-  //     );
-  //   }
-  // }
-
-  // if (minPrice >= 0 || maxPrice >= 0) {
-  //   filter.basePrice = {};
-  //   if (minPrice >= 0) filter.basePrice.$gte = minPrice;
-  //   if (maxPrice >= 0) filter.basePrice.$lte = maxPrice;
-  // }
-
-  // console.log("FILTER :", filter);
-  // const totalProducts = await Product.countDocuments(filter);
-  // const products = await Product.find(filter)
-  //   .populate("category")
-  //   .skip((page - 1) * limit)
-  //   .limit(limit);
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
       where,
+      skip,
+      orderBy,
+      take: limit,
       include: {
         brand: true,
         category: true,
         country: true,
         images: true,
         attributes: true,
-        colorVariants: {
-          include: {
-            color: true,
-          },
-        },
-      },
-      skip,
-      take: limit,
-      orderBy: { createdAt: "desc" },
+        colorVariants: { include: { color: true } },
+      }
     }),
-    prisma.product.count({ where }),
+    prisma.product.count({ where })
   ]);
 
   return {
