@@ -53,12 +53,17 @@ const Filter = () => {
   const [available, setAvailable] = useState(initialAvailability);
 
   const updateQueryParams = useCallback(
-    (updates: Record<string, string | null>) => {
+    (updates: Record<string, string | string[] | null>) => {
       const params = new URLSearchParams(searchParams.toString());
 
       Object.entries(updates).forEach(([key, value]) => {
-        if (value) params.set(key, value);
-        else params.delete(key);
+        params.delete(key);
+
+        if (Array.isArray(value)) {
+          value.forEach((v) => params.append(key, v));
+        } else if (value) {
+          params.set(key, value);
+        }
       });
 
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -66,53 +71,27 @@ const Filter = () => {
     [router, pathname, searchParams]
   );
 
-  const handleCategorySelect = useCallback(
-    (categoryId: number) => {
-      updateQueryParams({
-        categoryId:
-          searchParams.get("categoryId") === String(categoryId)
-            ? null
-            : String(categoryId),
-      });
+  const toggleMultiSelect = useCallback(
+    (key: string, id: number) => {
+      const existing = searchParams.getAll(key);
+      const idStr = String(id);
+
+      let updated: string[];
+      if (existing.includes(idStr)) {
+        updated = existing.filter((x) => x !== idStr);
+      } else {
+        updated = [...existing, idStr];
+      }
+
+      updateQueryParams({ [key]: updated.length > 0 ? updated : null });
     },
-    [updateQueryParams, searchParams]
+    [searchParams, updateQueryParams]
   );
 
-  const handleBrandSelect = useCallback(
-    (brandId: number) => {
-      updateQueryParams({
-        brandId:
-          searchParams.get("brandId") === String(brandId)
-            ? null
-            : String(brandId),
-      });
-    },
-    [updateQueryParams, searchParams]
-  );
-
-  const handleCountrySelect = useCallback(
-    (countryId: number) => {
-      updateQueryParams({
-        countryId:
-          searchParams.get("countryId") === String(countryId)
-            ? null
-            : String(countryId),
-      });
-    },
-    [updateQueryParams, searchParams]
-  );
-
-  const handleColorSelect = useCallback(
-    (colorId: number) => {
-      updateQueryParams({
-        colorId:
-          searchParams.get("colorId") === String(colorId)
-            ? null
-            : String(colorId),
-      });
-    },
-    [updateQueryParams, searchParams]
-  );
+  const handleCategorySelect = (id: number) => toggleMultiSelect("categoryId", id);
+  const handleBrandSelect = (id: number) => toggleMultiSelect("brandId", id);
+  const handleCountrySelect = (id: number) => toggleMultiSelect("countryId", id);
+  const handleColorSelect = (id: number) => toggleMultiSelect("colorId", id);
 
   const handlePriceChange = useCallback(
     (newValue: [number, number]) => {
@@ -138,32 +117,49 @@ const Filter = () => {
       <CollapsibleMenu
         title="دسته بندی ها"
         loading={filterLoading}
-        items={categories}
+        items={
+          categories.map((i) => ({
+            id: i.id,
+            name: i.name,
+            onClick: () => handleCategorySelect(Number(i.id)),
+            checked: searchParams.getAll("categoryId").includes(String(i.id))
+          }))}
       />
 
       <CollapsibleMenu
         title="کشور ها"
         loading={filterLoading}
-        items={countries}
+        items={
+          countries.map((i) => ({
+            id: i.id,
+            name: i.name,
+            onClick: () => handleCountrySelect(Number(i.id)),
+            checked: searchParams.getAll("countryId").includes(String(i.id))
+          }))}
       />
 
       <CollapsibleMenu
         title="برند ها"
         loading={filterLoading}
         items={
-          brands.map((b) => ({
-            id: b.id,
-            name: b.name,
-            onClick: () => handleBrandSelect(Number(b.id)),
-            checked: searchParams.get("brandId") === String(b.id),
-          }))
-        }
+          brands.map((i) => ({
+            id: i.id,
+            name: i.name,
+            onClick: () => handleBrandSelect(Number(i.id)),
+            checked: searchParams.getAll("brandId").includes(String(i.id))
+          }))}
       />
 
       <CollapsibleMenu
         title="رنگ ها"
         loading={filterLoading}
-        items={colors}
+        items={
+          colors.map((i) => ({
+            id: i.id,
+            name: i.name,
+            onClick: () => handleColorSelect(Number(i.id)),
+            checked: searchParams.getAll("colorId").includes(String(i.id))
+          }))}
       />
 
       {/* Price Range */}

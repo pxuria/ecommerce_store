@@ -19,7 +19,6 @@ interface Props {
         name: string;
         checked: boolean;
         onClick?: (id: string | number) => void;
-        slug: string;
     }[];
 }
 
