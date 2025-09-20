@@ -15,13 +15,15 @@ interface Props {
     title: string;
     loading?: boolean;
     items: {
-        id: string;
+        id: string | number;
         name: string;
+        checked: boolean;
+        onClick?: (id: string | number) => void;
         slug: string;
     }[];
 }
 
-export default function CollapsibleMenu({ title, loading, items }: Props) {
+export default function CollapsibleMenu({ title, loading, items = [] }: Props) {
     const [isOpen, setIsOpen] = useState(false)
 
     return (
@@ -48,9 +50,10 @@ export default function CollapsibleMenu({ title, loading, items }: Props) {
                 <div className="p-2 space-y-3">
                     {items.length > 0 && items.map(item => (
                         <div key={item.id} className="flex items-center gap-2">
-                            <Checkbox />
+                            <Checkbox
+                                checked={item.checked}
+                                onCheckedChange={() => item.onClick?.(item.id)} />
                             <label className="text-sm font-medium">{item.name}</label>
-                            {/* <input type="checkbox" /> */}
                         </div>
                     ))}
                 </div>

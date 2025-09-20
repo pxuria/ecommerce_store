@@ -11,9 +11,9 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const skip = (page - 1) * limit;
 
   const name = searchParams.get("name") || undefined;
-  const categoryId = searchParams.get("categoryId") || undefined;
-  const brandId = searchParams.get("brandId") || undefined;
-  const countryId = searchParams.get("countryId") || undefined;
+  const categoryIds = searchParams.getAll("categoryId").map(Number);
+  const brandIds = searchParams.getAll("brandId").map(Number);
+  const countryIds = searchParams.getAll("countryId").map(Number);
   const isActive = searchParams.get("isActive") != null
     ? searchParams.get("isActive") === "true"
     : undefined;
@@ -28,9 +28,9 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const where: any = {};
 
   if (name) where.name = { contains: name, mode: "insensitive" };
-  if (categoryId) where.categoryId = parseInt(categoryId);
-  if (brandId) where.brandId = parseInt(brandId);
-  if (countryId) where.countryId = parseInt(countryId);
+  if (categoryIds.length > 0) where.categoryId = { in: categoryIds };
+  if (brandIds.length > 0) where.brandId = { in: brandIds };
+  if (countryIds.length > 0) where.countryId = { in: countryIds };
   if (isActive !== undefined) where.isActive = isActive;
 
   if (minPrice || maxPrice) {
@@ -54,7 +54,6 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   } else if (sortBy === "createdAt") {
     orderBy = { createdAt: sortOrder };
   }
-
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
