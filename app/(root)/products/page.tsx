@@ -39,8 +39,13 @@ type IProductWithBasePrice = IProduct & {
 
 const Page = () => {
   const [products, setProducts] = useState<IProductWithBasePrice[]>([]);
-  const [pagination, setPagination] = useState({});
+  const [pagination, setPagination] = useState({
+    total: 0,
+    currentPage: 1,
+    totalPages: 1
+  });
   const searchParams = useSearchParams();
+  const showFilters = searchParams.get("showFilters") === "true";
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -49,7 +54,11 @@ const Page = () => {
         const data = await res.json();
 
         setProducts(data.data);
-        setPagination(data.pagination);
+        setPagination({
+          total: data.pagination.total,
+          currentPage: data.pagination.page,
+          totalPages: data.pagination.totalPages
+        });
       } catch (error) {
         console.log(error)
       }
@@ -58,12 +67,6 @@ const Page = () => {
     fetchProducts();
   }, [])
 
-  // const loadedProducts = response?.data || [];
-  // const pagination = response?.pagination || {};
-  // const showFilters = searchParams.showFilters === "true";
-  const showFilters = searchParams.get("showFilters") === "true";
-  console.log(searchParams);
-  console.log(products);
 
   return (
     <section className="md:px-4 px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
