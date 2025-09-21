@@ -76,6 +76,12 @@ export interface IProduct {
     deletedAt: null | Date;
 }
 
+export type IProductWithBasePrice = IProduct & {
+    basePrice: number;
+    finalPrice: number;
+    discountPercent: number;
+}
+
 export interface IUser {
     id: string;
     firstName: string;

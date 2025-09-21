@@ -3,11 +3,11 @@ export const runtime = 'nodejs';
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { asyncHandler, HttpError } from "@/utils/helpers";
+import { authOptions } from "@/utils/authOptions";
 
 export const POST = async (req: Request) => asyncHandler(async () => {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session) throw new HttpError("ابتدا وارد حساب کاربری شوید", 401);
-    console.log(session)
 
     const { productId } = await req.json();
 
@@ -27,8 +27,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
 });
 
 export const DELETE = async (req: Request) => asyncHandler(async () => {
-    const session = await getServerSession();
-    console.log(session)
+    const session = await getServerSession(authOptions);
     if (!session) throw new HttpError("ابتدا وارد حساب کاربری شوید", 401);
 
     const { productId } = await req.json();

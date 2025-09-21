@@ -5,7 +5,7 @@ import CustomPagination from "@/components/shared/CustomPagination";
 import ProductCard from "@/components/shared/ProductCard";
 import Filter from "@/components/shared/Filter";
 import ProductsFilters from "@/components/shared/ProductsFilters";
-import { IProduct } from "@/types/model";
+import { IProductWithBasePrice } from "@/types/model";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import LottieText from "@/components/shared/LottieText";
@@ -34,10 +34,6 @@ import productLoading from "@/public/assets/lotties/product-loading.json";
 //     return { data: [], pagination: {} };
 //   }
 // }
-
-type IProductWithBasePrice = IProduct & {
-  basePrice: number;
-}
 
 const Page = () => {
   const [products, setProducts] = useState<IProductWithBasePrice[]>([]);
@@ -98,17 +94,7 @@ const Page = () => {
                     }`}
                   key={item.id}
                 >
-                  <ProductCard
-                    id={item.id}
-                    imgSrc={item.images[0].url}
-                    imgAlt={item.images[0].alt}
-                    imgWidth={1500}
-                    imgHeight={900}
-                    title={item.name}
-                    isActive={item.isActive}
-                    price={item.basePrice}
-                    link={item.id.toString()}
-                  />
+                  <ProductCard product={item} />
                 </div>
               ))
             ) : <LottieText text="محصولی یافت نشد." file={noProduct} />)}

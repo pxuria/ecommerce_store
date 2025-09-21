@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { FaSignOutAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 import Orders from "@/components/dashboard/Orders";
 import Profile from "@/components/dashboard/Profile";
@@ -13,7 +14,6 @@ import { dashboardAdminTabs, dashboardTabs } from "@/constants";
 import Colors from "@/components/dashboard/colors/Colors";
 import Brands from "@/components/dashboard/brand/Brands";
 import Countries from "@/components/dashboard/country/Countries";
-import { toast } from "react-toastify";
 import Products from "@/components/dashboard/products/Products";
 import Categories from "@/components/dashboard/category/Categories";
 import Users from "@/components/dashboard/users/Users";
