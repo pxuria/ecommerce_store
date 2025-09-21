@@ -8,7 +8,12 @@ import { Bookmark, ShoppingBag } from "lucide-react";
 import { IProductWithBasePrice } from "@/types/model";
 // import { enBrandName } from "@/constants";
 
-const ProductCard = ({ product }: { product: IProductWithBasePrice }) => {
+interface Props {
+  product: IProductWithBasePrice;
+  itemClass?: string;
+}
+
+const ProductCard = ({ product, itemClass = "" }: Props) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -52,8 +57,8 @@ const ProductCard = ({ product }: { product: IProductWithBasePrice }) => {
   };
 
   return (
-    <div className={`flex-column items-center`}>
-      <div className="rounded-2xl overflow-hidden pb-2 px-2 pt-2 border border-muted bg-[#fff] shadow-md">
+    <div className={itemClass}>
+      <div className={`rounded-2xl overflow-hidden pb-2 px-2 pt-2 border border-muted bg-[#fff] shadow-md`}>
         <div className="relative overflow-hidden rounded-lg">
           <div className="relative">
             <button
@@ -68,7 +73,7 @@ const ProductCard = ({ product }: { product: IProductWithBasePrice }) => {
             </button>
             <div className="group relative z-0">
               <div className="carousel_item_img flex_center">
-                <h4 className="font-bold text-white md:text-black">Arshianbaft</h4>
+                <h4 className="font-bold text-white md:text-black hidden sm:block">Arshianbaft</h4>
                 {/* <Image
                   src="/assets/images/outlined_logo.png"
                   alt={enBrandName}
@@ -79,7 +84,7 @@ const ProductCard = ({ product }: { product: IProductWithBasePrice }) => {
               </div>
 
               {product.discountPercent > 0 &&
-                <span className="absolute bottom-3 right-3 z-30 bg-secondary-600 text-white text-xs font-medium py-1 px-2 rounded-lg">
+                <span className="absolute bottom-3 right-3 z-30 bg-secondary-600 text-white text-[10px] sm:text-xs font-medium py-1 px-2 rounded-lg">
                   {product.discountPercent}% تخفیف
                 </span>
               }
@@ -88,9 +93,9 @@ const ProductCard = ({ product }: { product: IProductWithBasePrice }) => {
                 unoptimized
                 src={product.images[0].url}
                 alt={product.images[0].alt}
-                width={1500}
+                width={900}
                 height={900}
-                className="object-cover h-[15.5rem] rounded-3xl group-hover:rounded-2xl w-[20rem] transition-all ease-in duration-500 group-hover:scale-110"
+                className="object-cover h-[10rem] md:h-[15rem] rounded-3xl group-hover:rounded-2xl w-full transition-all ease-in duration-500 group-hover:scale-110"
               />
             </div>
           </div>
@@ -98,13 +103,13 @@ const ProductCard = ({ product }: { product: IProductWithBasePrice }) => {
 
         <div className="flex items-end justify-between gap-4 flex-wrap mt-2">
           <Link href={`products/${product.id}`}>
-            <h4 className="text-black text-base font-medium text-right mt-2">
+            <h4 className="text-black text-sm sm:text-base font-medium text-right mt-2">
               {product.name}
             </h4>
           </Link>
 
           <span
-            className={`text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${product.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            className={`text-[10px] sm:text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${product.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
               }`}
           >
             {product.isActive ? "موجود" : "ناموجود"}
@@ -115,32 +120,32 @@ const ProductCard = ({ product }: { product: IProductWithBasePrice }) => {
           {product.discountPercent > 0 ? (
             <div className="flex flex-col items-end">
               <div className="flex items-end gap-1">
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-xs sm:text-sm text-gray-500 line-through">
                   {product.basePrice.toLocaleString("en-US")}
                 </span>
                 <span className="text-black text-sm">تومان</span>
               </div>
 
               <div className="flex items-end gap-1">
-                <span className="text-lg font-bold text-red-600">
+                <span className="text-base sm:text-lg font-bold text-red-600">
                   {product.finalPrice.toLocaleString("en-US")}
                 </span>
-                <span className="text-black text-base font-bold">تومان</span>
+                <span className="text-black text-sm sm:text-base font-bold">تومان</span>
               </div>
             </div>
           ) : (
             <div className="flex items-end gap-1">
-              <span className="text-lg font-bold">
+              <span className="text-base sm:text-lg font-bold">
                 {product.basePrice.toLocaleString("en-US")}
               </span>
-              <span className="text-black text-base font-bold">تومان</span>
+              <span className="text-black text-sm sm:text-base font-bold">تومان</span>
             </div>
           )}
         </div>
 
         <Link
           href={`products/${product.id}`}
-          className="block rounded-lg overflow-hidden w-full h-10 text-sm font-medium bg-secondary-600 hover:bg-secondary-700 transition-all ease-in text-white mt-2 flex_center gap-2"
+          className="block rounded-lg overflow-hidden w-full h-10 text-sm sm:text-base font-medium bg-secondary-600 hover:bg-secondary-700 transition-all ease-in text-white mt-2 flex_center gap-2"
         >
           <ShoppingBag className="text-white w-5 h-5" />
           مشاهده محصول

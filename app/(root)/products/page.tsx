@@ -86,18 +86,50 @@ const Page = () => {
           {loading
             ? <LottieText text="در حال بارگذاری" itemClass="w-64 h-64" file={productLoading} />
             : (products.length ? (
-              products?.map((item: IProductWithBasePrice) => (
-                <div
-                  className={`w-[calc(50%-16px)] ${showFilters
-                    ? "sm::w-[calc(50%-16px)] md:w-[calc(33%-16px)]"
-                    : "w-[calc(50%-16px)] lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
-                    }`}
-                  key={item.id}
-                >
-                  <ProductCard product={item} />
-                </div>
-              ))
-            ) : <LottieText text="محصولی یافت نشد." file={noProduct} />)}
+              <div className="w-full flex items-start justify-between gap-2 sm:gap-4 flex-wrap">
+                {products?.map((item: IProductWithBasePrice) => (
+                  <>
+                    <ProductCard
+                      key={item.id}
+                      product={item}
+                      itemClass={`w-[calc(50%-8px)] sm:w-[calc(50%-16px)] ${showFilters
+                        ? "md:w-[calc(33%-16px)]"
+                        : "lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
+                        }`}
+                    />
+
+                    <ProductCard
+                      key={item.id}
+                      product={item}
+                      itemClass={`w-[calc(50%-8px)] sm:w-[calc(50%-16px)] ${showFilters
+                        ? "md:w-[calc(33%-16px)]"
+                        : "lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
+                        }`}
+                    />
+
+                    <ProductCard
+                      key={item.id}
+                      product={item}
+                      itemClass={`w-[calc(50%-8px)] sm:w-[calc(50%-16px)] ${showFilters
+                        ? "md:w-[calc(33%-16px)]"
+                        : "lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
+                        }`}
+                    />
+
+                    <ProductCard
+                      key={item.id}
+                      product={item}
+                      itemClass={`w-[calc(50%-8px)] sm:w-[calc(50%-16px)] ${showFilters
+                        ? "md:w-[calc(33%-16px)]"
+                        : "lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
+                        }`}
+                    />
+
+                  </>
+                ))}
+              </div>
+            )
+              : <LottieText text="محصولی یافت نشد." file={noProduct} />)}
         </div>
       </div>
 
