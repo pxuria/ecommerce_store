@@ -58,7 +58,7 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
 
   return (
     <div className={itemClass}>
-      <div className={`rounded-2xl overflow-hidden pb-2 px-2 pt-2 border border-muted bg-[#fff] shadow-md`}>
+      <div className={`rounded-2xl overflow-hidden pb-2 px-2 pt-2 border border-muted bg-[#fff] shadow-none sm:shadow-md`}>
         <div className="relative overflow-hidden rounded-lg">
           <div className="relative">
             <button
