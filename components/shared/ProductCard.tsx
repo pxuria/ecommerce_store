@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MdOutlineBookmarkBorder, MdOutlineBookmark } from "react-icons/md";
 import { FiShoppingBag } from "react-icons/fi";
-import { enBrandName } from "@/constants";
+// import { enBrandName } from "@/constants";
 
 interface Props {
   imgSrc: string;
@@ -15,20 +15,18 @@ interface Props {
   title: string;
   link: string;
   price: number;
-  stock: boolean;
-  margin?: boolean;
+  isActive: boolean;
 }
 
 const ProductCard = ({
   imgSrc,
   imgAlt,
-  stock,
+  isActive,
   imgWidth,
   imgHeight,
   title,
   link,
-  price,
-  margin,
+  price
 }: Props) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
 
@@ -39,7 +37,7 @@ const ProductCard = ({
   };
 
   return (
-    <div className={`flex-column items-center ${margin && "mx-2"}`}>
+    <div className={`flex-column items-center`}>
       <div className="rounded-2xl overflow-hidden pb-2 px-2 pt-2 border border-muted bg-[#fff] shadow-md">
         <div className="relative overflow-hidden rounded-lg">
           <div className="relative">
@@ -58,13 +56,14 @@ const ProductCard = ({
             </button>
             <div className="group relative z-0">
               <div className="carousel_item_img flex_center">
-                <Image
+                <h4 className="font-bold">Arshianbaft</h4>
+                {/* <Image
                   src="/assets/images/outlined_logo.png"
                   alt={enBrandName}
                   width={435}
                   height={142}
                   className="w-16 h-5"
-                />
+                /> */}
               </div>
 
               <Image
@@ -87,10 +86,10 @@ const ProductCard = ({
           </Link>
 
           <span
-            className={`text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${stock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            className={`text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
               }`}
           >
-            {stock ? "موجود" : "ناموجود"}
+            {isActive ? "موجود" : "ناموجود"}
           </span>
         </div>
 
@@ -101,19 +100,11 @@ const ProductCard = ({
             </span>
             <span className="text-black text-base font-bold">تومان</span>
           </div>
-
-          {/* <button
-              className="bg-black p-2 rounded-md overflow-hidden flex items-center justify-center active:scale-110 transition-all ease-in"
-              type="button"
-              onClick={showCartHandler}
-            >
-              <FiShoppingBag className="w-5 h-5 text-white" />
-            </button> */}
         </div>
 
         <Link
           href={`products/${link}`}
-          className="block rounded-lg overflow-hidden w-full h-10 text-sm font-medium bg-pink text-white mt-2 flex_center gap-2"
+          className="block rounded-lg overflow-hidden w-full h-10 text-sm font-medium bg-secondary-600 hover:bg-secondary-700 transition-all ease-in text-white mt-2 flex_center gap-2"
         >
           <FiShoppingBag className="w-5 h-5 text-white" />
           مشاهده محصول

@@ -73,8 +73,13 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     prisma.product.count({ where })
   ]);
 
+  const withBasePrice = products.map(p => ({
+    ...p,
+    basePrice: Math.min(...p.colorVariants.map(cv => Number(cv.pricePerMeter)))
+  }));
+
   return {
-    data: products,
+    data: withBasePrice,
     pagination: {
       total,
       page,

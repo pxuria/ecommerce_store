@@ -5,9 +5,10 @@ import CustomPagination from "@/components/shared/CustomPagination";
 import ProductCard from "@/components/shared/ProductCard";
 import Filter from "@/components/shared/Filter";
 import ProductsFilters from "@/components/shared/ProductsFilters";
-import { IProduct } from "@/types";
+import { IProduct } from "@/types/model";
 import NoProduct from "@/components/shared/NoProduct";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 // export const metadata: Metadata = {
 //   title: "محصولات",
@@ -32,13 +33,14 @@ import { useEffect, useState } from "react";
 //   }
 // }
 
-// const page = async ({searchParams}: {
-//   searchParams: Record<string, string | undefined>;
-// }) => {
+type IProductWithBasePrice = IProduct & {
+  basePrice: number;
+}
+
 const Page = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<IProductWithBasePrice[]>([]);
   const [pagination, setPagination] = useState({});
-  // const response = await fetchProducts(searchParams);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -59,39 +61,41 @@ const Page = () => {
   // const loadedProducts = response?.data || [];
   // const pagination = response?.pagination || {};
   // const showFilters = searchParams.showFilters === "true";
-  // console.log(loadedProducts);
+  const showFilters = searchParams.get("showFilters") === "true";
+  console.log(searchParams);
+  console.log(products);
 
   return (
     <section className="md:px-4 px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
-      <div className="w-full flex items-start justify-center gap-4 flex-nowrap">
-        {true && (
+      <div className="w-full flex items-start justify-center gap-4 flex-nowrap px-4">
+        {showFilters && (
           <div className="w-1/4">
             <Filter />
           </div>
         )}
 
-        <div className={`flex items-center justify-end gap-4 flex-wrap ${true ? "w-3/4" : "w-full"}`}>
+        <div className={`flex items-center justify-end gap-4 flex-wrap md:px-2 ${showFilters ? "w-3/4" : "w-full"}`}>
           <ProductsFilters />
 
           {products.length ? (
-            products?.map((item: IProduct) => (
+            products?.map((item: IProductWithBasePrice) => (
               <div
-                className={`w-[calc(50%-16px)] ${true
-                  ? "md:w-[calc(33%-16px)]"
-                  : "min-[900px]:w-[calc(33%-16px)] xl:w-[calc(25%-16px)]"
+                className={`w-[calc(50%-16px)] ${showFilters
+                  ? "sm::w-[calc(50%-16px)] md:w-[calc(33%-16px)]"
+                  : "w-[calc(50%-16px)] lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
                   }`}
-                key={item._id}
+                key={item.id}
               >
-                {/* <ProductCard
-                  imgSrc={item.image[0]}
-                  imgAlt={item.name}
+                <ProductCard
+                  imgSrc={item.images[0].url}
+                  imgAlt={item.images[0].alt}
                   imgWidth={1500}
                   imgHeight={900}
                   title={item.name}
-                  stock={item.stock}
+                  isActive={item.isActive}
                   price={item.basePrice}
-                  link={item._id}
-                /> */}
+                  link={item.id.toString()}
+                />
               </div>
             ))
           ) : <NoProduct />}

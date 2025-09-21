@@ -42,7 +42,7 @@ const Filter = () => {
   const initialPriceRange = useMemo<[number, number]>(
     () => [
       Number(searchParams.get("minPrice")) || 0,
-      Number(searchParams.get("maxPrice")) || 20000000,
+      Number(searchParams.get("maxPrice")) || 1000000000,
     ],
     [searchParams]
   );
@@ -170,9 +170,9 @@ const Filter = () => {
           onInput={(newValue) =>
             handlePriceChange(newValue as [number, number])
           }
-          step={10000}
+          step={50000}
           min={0}
-          max={20000000}
+          max={100000000}
           id="product_price_range"
         />
         <div className="flex items-center justify-between mt-2 px-1">

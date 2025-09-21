@@ -31,7 +31,7 @@ export interface ICategory {
 export interface IProductImage {
     id: number;
     url: string;
-    alt?: string;
+    alt: string;
     productId: number;
     product?: IProduct;
 }
@@ -67,7 +67,7 @@ export interface IProduct {
     country?: ICountry;
     brandId?: string;
     brand?: IBrand;
-    images?: IProductImage[];
+    images: IProductImage[];
     attributes?: IProductAttribute[];
     colorVariants?: IProductColorVariant[];
     isActive: boolean;
