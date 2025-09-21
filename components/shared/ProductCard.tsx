@@ -8,6 +8,7 @@ import { FiShoppingBag } from "react-icons/fi";
 // import { enBrandName } from "@/constants";
 
 interface Props {
+  id: number;
   imgSrc: string;
   imgAlt: string;
   imgWidth: number;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 const ProductCard = ({
+  id,
   imgSrc,
   imgAlt,
   isActive,
@@ -29,11 +31,44 @@ const ProductCard = ({
   price
 }: Props) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleBookmark = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBookmark = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    setBookmarked((prev) => !prev);
+
+    if (loading) return;
+
+    try {
+      setLoading(true);
+
+      const method = bookmarked ? "DELETE" : "POST";
+
+      const res = await fetch("/api/users/favorites", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: id }),
+      });
+
+      if (res.status === 401) {
+        alert("ابتدا وارد حساب کاربری شوید");
+        return;
+      }
+
+      if (!res.ok) {
+        const error = await res.json();
+        alert(error?.message || "خطا در ذخیره محصول");
+        return;
+      }
+
+      // Toggle on success
+      setBookmarked((prev) => !prev);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      alert("خطایی رخ داد، دوباره تلاش کنید.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,8 +80,9 @@ const ProductCard = ({
               className="absolute right-3 top-3 bg-[#f9fafbb3] hover:bg-[#f8f9fa] primary_transition cursor-pointer rounded-full p-2 z-40"
               onClick={handleBookmark}
               aria-label="save product"
-              name="save"
+              disabled={loading}
               type="button"
+              name="save"
             >
               {bookmarked ? (
                 <MdOutlineBookmark className="w-5 h-5" />
@@ -56,7 +92,7 @@ const ProductCard = ({
             </button>
             <div className="group relative z-0">
               <div className="carousel_item_img flex_center">
-                <h4 className="font-bold">Arshianbaft</h4>
+                <h4 className="font-bold text-white md:text-black">Arshianbaft</h4>
                 {/* <Image
                   src="/assets/images/outlined_logo.png"
                   alt={enBrandName}

@@ -6,9 +6,11 @@ import ProductCard from "@/components/shared/ProductCard";
 import Filter from "@/components/shared/Filter";
 import ProductsFilters from "@/components/shared/ProductsFilters";
 import { IProduct } from "@/types/model";
-import NoProduct from "@/components/shared/NoProduct";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import LottieText from "@/components/shared/LottieText";
+import noProduct from "@/public/assets/lotties/no_product2.json";
+import productLoading from "@/public/assets/lotties/product-loading.json";
 
 // export const metadata: Metadata = {
 //   title: "محصولات",
@@ -39,6 +41,7 @@ type IProductWithBasePrice = IProduct & {
 
 const Page = () => {
   const [products, setProducts] = useState<IProductWithBasePrice[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [pagination, setPagination] = useState({
     total: 0,
     currentPage: 1,
@@ -49,6 +52,8 @@ const Page = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+
       try {
         const res = await fetch('/api/products');
         const data = await res.json();
@@ -61,6 +66,8 @@ const Page = () => {
         });
       } catch (error) {
         console.log(error)
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -69,8 +76,8 @@ const Page = () => {
 
 
   return (
-    <section className="md:px-4 px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
-      <div className="w-full flex items-start justify-center gap-4 flex-nowrap px-4">
+    <section className="px-4 md:px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
+      <div className="w-full flex items-start justify-center gap-4 flex-nowrap px-0 md:px-4">
         {showFilters && (
           <div className="w-1/4">
             <Filter />
@@ -80,28 +87,31 @@ const Page = () => {
         <div className={`flex items-center justify-end gap-4 flex-wrap md:px-2 ${showFilters ? "w-3/4" : "w-full"}`}>
           <ProductsFilters />
 
-          {products.length ? (
-            products?.map((item: IProductWithBasePrice) => (
-              <div
-                className={`w-[calc(50%-16px)] ${showFilters
-                  ? "sm::w-[calc(50%-16px)] md:w-[calc(33%-16px)]"
-                  : "w-[calc(50%-16px)] lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
-                  }`}
-                key={item.id}
-              >
-                <ProductCard
-                  imgSrc={item.images[0].url}
-                  imgAlt={item.images[0].alt}
-                  imgWidth={1500}
-                  imgHeight={900}
-                  title={item.name}
-                  isActive={item.isActive}
-                  price={item.basePrice}
-                  link={item.id.toString()}
-                />
-              </div>
-            ))
-          ) : <NoProduct />}
+          {loading
+            ? <LottieText text="در حال بارگذاری" itemClass="w-64 h-64" file={productLoading} />
+            : (products.length ? (
+              products?.map((item: IProductWithBasePrice) => (
+                <div
+                  className={`w-[calc(50%-16px)] ${showFilters
+                    ? "sm::w-[calc(50%-16px)] md:w-[calc(33%-16px)]"
+                    : "w-[calc(50%-16px)] lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
+                    }`}
+                  key={item.id}
+                >
+                  <ProductCard
+                    id={item.id}
+                    imgSrc={item.images[0].url}
+                    imgAlt={item.images[0].alt}
+                    imgWidth={1500}
+                    imgHeight={900}
+                    title={item.name}
+                    isActive={item.isActive}
+                    price={item.basePrice}
+                    link={item.id.toString()}
+                  />
+                </div>
+              ))
+            ) : <LottieText text="محصولی یافت نشد." file={noProduct} />)}
         </div>
       </div>
 

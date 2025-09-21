@@ -55,7 +55,7 @@ const CustomPagination = ({ pagination }: Props) => {
                     href={createPageUrl(page)}
                     isActive={page === currentPage}
                     className={`${page === currentPage
-                      ? "bg-pink_500 text-white"
+                      ? "bg-secondary-600 hover:bg-secondary-700 text-white"
                       : "bg-light_muted hover:bg-muted text-black transition-all ease-in"
                       } flex_center rounded w-8 h-8`}
                   >

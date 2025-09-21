@@ -263,15 +263,15 @@ ul.slick-dots li button::before {
 }
 
 .carousel_item_img {
-  @apply absolute w-[7rem] rounded-lg rounded-br-[32px] bg-[#fff] h-12 top-0 left-0 z-10;
+  @apply absolute w-[7rem] rounded-lg rounded-br-[32px] bg-transparent md:bg-[#fff] h-12 top-0 left-0 z-10;
 }
 
 .carousel_item_img::before {
-  @apply content-[''] absolute left-0 top-full bg-transparent rounded-full w-10 h-10;
+  @apply content-[''] absolute left-0 top-full bg-transparent hidden md:block rounded-full w-10 h-10;
   box-shadow: -20px -20px #fff;
 }
 .carousel_item_img::after {
-  @apply content-[''] absolute left-full top-0 bg-transparent rounded-full w-10 h-10;
+  @apply content-[''] absolute left-full top-0 bg-transparent hidden md:block rounded-full w-10 h-10;
   box-shadow: -20px -20px #fff;
 }
 
