@@ -25,7 +25,7 @@ const HomeFeatures = () => {
   ];
 
   return (
-    <section className="flex items-center gap-2 justify-between mx-auto w-[96%] sm:w-[65%] p-4 rounded-xl bg-pink_600 z-10 relative -bottom-14">
+    <section className="flex items-center gap-2 justify-between mx-auto w-[96%] sm:w-[65%] p-4 rounded-xl bg-secondary-600 z-10 relative -bottom-14">
       {home_features.map((item, index) => (
         <div className="flex-column items-center gap-2" key={index}>
           <Image

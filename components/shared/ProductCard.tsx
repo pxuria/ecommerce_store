@@ -101,6 +101,20 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
           </div>
         </div>
 
+        <div className="flex items-center justify-start gap-2 flex-wrap mt-2">
+          {[product.brand?.name, product.category?.name, product.country?.name]
+            .filter(Boolean)
+            .map((value, idx) => (
+              <Link
+                key={idx}
+                href=""
+                className='text-white bg-secondary-500 font-semibold text-[10px] sm:text-xs px-3 py-1 rounded-lg'
+              >
+                {value}
+              </Link>
+            ))}
+        </div>
+
         <div className="flex items-end justify-between gap-4 flex-wrap mt-2">
           <Link href={`products/${product.id}`}>
             <h4 className="text-black text-sm sm:text-base font-medium text-right mt-2">

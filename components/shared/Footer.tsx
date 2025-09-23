@@ -5,7 +5,7 @@ import Link from "next/link";
 const Footer = () => {
   const year = new Date().getFullYear();
   return (
-    <footer className="bg-yellow filter backdrop-blur-lg min-h-[400px] h-max text-white p-10 pb-12 pt-6 relative bottom-0 -z-12">
+    <footer className="bg-primary-100 filter backdrop-blur-lg min-h-[400px] h-max text-white p-10 pb-12 pt-6 relative bottom-0 -z-12">
       <div className="flex items-start justify-between flex-wrap md:flex-nowrap gap-4 mt-12">
         <div className="w-full md:w-6/12 flex items-start flex-col gap-5">
           {/* <Image
@@ -60,8 +60,8 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-[#0b14b6] min-w-[140px]">
-          <h4 className="text-2xl font-bold text-[#0b14b6] mb-5">صفحات</h4>
+        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-secondary-700 min-w-[140px]">
+          <h4 className="text-2xl font-bold text-secondary-700 mb-5">صفحات</h4>
           <ul className="flex-column gap-4">
             {footerPages.map((item, index) => (
               <li className="text-black text-nowrap" key={index}>
@@ -71,8 +71,8 @@ const Footer = () => {
           </ul>
         </div>
 
-        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-[#0b14b6] min-w-[140px]">
-          <h4 className="text-2xl font-bold text-[#0b14b6] mb-5">
+        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-secondary-700 min-w-[140px]">
+          <h4 className="text-2xl font-bold text-secondary-700 mb-5">
             محصولات جدید
           </h4>
           <ul className="flex-column gap-4">
@@ -84,8 +84,8 @@ const Footer = () => {
           </ul>
         </div>
 
-        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-[#0b14b6] min-w-[140px]">
-          <h4 className="text-2xl font-bold text-[#0b14b6] mb-5">
+        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-secondary-700 min-w-[140px]">
+          <h4 className="text-2xl font-bold text-secondary-700 mb-5">
             محصولات جدید
           </h4>
           <ul className="flex-column gap-4">
@@ -99,8 +99,8 @@ const Footer = () => {
       </div>
 
       {/* copy rights */}
-      <div className="absolute w-full bg-light_purple h-8 bottom-0 right-0 flex_center">
-        <span className="text-xs text-black font-medium">
+      <div className="absolute w-full bg-secondary-700 h-8 bottom-0 right-0 flex_center">
+        <span className="text-xs text-white font-medium">
           تمامی حقوق این سایت متعلق به تلاریو میباشد {year} ©
         </span>
       </div>
