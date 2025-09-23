@@ -102,15 +102,19 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
         </div>
 
         <div className="flex items-center justify-start gap-2 flex-wrap mt-2">
-          {[product.brand?.name, product.category?.name, product.country?.name]
-            .filter(Boolean)
-            .map((value, idx) => (
+          {[
+            { label: product.brand?.name, key: "brandId", value: product.brand?.id },
+            { label: product.category?.name, key: "categoryId", value: product.category?.id },
+            { label: product.country?.name, key: "countryId", value: product.country?.id },
+          ]
+            .filter(item => item.label && item.value)
+            .map((item, idx) => (
               <Link
                 key={idx}
-                href=""
+                href={`/products?${item.key}=${item.value}&page=1`}
                 className='text-white bg-secondary-500 font-semibold text-[10px] sm:text-xs px-3 py-1 rounded-lg'
               >
-                {value}
+                {item.label}
               </Link>
             ))}
         </div>
