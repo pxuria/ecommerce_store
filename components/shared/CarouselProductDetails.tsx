@@ -12,7 +12,6 @@ interface Props {
 
 const CarouselProductDetails = ({ product }: Props) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   const handleBookmark = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -34,7 +33,7 @@ const CarouselProductDetails = ({ product }: Props) => {
       >
         <CarouselContent className="">
           {images.map((url, index) => (
-            <CarouselItem key={index} className={`${index !== activeIndex ? "hidden" : "block"} relative`}>
+            <CarouselItem key={index} className={`relative`}>
               <Image
                 src={url}
                 width={800}
@@ -74,28 +73,6 @@ const CarouselProductDetails = ({ product }: Props) => {
       </Carousel>
 
       {/* Thumbnails */}
-      {/* <div className="w-1/4 overflow-y-auto max-h-[490px] flex flex-col gap-2">
-        {images.map((url, index) => (
-          <button
-            key={index}
-            onClick={() => setActiveIndex(index)}
-            className={`relative rounded-xl overflow-hidden border-2 ${activeIndex === index
-              ? "border-pink_600"
-              : "border-transparent opacity-70"
-              }`}
-          >
-            <Image
-              src={url}
-              width={200}
-              height={200}
-              unoptimized
-              alt={`Thumbnail ${index + 1}`}
-              className="w-full h-[150px] object-cover"
-            />
-          </button>
-        ))}
-      </div> */}
-
       <Carousel
         className="w-1/4"
         orientation="vertical"

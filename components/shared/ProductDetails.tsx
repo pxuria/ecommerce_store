@@ -15,6 +15,7 @@ import { CartItem } from "@/types";
 import { IProductWithBasePrice } from "@/types/model";
 
 import CarouselProductDetails from "./CarouselProductDetails";
+import { Button } from "../ui/button";
 
 const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
   const dispatch = useDispatch();
@@ -72,11 +73,22 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
 
         <div className="flex-column gap-5 mt-4">
           {/* categories */}
-
           <div className="flex items-center justify-start gap-3">
             <span className="text-black font-medium">دسته بندی :</span>
             <span className="text-secondary-700 font-medium">
               {product?.category?.name}
+            </span>
+          </div>
+          <div className="flex items-center justify-start gap-3">
+            <span className="text-black font-medium">برند :</span>
+            <span className="text-secondary-700 font-medium">
+              {product?.brand?.name}
+            </span>
+          </div>
+          <div className="flex items-center justify-start gap-3">
+            <span className="text-black font-medium">کشور :</span>
+            <span className="text-secondary-700 font-medium">
+              {product?.country?.name}
             </span>
           </div>
 
@@ -102,29 +114,6 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
             </div>
           </div>
 
-          {/* color */}
-          {/* <div>
-            <span className="text-black font-medium select-none">
-              انتخاب رنگ
-            </span>
-            <div className="flex gap-4 items-center flex-wrap w-1/2 mt-3">
-              {product?.colorVariants?.map((item, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className={`px-4 py-1 ${selectedColor === item.color?.name
-                    ? "border-2 bg-yellow_300 text-black border-primary-900"
-                    : "border border-muted"
-                    } rounded-lg flex_center`}
-                  onClick={() => setSelectedColor(item.color?.name)}
-                  aria-label={`انتخاب رنگ ${item.color?.name}`}
-                >
-                  {item.color?.name}
-                </button>
-              ))}
-            </div>
-          </div> */}
-
           {/* price */}
           <div className="flex items-center gap-4">
             <h2 className="font-medium text-lg">قیمت :</h2>
@@ -142,7 +131,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
                     Number(pricePerMeter) *
                     (1 - selectedVariant.discountPercent / 100)
                   ).toLocaleString()}{" "}
-                  تومان / متر
+                  تومان/متر
                 </span>
               </div>
             ) : (
@@ -150,7 +139,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
                 <span className="font-bold text-xl">
                   {Number(pricePerMeter).toLocaleString()}
                 </span>
-                <span className="font-medium text-lg">تومان / متر</span>
+                <span className="font-medium text-lg">تومان/متر</span>
               </div>
             )}
           </div>
@@ -170,33 +159,33 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
           <div className="flex items-center gap-2">
             {quantity > 0 && (
               <div className="w-1/5 flex items-center justify-between flex-nowrap rounded-lg bg-white">
-                <button
+                <Button
                   type="button"
                   className="py-3 px-4"
                   onClick={handleAddToCart}
                   disabled={quantity >= Number(stockMeters)}
                 >
                   <Plus size={16} />
-                </button>
+                </Button>
 
                 <span>{quantity}</span>
 
-                <button
+                <Button
                   type="button"
                   className="py-3 px-4"
                   onClick={handleRemoveFromCart}
                 >
                   <Minus size={16} />
-                </button>
+                </Button>
               </div>
             )}
 
-            <button
+            <Button
               type="button"
-              className={`btn py-2 rounded-lg text-white flex_center gap-2 ${quantity === 0
+              className={`btn rounded-lg text-white flex_center gap-2 ${quantity === 0
                 ? Number(stockMeters) === 0
                   ? "w-full bg-[#636363] hover:bg-black cursor-not-allowed"
-                  : "w-full bg-pink_600 hover:bg-pink_700"
+                  : "w-full bg-secondary-600 hover:bg-secondary-700"
                 : "w-4/5 bg-red-500 hover:bg-red-600"
                 }`}
               onClick={
@@ -214,7 +203,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
               ) : (
                 <Trash2 size={16} />
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
