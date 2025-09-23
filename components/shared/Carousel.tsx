@@ -5,16 +5,18 @@ import Link from "next/link";
 import Slider from "react-slick";
 import CarouselBtn from "./CarouselBtn";
 import ProductCard from "./ProductCard";
-import axiosInstance from "@/lib/axiosInstance";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoCaretBack, IoCaretForward } from "react-icons/io5";
-import { IProduct } from "@/types";
+import { IProductWithBasePrice } from "@/types/model";
 
 interface Props {
   side?: "left" | "right" | "center";
   title: string;
   seeAllLink: string;
   carouselBg?: string;
+  innerCarouselBg?: string;
+  linkClass?: string;
+  titleClass?: string;
   api: string;
   carouselClass?: string;
 }
@@ -24,18 +26,21 @@ const Carousel = ({
   title,
   seeAllLink,
   carouselBg,
+  innerCarouselBg,
+  linkClass,
+  titleClass,
   api,
-  carouselClass,
+  carouselClass = "",
 }: Props) => {
-  const [cards, setCards] = useState<IProduct[]>([]);
+  const [cards, setCards] = useState<IProductWithBasePrice[]>([]);
   const sliderRef = useRef<Slider | null>(null);
 
   useEffect(() => {
     const fetchScroll = async () => {
       try {
-        const { data } = await axiosInstance.get(api);
-        console.log(data);
-        setCards(data.products);
+        const res = await fetch(`/api${api}`);
+        const data = await res.json();
+        setCards(data.data);
       } catch (error) {
         console.log(error);
       }
@@ -88,20 +93,20 @@ const Carousel = ({
   return (
     <section
       className={`my-10 w-full ${carouselBg ? `bg-${carouselBg}` : ""} ${side === "left" ? "pr-4 sm:pr-10 pl-0" : "pl-4 sm:pl-10 pr-0"
-        } ${carouselClass || ""} py-6`}
+        } ${carouselClass} py-6`}
       aria-label={`محصولات ${title}`}
     >
       <div
         className={`flex items-center justify-between ${side === "left"
-            ? "pl-4 sm:pl-20 pr-0 sm:pr-10"
-            : "pr-4 sm:pr-20 pl-0 sm:pl-10"
+          ? "pl-4 sm:pl-20 pr-0 sm:pr-10"
+          : "pr-4 sm:pr-20 pl-0 sm:pl-10"
           }`}
       >
-        <h3 className="font-bold text-2xl text-black title relative select-none">
+        <h3 className={`font-bold text-2xl text-black title relative select-none ${titleClass}`}>
           {title}
         </h3>
         <Link
-          className={`flex items-end gap-1 text-black font-normal text-base`}
+          className={`flex items-end gap-1 text-black font-normal text-base ${linkClass}`}
           href={seeAllLink}
         >
           مشاهده همه
@@ -120,28 +125,15 @@ const Carousel = ({
         )}
 
         <div
-          className={`w-[90%] inline-block bg-light_purple
+          className={`w-[90%] inline-block ${innerCarouselBg}
            ${side === "left"
-              ? "rounded-tr-2xl rounded-br-2xl pr-4 float-left"
-              : "rounded-tl-2xl rounded-bl-2xl pl-4 float-right"
-            } pt-8 pb-6`}
+              ? "rounded-tr-2xl rounded-br-2xl float-left"
+              : "rounded-tl-2xl rounded-bl-2xl float-right"
+            } pt-8 pb-6 px-4`}
         >
           {(cards && cards.length > 0) && (
             <Slider ref={sliderRef} {...settings}>
-              {cards.map((item, index) => (
-                <ProductCard
-                  key={index}
-                  imgSrc={item.image[0]}
-                  imgAlt={item.name}
-                  imgWidth={1500}
-                  imgHeight={900}
-                  title={item.name}
-                  stock={item.stock}
-                  price={item.basePrice}
-                  link={item._id}
-                  margin
-                />
-              ))}
+              {cards.map((item, index) => <ProductCard key={index} product={item} />)}
             </Slider>
           )}
         </div>

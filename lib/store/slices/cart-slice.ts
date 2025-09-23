@@ -12,35 +12,35 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const itemId = action.payload._id;
-      const existingItem = state.items.find((item) => item._id === itemId);
+      const itemId = action.payload.id;
+      const existingItem = state.items.find((item) => item.id === itemId);
 
       if (existingItem) existingItem.quantity += 1;
-      else state.items.push({ ...action.payload, _id: itemId, quantity: 1 });
+      else state.items.push({ ...action.payload, id: itemId, quantity: 1 });
 
       state.totalQuantity += 1;
       state.totalPrice += action.payload.price;
     },
-    removeFromCart: (state, action: PayloadAction<{ _id: string }>) => {
-      const itemId = action.payload._id;
-      const existingItem = state.items.find((item) => item._id === itemId);
+    removeFromCart: (state, action: PayloadAction<{ id: string }>) => {
+      const itemId = action.payload.id;
+      const existingItem = state.items.find((item) => item.id === itemId);
 
       if (existingItem) {
         if (existingItem.quantity > 1) existingItem.quantity -= 1;
-        else state.items = state.items.filter((item) => item._id !== itemId);
+        else state.items = state.items.filter((item) => item.id !== itemId);
 
         state.totalQuantity -= 1;
         state.totalPrice -= existingItem.price;
       }
     },
-    removeAllFromCart: (state, action: PayloadAction<{ _id: string }>) => {
-      const itemId = action.payload._id;
-      const existingItem = state.items.find((item) => item._id === itemId);
+    removeAllFromCart: (state, action: PayloadAction<{ id: string }>) => {
+      const itemId = action.payload.id;
+      const existingItem = state.items.find((item) => item.id === itemId);
 
       if (existingItem) {
         state.totalQuantity -= existingItem.quantity;
         state.totalPrice -= existingItem.quantity * existingItem.price;
-        state.items = state.items.filter((item) => item._id !== itemId);
+        state.items = state.items.filter((item) => item.id !== itemId);
       }
     },
     clearCart: (state) => {

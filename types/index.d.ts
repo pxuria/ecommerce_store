@@ -13,7 +13,7 @@ export type ProductFilter = {
 };
 
 export interface CartItem {
-  _id: string;
+  id: string;
   productId: string;
   name: string;
   image: string[];

@@ -1,96 +1,57 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { MdRemoveRedEye } from "react-icons/md";
-import { FaMinus, FaPlus } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { useMemo, useState } from "react";
 
+import { Eye, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useAppSelector } from "@/lib/store";
-import { getCartItem, getCartItemQuantity } from "@/utils/helpers";
-import { CartItem, IProduct } from "@/types";
 import { useDispatch } from "react-redux";
 import {
   addToCart,
   removeAllFromCart,
   removeFromCart,
 } from "@/lib/store/slices/cart-slice";
-import { FiShoppingBag } from "react-icons/fi";
+import { getCartItem, getCartItemQuantity } from "@/utils/helpers";
+import { CartItem } from "@/types";
+import { IProductWithBasePrice } from "@/types/model";
+
 import CarouselProductDetails from "./CarouselProductDetails";
 
-const ProductDetails = ({ product }: { product: IProduct }) => {
+const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
   const dispatch = useDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
 
-  const [selectedColor, setSelectedColor] = useState<string>(
-    product.colors[0].name
-  );
-  const [selectedSize, setSelectedSize] = useState<string>(
-    product.colors[0].sizes[0].name
-  );
+  const [selectedVariant, setSelectedVariant] = useState(product.colorVariants[0]);
+  const { pricePerMeter, stockMeters } = selectedVariant;
 
-  useEffect(() => {
-    const colorObj = product.colors.find(
-      (color) => color.name === selectedColor
-    );
-    if (colorObj?.sizes.length) setSelectedSize(colorObj.sizes[0].name);
-  }, [selectedColor, product.colors]);
-
-  const getProductDetails = (
-    product: IProduct,
-    color: string,
-    size: string
-  ) => {
-    const colorObj = product.colors.find((c) => c.name === color);
-    if (!colorObj) return { price: product.basePrice, stockCount: 0 };
-
-    const sizeObj = colorObj.sizes.find((s) => s.name === size);
-    return sizeObj
-      ? { price: sizeObj.price, stockCount: sizeObj.stockCount }
-      : { price: product.basePrice, stockCount: 0 };
-  };
-
-  const { price, stockCount } = getProductDetails(
-    product,
-    selectedColor,
-    selectedSize
+  const productItem = useMemo(() => ({
+    id: `${product.id}-${selectedVariant.color?.id}`,
+    productId: product.id,
+    name: product.name,
+    image: product.images[0]?.url,
+    price: Number(pricePerMeter),
+    quantity: Number(stockMeters),
+    color: selectedVariant.color?.name,
+  }),
+    [product, selectedVariant, pricePerMeter, stockMeters]
   );
 
-  const productItem = useMemo(
-    () => ({
-      _id: `${product._id}-${selectedColor}-${selectedSize}`,
-      productId: product._id,
-      name: product.name,
-      image: product.image,
-      price,
-      quantity: stockCount,
-      color: selectedColor,
-      size: selectedSize,
-    }),
-    [product, selectedColor, selectedSize, price, stockCount]
-  );
-
-  const cartItem = getCartItem(cartItems, productItem._id) as CartItem;
-  const quantity = cartItem
-    ? getCartItemQuantity(cartItems, productItem._id)
-    : 0;
-  console.log("CART ITEM", cartItem);
-  console.log("CART ITEMS", cartItems);
-  console.log("PRODUCT ITEM", productItem);
-  console.log("QUANTITY", quantity);
+  const cartItem = getCartItem(cartItems, productItem.id) as CartItem;
+  const quantity = cartItem ? getCartItemQuantity(cartItems, productItem.id) : 0;
 
   const handleAddToCart = () => {
-    if (stockCount === 0 || quantity >= stockCount) return;
+    if (stockMeters === 0 || quantity >= Number(stockMeters)) return;
     dispatch(addToCart(productItem));
   };
+
   const handleRemoveFromCart = () => {
-    if (stockCount === 0) return;
-    if (quantity > 0) {
-      dispatch(removeFromCart({ _id: cartItem._id }));
+    if (quantity > 0 && cartItem) {
+      dispatch(removeFromCart({ id: cartItem.id }));
     }
   };
+
   const handleRemoveAllFromCart = () => {
     if (cartItem) {
-      dispatch(removeAllFromCart({ _id: cartItem._id }));
+      dispatch(removeAllFromCart({ id: cartItem.id }));
     }
   };
 
@@ -105,7 +66,7 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
           {/* views */}
           <div className="flex_center gap-1">
             <span className="text-sm text-black font-semibold">4.5</span>
-            <MdRemoveRedEye className="text-gray w-4 h-4" />
+            <Eye size={16} className="text-gray" />
           </div>
         </div>
 
@@ -115,87 +76,107 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
           <div className="flex items-center justify-start gap-3">
             <span className="text-black font-medium">دسته بندی :</span>
             <span className="text-secondary-700 font-medium">
-              {product.category.name}
+              {product?.category?.name}
             </span>
           </div>
 
-          {/* size */}
-          <div>
-            <h2 className="text-black font-medium select-none">انتخاب سایز</h2>
-            <div className="mt-3 flex flex-wrap gap-4">
-              {product.colors
-                .find((color) => color.name === selectedColor)
-                ?.sizes.map((size) => (
-                  <button
-                    key={size.name}
-                    type="button"
-                    className={`px-4 py-1 rounded-lg font-medium flex_center ${selectedSize === size.name
-                      ? "border-2 bg-yellow_300 text-black border-primary-900"
-                      : "border border-muted"
-                      }`}
-                    onClick={() => setSelectedSize(size.name)}
-                    aria-label={`انتخاب سایز ${size.name}`}
-                  >
-                    {size.name}
-                  </button>
-                ))}
-            </div>
-          </div>
-
-          {/* color */}
           <div>
             <span className="text-black font-medium select-none">
               انتخاب رنگ
             </span>
             <div className="flex gap-4 items-center flex-wrap w-1/2 mt-3">
-              {product.colors.map((item, index) => (
+              {product?.colorVariants?.map((variant) => (
                 <button
-                  key={index}
+                  key={variant.id}
                   type="button"
-                  className={`px-4 py-1 ${selectedColor === item.name
+                  className={`px-4 py-1 rounded-lg flex_center ${selectedVariant.id === variant.id
                     ? "border-2 bg-yellow_300 text-black border-primary-900"
                     : "border border-muted"
-                    } rounded-lg flex_center`}
-                  onClick={() => setSelectedColor(item.name)}
-                  aria-label={`انتخاب رنگ ${item.name}`}
+                    }`}
+                  onClick={() => setSelectedVariant(variant)}
+                  aria-label={`انتخاب رنگ ${variant.color?.name}`}
                 >
-                  {item.name}
+                  {variant.color?.name}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* price */}
-          <div className="flex items-center gap-2">
-            <h2 className="font-medium text-lg">قیمت :</h2>
-            <div className="flex items-center gap-2 text-pink_700">
-              <span className="font-bold text-xl">{price}</span>
-              <span className="font-medium text-lg">تومان</span>
+          {/* color */}
+          {/* <div>
+            <span className="text-black font-medium select-none">
+              انتخاب رنگ
+            </span>
+            <div className="flex gap-4 items-center flex-wrap w-1/2 mt-3">
+              {product?.colorVariants?.map((item, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`px-4 py-1 ${selectedColor === item.color?.name
+                    ? "border-2 bg-yellow_300 text-black border-primary-900"
+                    : "border border-muted"
+                    } rounded-lg flex_center`}
+                  onClick={() => setSelectedColor(item.color?.name)}
+                  aria-label={`انتخاب رنگ ${item.color?.name}`}
+                >
+                  {item.color?.name}
+                </button>
+              ))}
             </div>
+          </div> */}
+
+          {/* price */}
+          <div className="flex items-center gap-4">
+            <h2 className="font-medium text-lg">قیمت :</h2>
+
+            {selectedVariant.discountPercent && selectedVariant.discountPercent > 0 ? (
+              <div className="flex items-center gap-3">
+                {/* Original price */}
+                <span className="font-medium text-gray-500 line-through text-base">
+                  {Number(pricePerMeter).toLocaleString()} تومان
+                </span>
+
+                {/* Discounted price */}
+                <span className="font-bold text-xl text-pink_700">
+                  {(
+                    Number(pricePerMeter) *
+                    (1 - selectedVariant.discountPercent / 100)
+                  ).toLocaleString()}{" "}
+                  تومان / متر
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-pink_700">
+                <span className="font-bold text-xl">
+                  {Number(pricePerMeter).toLocaleString()}
+                </span>
+                <span className="font-medium text-lg">تومان / متر</span>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2 mt-2">
             <h2 className="font-medium text-base">موجودی :</h2>
             <span
-              className={`font-bold text-lg ${stockCount > 0 ? "text-green-600" : "text-red-600"
+              className={`font-bold text-lg ${Number(stockMeters) > 0 ? "text-green-600" : "text-red-600"
                 }`}
             >
-              {stockCount > 0 ? `${stockCount} عدد موجود است` : "ناموجود"}
+              {Number(stockMeters) > 0
+                ? `${Number(stockMeters)} متر موجود است`
+                : "ناموجود"}
             </span>
           </div>
 
-          {/* add cart */}
           <div className="flex items-center gap-2">
             {quantity > 0 && (
               <div className="w-1/5 flex items-center justify-between flex-nowrap rounded-lg bg-white">
                 <button
                   type="button"
                   className="py-3 px-4"
-                  aria-label="افزودن به سبد خرید"
                   onClick={handleAddToCart}
-                  disabled={quantity >= stockCount}
+                  disabled={quantity >= Number(stockMeters)}
                 >
-                  <FaPlus className="w-4 h-4" />
+                  <Plus size={16} />
                 </button>
 
                 <span>{quantity}</span>
@@ -203,10 +184,9 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
                 <button
                   type="button"
                   className="py-3 px-4"
-                  aria-label="حذف از سبد خرید"
                   onClick={handleRemoveFromCart}
                 >
-                  <FaMinus className="w-4 h-4" />
+                  <Minus size={16} />
                 </button>
               </div>
             )}
@@ -214,7 +194,7 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
             <button
               type="button"
               className={`btn py-2 rounded-lg text-white flex_center gap-2 ${quantity === 0
-                ? stockCount === 0
+                ? Number(stockMeters) === 0
                   ? "w-full bg-[#636363] hover:bg-black cursor-not-allowed"
                   : "w-full bg-pink_600 hover:bg-pink_700"
                 : "w-4/5 bg-red-500 hover:bg-red-600"
@@ -222,17 +202,17 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
               onClick={
                 quantity === 0 ? handleAddToCart : handleRemoveAllFromCart
               }
-              disabled={stockCount === 0}
+              disabled={Number(stockMeters) === 0}
             >
-              {stockCount === 0
+              {Number(stockMeters) === 0
                 ? "ناموجود"
                 : quantity === 0
                   ? "افزودن به سبد خرید"
                   : "حذف از سبد خرید"}
-              {stockCount === 0 ? null : quantity === 0 ? (
-                <FiShoppingBag />
+              {Number(stockMeters) === 0 ? null : quantity === 0 ? (
+                <ShoppingBag size={16} />
               ) : (
-                <FaRegTrashCan />
+                <Trash2 size={16} />
               )}
             </button>
           </div>
