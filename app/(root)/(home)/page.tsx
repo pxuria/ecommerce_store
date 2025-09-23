@@ -25,14 +25,14 @@ const page = () => {
         side="right"
         seeAllLink="products"
         carouselBg="white"
-        api="products/newest"
+        api="products?limit=16&sortBy=createdAt&sortOrder=desc"
       />
 
       <Carousel
         title="محصولات پرفروش"
         seeAllLink="products  "
         carouselClass="z-10"
-        api="products/best-selling"
+        api="products?limit=16&sortBy=price&sortOrder=desc"
       />
 
       <HomeFeatures />
