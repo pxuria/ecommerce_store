@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError } from '@/utils/helpers';
+import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const { searchParams } = new URL(req.url);
@@ -28,6 +28,6 @@ export const POST = async (request: Request) => asyncHandler(async () => {
     const { name, slug } = await request.json();
     if (!name || !slug) throw new HttpError('brand name or slug is required', 400);
 
-    const brand = await prisma.productBrand.create({ data: { name, slug } });
+    const brand = await prisma.productBrand.create({ data: { name, slug: toSlug(slug) } });
     return { data: brand };
 }, { successStatus: 201, auth: true });

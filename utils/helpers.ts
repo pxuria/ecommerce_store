@@ -5,6 +5,7 @@ import { CartItem, ParamsType } from "@/types";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { isAdmin } from "@/lib/auth";
+import slugify from "slugify";
 
 type ActionFn<T> = () => Promise<T> | T;
 interface AsyncHandlerOptions {
@@ -174,3 +175,5 @@ export const toJalaliDate = (
   if (!isoDate) return "";
   return moment(isoDate).format(format);
 };
+
+export const toSlug = (slug: string) => slugify(slug, { lower: true, strict: true });

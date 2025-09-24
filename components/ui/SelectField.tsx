@@ -59,7 +59,7 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, itemCla
           <FormControl>
             {loading ? <Skeleton className="h-10 w-full rounded-md" /> :
               (<Select
-                value={field.value ?? ""}
+                value={field.value ?? " "}
                 onValueChange={field.onChange}
                 disabled={loading}
               >
@@ -80,7 +80,7 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, itemCla
                       </SelectItem>
                     ))
                   ) : (
-                    <SelectItem value="" disabled>
+                    <SelectItem value="__no_data__" disabled>
                       موردی یافت نشد
                     </SelectItem>
                   )}

@@ -53,7 +53,7 @@ const CategoryForm = ({ item, onClose, onUpdated }: Props) => {
         } catch (error) {
             console.log(error);
         } finally {
-            // form.reset();
+            form.reset();
             setLoading(false);
         }
     };

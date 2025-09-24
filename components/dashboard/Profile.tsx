@@ -45,16 +45,17 @@ const Profile = () => {
     if (!session?.user?.id) return;
 
     try {
-      const { data } = await axiosInstance.get(`users/${session.user.id}`);
+      const res = await fetch(`/api/users/${session.user.id}`);
+      const data = await res.json();
 
       reset({
-        firstName: data.firstName || "",
-        lastName: data.lastName || "",
-        email: data.email || "",
-        phone: data.phone || "",
-        address: data.address || "",
-        city: data.city || "",
-        postalCode: data.postalCode || "",
+        firstName: data.data.firstName || "",
+        lastName: data.data.lastName || "",
+        email: data.data.email || "",
+        phone: data.data.phone || "",
+        address: data.data.address || "",
+        city: data.data.city || "",
+        postalCode: data.data.postalCode || "",
       });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -77,8 +78,6 @@ const Profile = () => {
         id: session.user.id,
         ...values
       });
-
-      console.log(data);
 
       handleShowToast("اطلاعات شما با موفقیت به‌روز شد");
     } catch (error) {

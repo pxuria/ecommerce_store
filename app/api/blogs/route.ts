@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError } from '@/utils/helpers';
+import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const { searchParams } = new URL(req.url);
@@ -30,7 +30,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
     const blog = await prisma.blog.create({
         data: {
             title: title,
-            slug: slug,
+            slug: toSlug(slug),
             content: content,
             coverImage: coverImage,
             estimatedTimeToRead: estimatedTimeToRead,

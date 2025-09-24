@@ -2,7 +2,7 @@ export const runtime = 'nodejs';
 
 import prisma from '@/lib/db';
 import { authOptions } from '@/utils/authOptions';
-import { asyncHandler } from "@/utils/helpers";
+import { asyncHandler, toSlug } from "@/utils/helpers";
 import { getServerSession } from 'next-auth';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
@@ -117,7 +117,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
   const product = await prisma.product.create({
     data: {
       name: body.name,
-      slug: body.slug,
+      slug: toSlug(body.slug),
       description: body.description,
       categoryId: parseInt(body.categoryId),
       brandId: parseInt(body.brandId),
