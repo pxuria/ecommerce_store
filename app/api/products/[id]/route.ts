@@ -2,7 +2,9 @@ export const runtime = 'nodejs';
 
 import prisma from '@/lib/db';
 import { ParamsType } from "@/types";
+import { authOptions } from '@/utils/authOptions';
 import { asyncHandler, HttpError, parseId } from "@/utils/helpers";
+import { getServerSession } from 'next-auth';
 
 const defaultIncludes = {
   images: true,
@@ -14,10 +16,43 @@ const defaultIncludes = {
 };
 
 export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
+  const session = await getServerSession(authOptions);
   const id = parseId(params);
-  const product = await prisma.product.findUnique({ where: { id }, include: defaultIncludes });
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      ...defaultIncludes,
+      favoredBy: session
+        ? { where: { id: session.user.id }, select: { id: true } }
+        : false,
+    }
+  });
+
   if (!product) throw new HttpError("Product not found", 404);
-  return { data: product };
+
+  const basePrice = Math.min(
+    ...product.colorVariants.map((cv) => cv.pricePerMeter.toNumber())
+  );
+  const variant = product.colorVariants.find(
+    (cv) => cv.pricePerMeter.toNumber() === basePrice
+  );
+
+  let finalPrice = basePrice;
+  let discountPercent = 0;
+
+  if (variant?.discountPercent) {
+    discountPercent = variant.discountPercent.toNumber();
+    finalPrice = Math.round(basePrice * (1 - discountPercent / 100));
+  }
+  return {
+    data: {
+      ...product,
+      basePrice,
+      finalPrice,
+      discountPercent,
+      isBookmarked: !!product.favoredBy?.length
+    }
+  };
 });
 
 export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(async () => {

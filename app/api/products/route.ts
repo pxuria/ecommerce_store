@@ -1,9 +1,12 @@
 export const runtime = 'nodejs';
 
 import prisma from '@/lib/db';
+import { authOptions } from '@/utils/authOptions';
 import { asyncHandler } from "@/utils/helpers";
+import { getServerSession } from 'next-auth';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
+  const session = await getServerSession(authOptions);
   const { searchParams } = new URL(req.url);
 
   const page = parseInt(searchParams.get("page") || "1", 10);
@@ -68,12 +71,15 @@ export const GET = async (req: Request) => asyncHandler(async () => {
         images: true,
         attributes: true,
         colorVariants: { include: { color: true } },
+        favoredBy: session
+          ? { where: { id: session.user.id }, select: { id: true } }
+          : false,
       }
     }),
     prisma.product.count({ where })
   ]);
 
-  const withBasePrice = products.map(p => {
+  const attachedData = products.map(p => {
     const basePrice = Math.min(...p.colorVariants.map(cv => cv.pricePerMeter.toNumber()));
     const variant = p.colorVariants.find(cv => cv.pricePerMeter.toNumber() === basePrice);
 
@@ -90,11 +96,12 @@ export const GET = async (req: Request) => asyncHandler(async () => {
       basePrice,
       finalPrice,
       discountPercent,
+      isBookmarked: session ? p.favoredBy.length > 0 : false
     };
   });
 
   return {
-    data: withBasePrice,
+    data: attachedData,
     pagination: {
       total,
       page,

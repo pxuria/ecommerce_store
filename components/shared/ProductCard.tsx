@@ -56,6 +56,12 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
     }
   };
 
+  const tags = [
+    { label: product.brand?.name, key: "brandId", value: product.brand?.id },
+    { label: product.category?.name, key: "categoryId", value: product.category?.id },
+    { label: product.country?.name, key: "countryId", value: product.country?.id },
+  ];
+
   return (
     <div className={itemClass}>
       <div className={`rounded-2xl overflow-hidden pb-2 px-2 pt-2 border border-muted bg-[#fff] shadow-none sm:shadow-md`}>
@@ -95,24 +101,19 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
                 alt={product.images[0].alt}
                 width={900}
                 height={900}
-                className="object-cover h-[10rem] md:h-[15rem] rounded-3xl group-hover:rounded-2xl w-full transition-all ease-in duration-500 group-hover:scale-110"
+                className="object-cover h-[8rem] sm:h-[10rem] md:h-[15rem] rounded-3xl group-hover:rounded-2xl w-full transition-all ease-in duration-500 group-hover:scale-110"
               />
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-start gap-2 flex-wrap mt-2">
-          {[
-            { label: product.brand?.name, key: "brandId", value: product.brand?.id },
-            { label: product.category?.name, key: "categoryId", value: product.category?.id },
-            { label: product.country?.name, key: "countryId", value: product.country?.id },
-          ]
-            .filter(item => item.label && item.value)
+          {tags.filter(item => item.label && item.value)
             .map((item, idx) => (
               <Link
                 key={idx}
                 href={`/products?${item.key}=${item.value}&page=1`}
-                className='text-white bg-secondary-500 font-semibold text-[10px] sm:text-xs px-3 py-1 rounded-lg'
+                className='text-white bg-secondary-500 font-semibold text-[10px] sm:text-xs px-2 md:px-3 py-1 rounded-lg'
               >
                 {item.label}
               </Link>
@@ -138,14 +139,14 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
           {product.discountPercent > 0 ? (
             <div className="flex flex-col items-end">
               <div className="flex items-end gap-1">
-                <span className="text-xs sm:text-sm text-gray-500 line-through">
+                <span className="text-xs sm:text-sm text-red-400 line-through">
                   {product.basePrice.toLocaleString("en-US")}
                 </span>
                 <span className="text-black text-sm">تومان</span>
               </div>
 
               <div className="flex items-end gap-1">
-                <span className="text-base sm:text-lg font-bold text-red-600">
+                <span className="text-base sm:text-lg font-bold text-secondary-700">
                   {product.finalPrice.toLocaleString("en-US")}
                 </span>
                 <span className="text-black text-sm sm:text-base font-bold">تومان</span>

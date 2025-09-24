@@ -41,24 +41,26 @@ const Bookmarks = () => {
     fetchBookmarks();
   }, [])
 
-  return <div className="">
-    {loading
-      ? <LottieText text="در حال بارگذاری" itemClass="w-64 h-64" file={productLoading} />
-      : (bookmarks.length ? (
-        <div className="w-full flex items-start justify-between gap-2 sm:gap-4 flex-wrap">
-          {bookmarks?.map((item: IProductWithBasePrice) => (
-            <ProductCard
-              key={item.id}
-              product={item}
-              itemClass='w-[calc(50%-8px)] sm:w-[calc(50%-16px)] lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]'
-            />
-          ))}
-        </div>
-      )
-        : <LottieText text="محصولی یافت نشد." file={noProduct} />)}
+  return (
+    <section className="min-h-[85vh]">
+      {loading
+        ? <LottieText text="در حال بارگذاری" itemClass="w-64 h-64" file={productLoading} />
+        : (bookmarks.length ? (
+          <div className="w-full flex items-start justify-between gap-2 sm:gap-4 flex-wrap">
+            {bookmarks?.map((item: IProductWithBasePrice) => (
+              <ProductCard
+                key={item.id}
+                product={item}
+                itemClass='w-[calc(50%-8px)] sm:w-[calc(50%-8px)] lg:w-[calc(33%-8px)]'
+              />
+            ))}
+          </div>
+        )
+          : <LottieText text="محصولی یافت نشد." file={noProduct} />)}
 
-    <CustomPagination pagination={pagination} />
-  </div>;
+      <CustomPagination pagination={pagination} />
+    </section>
+  );
 };
 
 export default Bookmarks;
