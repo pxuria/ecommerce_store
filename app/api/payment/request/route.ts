@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import ZarinPal from "zarinpal-node-sdk";
-import Order from "@/models/Order.model";
+// import Order from "@/models/Order.model";
 
 const zarinpal = new ZarinPal({
   merchantId: process.env.ZARINPAL_MERCHANT_ID! as string,
@@ -19,13 +19,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const order = await Order.findById(orderId);
-    if (!order || order.status !== "pending") {
-      return NextResponse.json(
-        { error: "Invalid or already processed order." },
-        { status: 400 }
-      );
-    }
+    // const order = await Order.findById(orderId);
+    // if (!order || order.status !== "pending") {
+    //   return NextResponse.json(
+    //     { error: "Invalid or already processed order." },
+    //     { status: 400 }
+    //   );
+    // }
 
     const response = await zarinpal.payments.create({
       amount,
@@ -45,11 +45,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const authority = response.data.authority;
+    // const authority = response.data.authority;
 
     // Store authority in DB to prevent URL tampering
-    order.paymentAuthority = authority;
-    await order.save();
+    // order.paymentAuthority = authority;
+    // await order.save();
 
     const url = zarinpal.payments.getRedirectUrl(response.data?.authority);
     return NextResponse.json({ url }, { status: 200 });
