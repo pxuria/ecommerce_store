@@ -9,7 +9,7 @@ import { FAQItems } from "@/constants";
 const FAQ = () => {
   return (
     <div className="py-10 px-4 w-full lg:w-1/2 mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-right text-pink_700">
+      <h2 className="text-2xl font-bold mb-6 text-right text-secondary-700">
         سوالات متداول
       </h2>
       <Accordion type="single" collapsible className="flex-column gap-2">

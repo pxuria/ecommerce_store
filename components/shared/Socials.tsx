@@ -26,7 +26,7 @@ const Socials = () => {
       <h2 className="text-2xl font-bold mb-4">
         ما را در شبکه‌های اجتماعی دنبال کنید
       </h2>
-      <p className="text-lg font-medium mb-6 text-pink_700">
+      <p className="text-lg font-medium mb-6 text-primary-900">
         با دنبال کردن {brandName} در شبکه‌های اجتماعی، از جدیدترین محصولات و تخفیف‌های
         ویژه باخبر شوید.
       </p>

@@ -5,12 +5,12 @@ const ContactusText = () => {
         <div className="py-10 px-4 w-full lg:w-3/5 mx-auto flex-column items-start justify-start">
             <h1 className="text-3xl font-bold mb-8 bg-white">
                 تماس با{" "}
-                <strong className="text-pink_800 text-4xl font-bold ">{brandName}</strong>
+                <strong className="text-secondary-700 text-4xl font-bold ">{brandName}</strong>
             </h1>
 
 
             <p className="text-lg mb-6 leading-relaxed">
-                <strong className="text-lg font-bold text-primary-900">{brandName}</strong>{" "}
+                <strong className="text-lg font-bold text-secondary-800">{brandName}</strong>{" "}
                 در دنیای زیبایی‌ها، جایی که خانه به آینه‌ای از روح و سلیقه ساکنانش تبدیل می‌شود،پارچه عرشیان بافت نه به عنوان یک فروشگاه، که به عنوان یک «آرتیستِ خانه‌آرایی» متولد شد. ما باور داریم که پارچه، تنها یک پوشش نیست؛ نفس یک فضاست. نوازشگر نگاه‌ها، نگهدارنده خاطرات و ترجمانِ سلیقه‌ای است که از ظرافت می‌گوید.
 
                 ما در پارچه عرشیان بافت، با عشقی پایان‌ناپذیر به هنر و صنعت، گردآورنده نفیس‌ترین و مرغوب‌ترین پارچه‌های مبل، پرده و دکوراسیون از چهارگوشه جهان هستیم. از ابریشم‌های نرم ایتالیایی که با خورشید رقابت می‌کنند، تا کتان‌های طبیعی و بادوام اروپایی که بوی اصالت می‌دهند؛ از طرح‌های کلاسیک و شاهانه تا مدرن‌ترین و مینیمال‌ترین بافت‌ها.
