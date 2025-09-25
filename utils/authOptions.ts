@@ -3,6 +3,7 @@ import Credentials from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/prisma'
 import { compare } from "bcryptjs";
 import { z } from 'zod'
+import { User } from '@prisma/client';
 
 const credentialsSchema = z.object({
   phone: z.string().min(5),
@@ -55,16 +56,12 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token.user) {
         // expose whole user object
-        session.user = token.user as any
+        session.user = token.user as unknown as User
       }
       return session
     },
   },
-
-  pages: {
-    signIn: '/login',
-  },
   jwt: {
-    maxAge: 7 * 24 * 60 * 60,
+    maxAge: 7 * 24 * 60 * 60
   }
 }
