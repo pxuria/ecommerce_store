@@ -1,10 +1,10 @@
-import ConnectDB from "@/config/db";
 import { isAdmin } from "@/lib/auth";
+import { connectDB } from "@/lib/db";
 import Category from "@/models/Category.model";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  await ConnectDB();
+  await connectDB();
 
   try {
     const categories = await Category.find({});
@@ -22,7 +22,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  await ConnectDB();
+  await connectDB();
 
   if (!(await isAdmin())) {
     return NextResponse.json("Access denied: Unauthorized", { status: 403 });

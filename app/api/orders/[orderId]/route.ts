@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import ConnectDB from "@/config/db";
 import Order from "@/models/Order.model";
 import Product from "@/models/Products.model";
 import Category from "@/models/Category.model";
+import { connectDB } from "@/lib/db";
 
 // Get Single Order by ID (GET)
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: { orderId: string } }
 ) {
   try {
-    await ConnectDB();
+    await connectDB();
     const { orderId } = params;
 
     const order = await Order.findById(orderId)
@@ -44,7 +44,7 @@ export async function PUT(
   { params }: { params: { orderId: string } }
 ) {
   try {
-    await ConnectDB();
+    await connectDB();
     const { orderId } = params;
     const updates = await req.json();
 
@@ -71,7 +71,7 @@ export async function DELETE(
   { params }: { params: { orderId: string } }
 ) {
   try {
-    await ConnectDB();
+    await connectDB();
     const { orderId } = params;
 
     const deletedOrder = await Order.findByIdAndDelete(orderId);

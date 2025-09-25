@@ -1,5 +1,5 @@
-import ConnectDB from "@/config/db";
 import { isAdmin } from "@/lib/auth";
+import { connectDB } from "@/lib/db";
 import Category from "@/models/Category.model";
 import { NextResponse } from "next/server";
 
@@ -7,7 +7,7 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  await ConnectDB();
+  await connectDB();
   try {
     const { id } = params;
 
@@ -33,7 +33,7 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  await ConnectDB();
+  await connectDB();
 
   if (!(await isAdmin())) {
     return NextResponse.json("Access denied: Unauthorized", { status: 403 });
@@ -73,7 +73,7 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  await ConnectDB();
+  await connectDB();
 
   if (!(await isAdmin())) {
     return NextResponse.json("Access denied: Unauthorized", { status: 403 });

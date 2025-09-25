@@ -44,6 +44,7 @@ const Footer = () => {
             </ul>
             <div className="flex items-center gap-4 justify-end mt-auto">
               <div
+                className="w-16 aspect-square"
                 dangerouslySetInnerHTML={{
                   __html: `<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=647497&Code=MM6TkbvEyvYFNeElexjjqHOIsm5PF8QW'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=647497&Code=MM6TkbvEyvYFNeElexjjqHOIsm5PF8QW' alt='' style='cursor:pointer' code='MM6TkbvEyvYFNeElexjjqHOIsm5PF8QW'></a>`,
                 }}

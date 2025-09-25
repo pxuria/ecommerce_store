@@ -1,6 +1,5 @@
 "use server";
 
-import ConnectDB from "@/config/db";
 // import redis from "../redis";
 // import Blog from "@/models/Blog.model";
 import { isAdmin } from "../auth";
@@ -41,7 +40,7 @@ export async function getBlogs() {
 
 export async function addBlog({ title, content, author, wallpaper, estimatedTimeToRead, metaTitle, metaDescription }: Blog) {
     return asyncHandler2(async () => {
-        await ConnectDB();
+        await connectDB();
 
         if (!(await isAdmin())) return { error: "Access denied: Unauthorized" }
 
@@ -69,7 +68,7 @@ export async function addBlog({ title, content, author, wallpaper, estimatedTime
 
 export async function getBlogById(id: string) {
     return asyncHandler2(async () => {
-        await ConnectDB();
+        await connectDB();
         // const cacheKey = `${blogsRedis.byId}${id}`;
 
         // const cachedBlog = await redis.get(cacheKey);
@@ -90,7 +89,7 @@ export async function getBlogById(id: string) {
 
 export async function updateBlog(id: string, data: Blog) {
     return asyncHandler2(async () => {
-        await ConnectDB();
+        await connectDB();
         if (!(await isAdmin())) return { error: "Access denied: Unauthorized" }
 
         // const updatedBlog = await Blog.findByIdAndUpdate(id, data, {
@@ -107,7 +106,7 @@ export async function updateBlog(id: string, data: Blog) {
 
 export async function deleteBlog(id: string) {
     return asyncHandler2(async () => {
-        await ConnectDB();
+        await connectDB();
         if (!(await isAdmin())) return { error: "Access denied: Unauthorized" }
 
         // const deletedBlog = await Blog.findByIdAndDelete(id);
@@ -122,7 +121,7 @@ export async function deleteBlog(id: string) {
 
 export async function getLatestBlogs() {
     return asyncHandler2(async () => {
-        await ConnectDB();
+        await connectDB();
         // const cacheKey = blogsRedis.latest;
 
         // const cached = await redis.get(cacheKey);

@@ -5,11 +5,11 @@ import Product from "@/models/Products.model";
 import Order from "@/models/Order.model";
 import User from "@/models/User.model";
 import { isAdmin } from "@/lib/auth";
-import ConnectDB from "@/config/db";
 import { IColor, ISize } from "@/types";
+import { connectDB } from "@/lib/db";
 
 export async function POST(req: Request) {
-  await ConnectDB();
+  await connectDB();
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -124,7 +124,7 @@ export async function POST(req: Request) {
 // 🟡 Get All Orders(GET)
 export async function GET() {
   try {
-    await ConnectDB();
+    await connectDB();
 
     if (!(await isAdmin())) {
       return NextResponse.json("Access denied: Unauthorized", { status: 403 });
