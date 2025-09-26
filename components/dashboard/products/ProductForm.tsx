@@ -74,10 +74,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
             if (images.length > 0) uploadedImages = await uploadImage(images);
 
 
-            const finalImages = [
-                ...(values.images ?? []),
-                ...uploadedImages
-            ];
+            const finalImages = [...uploadedImages].filter(url => /^https?:\/\//.test(url));;
 
             const payload = {
                 ...values,

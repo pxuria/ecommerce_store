@@ -141,9 +141,12 @@ model Product {
   colorVariants ProductColorVariant[]
   favoredBy     User[]                @relation("UserFavorites")
   isActive      Boolean               @default(true)
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  deletedAt     DateTime?             @map("deleted_at")
+  // minPrice      Decimal?              @db.Decimal(12, 2)
+  // maxPrice      Decimal?              @db.Decimal(12, 2)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? @map("deleted_at")
 
   @@index([name])
   @@index([slug])

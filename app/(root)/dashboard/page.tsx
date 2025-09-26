@@ -56,9 +56,9 @@ const Page = () => {
         value={activeTab}
         onValueChange={setActiveTab}
         dir="rtl"
-        className="w-full flex items-start jusrify-start flex-col md:flex-row gap-8 my-10"
+        className="w-full flex items-start jusrify-start flex-col md:flex-row gap-4 my-10"
       >
-        <TabsList className="flex flex-row md:flex-column justify-start items-start gap-2 w-full md:w-1/4 bg-white overflow-y-hidden overflow-x-auto h-fit">
+        <TabsList className="flex flex-row md:flex-column justify-start items-start gap-2 w-full md:w-[calc(25%-8px)] bg-white overflow-y-hidden overflow-x-auto h-fit">
           {dashboardTabs.map((item) => (
             <TabsTrigger
               key={item.dashName}
@@ -96,7 +96,7 @@ const Page = () => {
         </TabsList>
 
         {tabContents.map(item => (
-          <TabsContent key={item.value} value={item.value} className="w-full md:w-3/4 !mt-0">
+          <TabsContent key={item.value} value={item.value} className="w-full md:w-[calc(75%-8px)] !mt-0">
             {activeTab === item.value && item.component}
           </TabsContent>
         ))}

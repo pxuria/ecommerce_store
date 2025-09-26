@@ -65,11 +65,11 @@ const Navbar = () => {
           <Popover onOpenChange={setCartTrigger} open={cartTrigger}>
             <PopoverTrigger asChild>
               <div className="relative cursor-pointer">
-                <span className="absolute -top-2 -right-2 w-5 h-5 flex_center rounded-full z-10 bg-purple_700 text-xs text-white">
+                <span className="absolute -top-2 -right-2 w-5 h-5 flex_center rounded-full z-10 bg-secondary-700 text-xs text-white">
                   {cart.totalQuantity > 99 ? "😊" : cart.totalQuantity}
                 </span>
                 <Button
-                  className="bg-yellow_600 text-black hover:bg-yellow_700 px-3 py-2 rounded duration-500 h-10 w-10 flex_center btn"
+                  className="bg-primary-300 text-black hover:bg-primary-400 px-3 py-2 rounded duration-500 h-10 w-10 flex_center btn"
                   size="icon"
                   type="button"
                   aria-label="shopping_bag"
