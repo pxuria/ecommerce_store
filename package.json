@@ -67,6 +67,7 @@
     "react-redux": "^9.2.0",
     "react-slick": "^0.31.0",
     "react-toastify": "^11.0.3",
+    "recharts": "^3.2.1",
     "redux-persist": "^6.0.0",
     "slugify": "^1.6.6",
     "tailwind-merge": "^3.3.1",
