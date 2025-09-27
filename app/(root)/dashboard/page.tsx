@@ -19,6 +19,7 @@ import Categories from "@/components/dashboard/category/Categories";
 import Users from "@/components/dashboard/users/Users";
 import Blogs from "@/components/dashboard/blog/Blogs";
 import { UserRole } from "@prisma/client";
+import Logs from "@/components/dashboard/Logs";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-secondary-700 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
@@ -26,6 +27,7 @@ const tabContents = [
   { value: 'profile', component: <Profile /> },
   { value: 'orders', component: <Orders /> },
   { value: 'bookmarks', component: <Bookmarks /> },
+  { value: 'logs', component: <Logs /> },
   { value: 'products', component: <Products /> },
   { value: 'product_category', component: <Categories /> },
   { value: 'blogs', component: <Blogs /> },

@@ -1,24 +1,11 @@
 import { Bounce, ToastOptions, ToastPosition } from "react-toastify";
-import {
-  FaGifts,
-  FaInstagram,
-  FaTelegramPlane,
-  FaWhatsapp,
-  FaTag,
-  FaBoxes,
-  FaBookmark,
-  FaUser,
-  FaUsers,
-  FaPaintBrush,
-  FaGlobeAmericas
-} from "react-icons/fa";
 
 import supportLottie from "../public/assets/lotties/support.json";
 import originalLottie from "../public/assets/lotties/original.json";
 import returnLottie from "../public/assets/lotties/gift-on-the-way.json";
 import deliveryLottie from "../public/assets/lotties/delivery-service.json";
 import payLottie from "../public/assets/lotties/pay.json";
-import { FaBoxesPacking, FaNewspaper } from "react-icons/fa6";
+import { Bookmark, Boxes, ChartColumnBig, Gift, LandPlot, Newspaper, Package, Palette, Tag, User, Users } from "lucide-react";
 
 
 export const brandName = 'عرشیان بافت';
@@ -82,19 +69,19 @@ export const socials = [
   {
     link: "www.whatsapp.com",
     name: "whatsapp",
-    logo: <FaWhatsapp />,
+    logo: '/assets/images/WhatsappLogo.svg',
     color: "#128c7e",
   },
   {
     link: "www.telegram.com",
     name: "telegram",
-    logo: <FaTelegramPlane />,
+    logo: '/assets/images/TelegramLogo.svg',
     color: "#369fdb",
   },
   {
     link: "www.instagram.com",
     name: "instagram",
-    logo: <FaInstagram />,
+    logo: '/assets/images/InstagramLogo.svg',
     color: "#e1306c",
   },
 ];
@@ -265,55 +252,60 @@ export const dashboardTabs = [
   {
     name: "حساب کاربری",
     dashName: "profile",
-    icon: <FaUser className="w-5 h-5" />,
+    icon: <User size={20} fill="#000" />
   },
   {
     name: "سفارشات",
     dashName: "orders",
-    icon: <FaGifts className="w-5 h-5" />,
+    icon: <Gift size={20} fill="#000" />
   },
   {
     name: "علاقه مندی ها",
     dashName: "bookmarks",
-    icon: <FaBookmark className="w-5 h-5" />,
-  },
+    icon: <Bookmark size={20} fill="#000" />
+  }
 ];
 
 export const dashboardAdminTabs = [
   {
+    name: "گزارشات",
+    dashName: "logs",
+    icon: <ChartColumnBig size={20} fill="#000" />
+  },
+  {
     name: "بلاگ ها",
     dashName: "blogs",
-    icon: <FaNewspaper className="w-5 h-5" />,
+    icon: <Newspaper size={20} fill="#000" />
   },
   {
     name: "محصولات",
     dashName: "products",
-    icon: <FaBoxes className="w-5 h-5" />,
+    icon: <Package size={20} fill="#000" />
   },
   {
     name: "دسته بندی محصولات",
     dashName: "product_category",
-    icon: <FaBoxesPacking className="w-5 h-5" />,
+    icon: <Boxes size={20} fill="#000" />
   },
   {
     name: "رنگ ها",
     dashName: "colors",
-    icon: <FaPaintBrush className="w-5 h-5" />,
+    icon: <Palette size={20} fill="#000" />
   },
   {
     name: "کشور ها",
     dashName: "countries",
-    icon: <FaGlobeAmericas className="w-5 h-5" />,
+    icon: <LandPlot size={20} fill="#000" />
   },
   {
     name: "برند ها",
     dashName: "brands",
-    icon: <FaTag className="w-5 h-5" />,
+    icon: <Tag size={20} fill="#000" />
   },
   {
     name: "لیست کاربران",
     dashName: "users-list",
-    icon: <FaUsers className="w-5 h-5" />,
+    icon: <Users size={20} fill="#000" />
   }
 ]
 

@@ -37,7 +37,13 @@ const Footer = () => {
                       className="filled"
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    {item.logo}
+
+                    <Image
+                      src={item.logo}
+                      alt={item.name}
+                      width={16}
+                      height={16}
+                    />
                   </Link>
                 </li>
               ))}
