@@ -15,13 +15,11 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    PieChart,
-    Pie,
-    Cell,
     BarChart,
-    Bar,
-    Legend,
+    Bar
 } from "recharts";
+import PieChart from "../charts/PieChart";
+import { ChartConfig } from "../ui/chart";
 
 const salesData = [
     { date: "Mon", sales: 400 },
@@ -59,7 +57,41 @@ const customerData = [
     { name: "Returning", value: 40 },
 ]
 
-const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"]
+const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"];
+
+const chartConfig = {
+    visitors: {
+        label: "Visitors",
+    },
+    chrome: {
+        label: "Chrome",
+        color: "var(--chart-1)",
+    },
+    safari: {
+        label: "Safari",
+        color: "var(--chart-2)",
+    },
+    firefox: {
+        label: "Firefox",
+        color: "var(--chart-3)",
+    },
+    edge: {
+        label: "Edge",
+        color: "var(--chart-4)",
+    },
+    other: {
+        label: "Other",
+        color: "var(--chart-5)",
+    },
+} satisfies ChartConfig
+
+const chartData = [
+    { browser: "chrome", visitors: 275, fill: "var(--chart-1)" },
+    { browser: "safari", visitors: 200, fill: "var(--chart-2)" },
+    { browser: "firefox", visitors: 187, fill: "var(--chart-3)" },
+    { browser: "edge", visitors: 173, fill: "var(--chart-4)" },
+    { browser: "other", visitors: 90, fill: "var(--chart-5)" },
+]
 
 const Logs = () => {
     return (
@@ -112,31 +144,13 @@ const Logs = () => {
 
             {/* Orders by Status + Top Products */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Orders by Status</CardTitle>
-                    </CardHeader>
-                    <CardContent className="h-72">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={orderStatusData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    cx="50%"
-                                    cy="50%"
-                                    outerRadius={100}
-                                    label
-                                >
-                                    {orderStatusData.map((_, index) => (
-                                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
+                <PieChart
+                    title="Pie Chart"
+                    dataKey="visitors"
+                    nameKey="browser"
+                    chartData={chartData}
+                    chartConfig={chartConfig}
+                />
 
                 <Card>
                     <CardHeader>
@@ -179,7 +193,7 @@ const Logs = () => {
                     <CardHeader>
                         <CardTitle>New vs Returning Customers</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-72">
+                    {/* <CardContent className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie
@@ -199,7 +213,7 @@ const Logs = () => {
                                 <Legend />
                             </PieChart>
                         </ResponsiveContainer>
-                    </CardContent>
+                    </CardContent> */}
                 </Card>
             </div>
         </div>
