@@ -60,7 +60,7 @@ const CartPopover = () => {
         <Link className="w-1/2" href="/dashboard?tab=orders">
           <button
             type="button"
-            className="btn w-full flex_center  text-sm font-medium bg-purple_900 hover:bg-purple_800 text-white py-2 rounded-lg"
+            className="btn w-full flex_center text-sm font-medium bg-secondary-700 hover:bg-secondary-600 text-white py-2 rounded-lg"
           >
             تسویه حساب
           </button>

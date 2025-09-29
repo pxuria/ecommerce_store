@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CartItem, CartState } from "@/types";
+import { CartState } from "@/types";
+import { OrderItem } from "@prisma/client";
 
 const initialState: CartState = {
   items: [],
@@ -11,9 +12,9 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<CartItem>) => {
+    addToCart: (state, action: PayloadAction<OrderItem>) => {
       const itemId = action.payload.id;
-      const existingItem = state.items.find((item) => item.id === itemId);
+      const existingItem = state.items.find((item) => Number(item.id) === itemId);
 
       if (existingItem) existingItem.quantity += 1;
       else state.items.push({ ...action.payload, id: itemId, quantity: 1 });

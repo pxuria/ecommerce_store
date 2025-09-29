@@ -56,12 +56,12 @@ const Page = async ({ params }: { params: { id: string } }) => {
       <ProductDetails product={product} />
 
       <section className="w-full mt-8 container mx-auto px-10">
-        <div className="p-4 rounded-xl">
+        <div className="p-4">
           <h2 className="text-xl text-black font-medium mb-4 pb-1 w-fit border-b-2 border-secondary-700">مشخصات</h2>
 
           {product.attributes.map(attr => (
             <div key={attr.id} className="flex gap-10 mb-4 border-b border-[#f0f0f1] py-4">
-              <span className="w-1/3">{attr.key}</span>
+              <h4 className="w-1/3">{attr.key}</h4>
               <span className="w-2/3">{attr.value}</span>
             </div>
           ))}

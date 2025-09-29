@@ -260,7 +260,7 @@ const Carousel = ({
             <div className="embla" ref={emblaRef}>
               <div className="embla__container">
                 {cards.map((item, index) => (
-                  <div className="w-[calc(33%-16px)]" key={index}>
+                  <div className="w-[calc(33%-16px)] mx-2" key={index}>
                     <ProductCard product={item} />
                   </div>
                 ))}
