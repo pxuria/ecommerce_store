@@ -56,22 +56,21 @@ const Page = async ({ params }: { params: { id: string } }) => {
       <ProductDetails product={product} />
 
       <section className="w-full mt-8 container mx-auto px-10">
-        <div className="bg-yellow_300 p-4 rounded-xl">
-          <h2 className="text-xl text-black font-medium mb-4">مشخصات</h2>
+        <div className="p-4 rounded-xl">
+          <h2 className="text-xl text-black font-medium mb-4 pb-1 w-fit border-b-2 border-secondary-700">مشخصات</h2>
 
-          <div className="flex gap-10">
-            <span className="">جنس</span>
-            <div className="flex-column">
-              <span className="">الیاف نخی</span>
-              <span className="">پلی استر</span>
+          {product.attributes.map(attr => (
+            <div key={attr.id} className="flex gap-10 mb-4 border-b border-[#f0f0f1] py-4">
+              <span className="w-1/3">{attr.key}</span>
+              <span className="w-2/3">{attr.value}</span>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
       {product.category?.id && (
         <Carousel
-          title="محصولات جدید"
+          title="محصولات مرتبط"
           side="right"
           seeAllLink={`/products?limit=16&sortBy=createdAt&sortOrder=desc&categoryId=${product.category.id}`}
           carouselBg="secondary-500"

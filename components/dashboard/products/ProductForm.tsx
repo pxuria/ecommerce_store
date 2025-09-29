@@ -43,7 +43,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
             stockMeters: Number(cv.stockMeters ?? 0),
         })) ?? [],
         attributes: item?.attributes?.map(a => ({ key: a.key, value: a.value })) ?? [],
-        isActive: !!item?.isActive
+        isActive: item?.isActive ? !!item?.isActive : true
     }
 
     const form = useForm<productValues>({
