@@ -29,4 +29,4 @@ export const POST = async (req: Request) => asyncHandler(async () => {
 
     const category = await prisma.productCategory.create({ data: { name, slug: toSlug(slug) } });
     return { data: category }
-}, { auth: true });
+}, { auth: true, successStatus: 201 });

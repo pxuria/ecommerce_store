@@ -1,153 +1,96 @@
-import { NextResponse } from "next/server";
-import mongoose from "mongoose";
-// import Category from "@/models/Category.model";
-// import Product from "@/models/Products.model";
-// import Order from "@/models/Order.model";
-import { isAdmin } from "@/lib/auth";
-// import { IColor, ISize } from "@/types";
-import { connectDB } from "@/lib/db";
+export const runtime = 'nodejs';
 
-export async function POST(req: Request) {
-  await connectDB();
-  const session = await mongoose.startSession();
-  session.startTransaction();
+import { getServerSession } from 'next-auth';
+import prisma from '@/lib/db';
+import { OrderItem } from '@prisma/client';
+import { authOptions } from '@/utils/authOptions';
+import { asyncHandler, HttpError } from "@/utils/helpers";
 
-  try {
-    const { userId, items, totalPrice } = await req.json();
+export const GET = async (req: Request) => asyncHandler(async () => {
+  const { searchParams } = new URL(req.url);
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "20", 20);
 
-    if (
-      !userId ||
-      !items ||
-      !Array.isArray(items) ||
-      items.length === 0 ||
-      totalPrice <= 0
-    ) {
-      return NextResponse.json(
-        { message: "id کاربر، آرایه آیتم ها، و مبلغ کل الزامی است." },
-        { status: 400 }
-      );
+  const skip = (page - 1) * limit;
+
+  const orders = await prisma.order.findMany({
+    skip,
+    take: limit,
+    include: {
+      user: { select: { id: true, firstName: true, lastName: true, email: true } },
+      items: {
+        include: {
+          productColorVariant: {
+            include: {
+              product: true,
+              color: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const total = await prisma.order.count();
+
+
+  return {
+    data: orders,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     }
+  };
+}, { auth: true });
 
-    // const user = await User.findById(userId);
-    // if (!user) {
-    if (!true) {
-      await session.abortTransaction();
-      return NextResponse.json({ message: "کاربر یافت نشد." }, { status: 404 });
-    }
+export const POST = async (req: Request) => asyncHandler(async () => {
+  const session = await getServerSession(authOptions);
+  if (!session) throw new HttpError('Unauthorized', 401);
 
-    // const uniqueItems = Array.from(
-    //   new Set(items.map((item) => item.productId))
-    // ).map((productId) => items.find((item) => item.productId === productId));
+  const userId = session.user.id;
+  const { items, shippingAddress, city, postalCode, trackId } = await req.json();
 
-    // const productIds = uniqueItems.map((item) => item.productId);
-    // const products = await Product.find({ _id: { $in: productIds } });
+  if (!items || items.length === 0) throw new HttpError('Order must contain items', 400);
 
-    // Check if all products exist
-    // if (products.length !== productIds.length) {
-    //   await session.abortTransaction();
-    //   return NextResponse.json(
-    //     { message: "تعدادی از محصولات یافت نشد." },
-    //     { status: 400 }
-    //   );
-    // }
+  // Calculate totals
+  let totalAmount = 0;
+  const orderItemsData = items.map((item: OrderItem) => {
+    const total = (Number(item.unitPrice) - (Number(item.discount) || 0)) * Number(item.quantity);
+    totalAmount += total;
+    return {
+      productColorVariantId: item.productColorVariantId,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      discount: item.discount || null,
+      total,
+    };
+  });
 
-    // Check stock availability
-    // for (const item of items) {
-    // const product = products.find((p) => p._id.toString() === item.productId);
+  const order = await prisma.order.create({
+    data: {
+      userId,
+      trackId,
+      shippingAddress,
+      city,
+      postalCode,
+      totalAmount,
+      items: {
+        create: orderItemsData,
+      },
+    },
+    include: {
+      items: {
+        include: {
+          productColorVariant: {
+            include: { product: true, color: true },
+          },
+        },
+      },
+    },
+  });
 
-    // if (!product || !product.colors || product.colors.length === 0) {
-    //   await session.abortTransaction();
-    //   return NextResponse.json(
-    //     { message: `محصول ${item.name} یافت نشد.` },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // Find the matching color
-    // const colorVariant = product.colors.find(
-    //   (c: IColor) => c.name === item.color
-    // );
-    // if (!colorVariant || !colorVariant.sizes) {
-    //   await session.abortTransaction();
-    //   return NextResponse.json(
-    //     { message: `رنگ ${item.color} یافت نشد برای ${item.name}.` },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // Find the matching size
-    // const sizeVariant = colorVariant.sizes.find(
-    //   (s: ISize) => s.name === item.size
-    // );
-    // if (!sizeVariant) {
-    //   await session.abortTransaction();
-    //   return NextResponse.json(
-    //     { message: `سایز ${item.size} یافت نشد برای ${item.name}.` },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // Check stock availability
-    // if (sizeVariant.stockCount < item.quantity) {
-    //   await session.abortTransaction();
-    //   return NextResponse.json(
-    //     {
-    //       message: `موجودی کافی برای ${item.name} (رنگ: ${item.color}, سایز: ${item.size}) نیست. موجود: ${sizeVariant.stockCount}, درخواست شده: ${item.quantity}`,
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
-    // }
-
-    // const newOrder = new Order({
-    //   userId,
-    //   items,
-    //   totalPrice,
-    // });
-    // await newOrder.save({ session });
-    console.log("NEW ORDER:", 1);
-
-    await session.commitTransaction();
-    return NextResponse.json(1, { status: 201 });
-  } catch (error) {
-    console.log(error);
-    await session.abortTransaction();
-    return NextResponse.json(
-      { message: "شکست در ساخت سفارش جدید.", error },
-      { status: 500 }
-    );
-  } finally {
-    session.endSession();
-  }
-}
-
-// 🟡 Get All Orders(GET)
-export async function GET() {
-  try {
-    await connectDB();
-
-    if (!(await isAdmin())) {
-      return NextResponse.json("Access denied: Unauthorized", { status: 403 });
-    }
-
-    // const orders = await Order.find({})
-    //   .populate({
-    //     path: "items.product",
-    //     // model: Product,
-    //     select: "name category image",
-    //     populate: {
-    //       path: "category",
-    //       // model: Category,
-    //       select: "name",
-    //     },
-    //   })
-    //   .lean();
-
-    return NextResponse.json([], { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch orders", error },
-      { status: 500 }
-    );
-  }
-}
+  return { data: order };
+}, { successStatus: 201 });
