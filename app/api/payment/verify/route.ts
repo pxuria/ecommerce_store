@@ -1,119 +1,59 @@
-import { NextResponse } from "next/server";
-import ZarinPal from "zarinpal-node-sdk";
-import mongoose from "mongoose";
-// import Product from "@/models/Products.model";
-// import Order from "@/models/Order.model";
+export const runtime = 'nodejs';
 
-const zarinpal = new ZarinPal({
-  merchantId: process.env.ZARINPAL_MERCHANT_ID! as string,
-  sandbox: true,
-  //   accessToken: process.env.ZARINPAL_ACESS_TOKEN,
-});
+import prisma from '@/lib/db';
+import { zarinpal } from "@/utils/zarinpal";
+import { asyncHandler, HttpError } from "@/utils/helpers";
+import { OrderStatus } from '@prisma/client';
 
-// async function updateOrderStatus(order: IOrder, status: "paid" | "failed") {
-// order.status = status;
-// await order.save();
-// }
+export const POST = async (req: Request) => asyncHandler(async () => {
+  const { authority, status, orderId } = await req.json();
+  if (!authority || !status || !orderId) throw new HttpError("Missing required parameters", 400);
 
-export async function POST(req: Request) {
-  const session = await mongoose.startSession();
-  let transactionStarted = false;
+  const order = await prisma.order.findUnique({
+    where: { id: Number(orderId) },
+    include: { items: true }
+  });
 
-  try {
-    const { authority, status, orderId } = await req.json();
-    if (!authority || !status || !orderId) {
-      return NextResponse.json(
-        { error: "Missing required parameters" },
-        { status: 400 }
-      );
-    }
+  if (!order) throw new HttpError("Order not found", 404);
+  if (order.trackId !== authority) throw new HttpError("Invalid payment authority", 400);
 
-    // const order = await Order.findById(orderId);
-    // if (!order) {
-    //   return NextResponse.json(
-    //     { success: false, message: "Order not found." },
-    //     { status: 404 }
-    //   );
-    // }
+  if (status !== "OK") {
+    await prisma.order.update({
+      where: { id: Number(orderId) },
+      data: { status: OrderStatus.CANCELED }
+    });
+    return { success: false, message: "Transaction was cancelled or failed." };
+  }
 
-    if (status !== "OK") {
-      // await updateOrderStatus(order, "failed");
-      return NextResponse.json(
-        { success: false, message: "Transaction was cancelled or failed." },
-        { status: 400 }
-      );
-    }
+  const response = await zarinpal.verifications.verify({
+    amount: Number(order.totalAmount),
+    authority,
+  });
 
-    const response = await zarinpal.verifications.verify({
-      amount: 0,
-      authority,
+  if (response.data.code === 100) {
+    const paidOrder = await prisma.order.update({
+      where: { id: Number(orderId) },
+      data: { status: OrderStatus.PAID, paymentRefId: response.data.ref_id },
+      include: { items: true }
     });
 
-    if (response.data.code === 100) {
-      await session.startTransaction();
-      transactionStarted = true;
+    // ⚡️ Optional: reduce stock here for each order item
 
-      // ✅ Payment is successful, now reduce stock
-      // for (const item of order.items) {
-      // const product = await Product.findById(item.productId).session(session);
-      // if (!product) throw new Error(`Product ${item.productId} not found`);
+    return {
+      success: true,
+      ref_id: response.data.ref_id,
+      data: paidOrder,
+    };
+  } else {
+    // 6. Payment failed
+    await prisma.order.update({
+      where: { id: Number(orderId) },
+      data: { status: OrderStatus.CANCELED },
+    });
 
-      // Find color variant
-      // const colorVariant = product.colors.find(
-      // (c: IColor) => c.name === item.color
-      // );
-
-      // if (!colorVariant)
-      //   throw new Error(
-      //     `Color ${item.color} not found for ${item.productId}`
-      //   );
-
-      // Find size variant
-      // const sizeVariant = colorVariant.sizes.find(
-      //   (s: ISize) => s.name === item.size
-      // );
-
-      // if (!sizeVariant)
-      //   throw new Error(`Size ${item.size} not found for ${item.productId}`);
-
-      // Reduce stock count
-      // if (sizeVariant.stockCount < item.quantity) {
-      //   throw new Error(
-      //     `Not enough stock for ${item.productId} (Color: ${item.color}, Size: ${item.size})`
-      //   );
-      // }
-
-      // sizeVariant.stockCount -= item.quantity;
-      // product.markModified("colors");
-      // await product.save({ session });
-      // }
-
-      // await updateOrderStatus(order, "paid");
-      await session.commitTransaction();
-
-      return NextResponse.json(
-        { success: true, ref_id: response.data.ref_id },
-        { status: 200 }
-      );
-    } else {
-      // await updateOrderStatus(order, "failed");
-      return NextResponse.json(
-        {
-          success: false,
-          message: `Transaction failed with code: ${response.data.code}`,
-        },
-        { status: 400 }
-      );
-    }
-  } catch (error) {
-    if (transactionStarted) await session.abortTransaction();
-
-    console.error("Payment Verification Error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  } finally {
-    session.endSession();
+    return {
+      success: false,
+      message: `Transaction failed with code: ${response.data.code}`,
+    };
   }
-}
+});

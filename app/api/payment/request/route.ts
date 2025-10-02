@@ -1,64 +1,41 @@
-import { NextResponse } from "next/server";
-import ZarinPal from "zarinpal-node-sdk";
-// import Order from "@/models/Order.model";
+export const runtime = 'nodejs';
 
-const zarinpal = new ZarinPal({
-  merchantId: process.env.ZARINPAL_MERCHANT_ID! as string,
-  sandbox: true,
-  //   accessToken: process.env.ZARINPAL_ACESS_TOKEN,
-});
+import { asyncHandler, HttpError } from "@/utils/helpers";
+import prisma from '@/lib/db';
+import { zarinpal } from "@/utils/zarinpal";
+import { OrderStatus } from "@prisma/client";
 
-export async function POST(req: Request) {
-  try {
-    const { amount, mobile, email, orderId } = await req.json();
+export const POST = async (req: Request) => asyncHandler(async () => {
+  const { amount, mobile, email, orderId } = await req.json();
+  if (!amount || !orderId) throw new HttpError("Amount and Order ID are required", 400);
 
-    if (!amount || !orderId) {
-      return NextResponse.json(
-        { error: "Amount and Order ID are required" },
-        { status: 400 }
-      );
-    }
+  const order = await prisma.order.findUnique({ where: { id: Number(orderId) } });
+  if (!order) throw new HttpError("Order not found", 404);
+  if (order.status !== OrderStatus.PENDING) throw new HttpError("Invalid or already processed order", 400);
 
-    // const order = await Order.findById(orderId);
-    // if (!order || order.status !== "pending") {
-    //   return NextResponse.json(
-    //     { error: "Invalid or already processed order." },
-    //     { status: 400 }
-    //   );
-    // }
+  const callbackUrl =
+    process.env.ZARINPAL_CALLBACK_URL ??
+    `http://localhost:3000/payment`;
 
-    const response = await zarinpal.payments.create({
-      amount,
-      callback_url:
-        `${process.env.ZARINPAL_CALLBACK_URL}?orderId=${orderId}` ||
-        `http://localhost:3000/payment?orderId=${orderId}`,
-      description: `Payment for order #${orderId}`,
-      mobile,
-      email,
-    });
+  const response = await zarinpal.payments.create({
+    amount: Number(amount),
+    callback_url: `${callbackUrl}?orderId=${orderId}`,
+    description: `Payment for order #${orderId}`,
+    mobile,
+    email
+  });
 
-    if (!response.data?.authority) {
-      console.error("ZarinPal payment creation failed:", response);
-      return NextResponse.json(
-        { error: "Invalid response from ZarinPal" },
-        { status: 500 }
-      );
-    }
-
-    // const authority = response.data.authority;
-
-    // Store authority in DB to prevent URL tampering
-    // order.paymentAuthority = authority;
-    // await order.save();
-
-    const url = zarinpal.payments.getRedirectUrl(response.data?.authority);
-    return NextResponse.json({ url }, { status: 200 });
-  } catch (error) {
-    console.error("ZarinPal Error:", error);
-
-    return NextResponse.json(
-      { error: "Payment request failed" },
-      { status: 500 }
-    );
+  const authority = response.data?.authority;
+  if (!authority) {
+    console.error("ZarinPal payment creation failed:", response);
+    throw new HttpError("Invalid response from ZarinPal", 500);
   }
-}
+
+  await prisma.order.update({
+    where: { id: Number(orderId) },
+    data: { trackId: authority },
+  });
+
+  const url = zarinpal.payments.getRedirectUrl(authority);
+  return { data: url };
+});
