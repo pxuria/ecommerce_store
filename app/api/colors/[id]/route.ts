@@ -11,7 +11,6 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
     return { data: color };
 });
 
-
 export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
     const data = await req.json();
