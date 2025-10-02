@@ -90,7 +90,6 @@ export interface IUser {
     phone: string;
     password: string;
     role: UserRole;
-    // bookmarks: Schema.Types.ObjectId[];
     address?: string;
     city?: string;
     postalCode?: string;

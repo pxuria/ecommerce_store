@@ -21,8 +21,6 @@ enum UserRole {
 enum OrderStatus {
   PENDING
   PAID
-  SHIPPED
-  DELIVERED
   CANCELED
 }
 
@@ -33,6 +31,7 @@ model Order {
   items           OrderItem[]
   status          OrderStatus @default(PENDING)
   totalAmount     Decimal     @db.Decimal(12, 2)
+  trackId         String
   shippingAddress String?
   city            String?
   postalCode      String?
@@ -47,14 +46,14 @@ model Order {
 model OrderItem {
   id                    Int                 @id @default(autoincrement())
   orderId               Int
-  order                 Order               @relation(fields: [orderId], references: [id])
+  order                 Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productColorVariantId Int
   productColorVariant   ProductColorVariant @relation(fields: [productColorVariantId], references: [id])
 
   quantity  Decimal  @db.Decimal(12, 3)
   unitPrice Decimal  @db.Decimal(12, 2)
   discount  Decimal? @db.Decimal(5, 2)
-  subtotal  Decimal  @db.Decimal(12, 2)
+  total     Decimal  @db.Decimal(12, 2)
 
   @@index([orderId])
   @@index([productColorVariantId])
