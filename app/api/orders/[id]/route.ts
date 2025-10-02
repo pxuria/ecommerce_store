@@ -1,11 +1,11 @@
 export const runtime = 'nodejs';
 
-import prisma from '@/lib/db';
-import { asyncHandler, HttpError } from "@/utils/helpers";
-import { ParamsType } from "@/types";
 import { getServerSession } from "next-auth";
+import { ParamsType } from "@/types";
+import { asyncHandler, HttpError } from "@/utils/helpers";
 import { authOptions } from "@/utils/authOptions";
 import { UserRole } from "@prisma/client";
+import prisma from '@/lib/db';
 
 export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
   const session = await getServerSession(authOptions);

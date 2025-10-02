@@ -2,19 +2,33 @@ export const runtime = 'nodejs';
 
 import { getServerSession } from 'next-auth';
 import prisma from '@/lib/db';
-import { OrderItem } from '@prisma/client';
 import { authOptions } from '@/utils/authOptions';
 import { asyncHandler, HttpError } from "@/utils/helpers";
+import { UserRole } from '@prisma/client';
+
+type OrderItemInput = {
+  productColorVariantId: number;
+  quantity: number;
+  unitPrice: number;
+  discount?: number | null;
+};
 
 export const GET = async (req: Request) => asyncHandler(async () => {
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "20", 20);
 
+  const session = await getServerSession(authOptions);
+
+  if (!session) throw new HttpError('Unauthorized', 401);
+
+  const where = session?.user.role === UserRole.ADMIN ? {} : { userId: session.user.id };
+
   const skip = (page - 1) * limit;
 
   const orders = await prisma.order.findMany({
     skip,
+    where,
     take: limit,
     include: {
       user: { select: { id: true, firstName: true, lastName: true, email: true } },
@@ -57,7 +71,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
 
   // Calculate totals
   let totalAmount = 0;
-  const orderItemsData = items.map((item: OrderItem) => {
+  const orderItemsData = items.map((item: OrderItemInput) => {
     const total = (Number(item.unitPrice) - (Number(item.discount) || 0)) * Number(item.quantity);
     totalAmount += total;
     return {
