@@ -13,7 +13,7 @@ const OrderSubmitRow = ({ item }: Props) => {
       className="w-full lg:w-[calc(50%-8px)] bg-[#fff] shadow-md rounded-lg p-2 flex items-start justify-start gap-3"
     >
       <Image
-        src={item.image[0]}
+        src={item.coverImage}
         unoptimized
         alt={item.name}
         width={65}
@@ -38,15 +38,12 @@ const OrderSubmitRow = ({ item }: Props) => {
             <span className="px-3 pb-1 text-sm font-medium rounded bg-purple_700 text-white flex_center">
               {item.color}
             </span>
-            <span className="px-3 text-sm font-medium border border-pink_700 text-pink_700 rounded flex_center">
-              {item.size}
-            </span>
           </div>
 
           {/* price */}
           <div className="flex_center gap-1">
             <span className="text-base sm:text-lg font-bold">
-              {item.price.toLocaleString("en-US")}
+              {item.total.toLocaleString("en-US")}
             </span>
             <span className="text-sm sm:text-base font-bold text-black">
               تومان

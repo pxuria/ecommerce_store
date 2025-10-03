@@ -1,21 +1,21 @@
-// import { paymentHandler } from "@/utils/helpers";
+import { paymentHandler } from "@/utils/helpers";
 import { Order, OrderStatus } from "@prisma/client";
-// import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 interface Props {
   order: Order;
 }
 
 const OrderCard = ({ order }: Props) => {
-  // const { data: session } = useSession();
+  const { data: session } = useSession();
 
   const orderHandler = async () => {
     try {
-      // await paymentHandler(
-      // String(order.id),
-      // order.,
-      // session?.user.email || ""
-      // );
+      await paymentHandler(
+        String(order.id),
+        Number(order.totalAmount),
+        session?.user.email || ""
+      );
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +78,7 @@ const OrderCard = ({ order }: Props) => {
 
           <div className="flex_center font-medium flex-nowrap gap-1 bg-white px-4 py-1 rounded">
             <span className="text-lg">
-              {order.totalPrice.toLocaleString("en-US")}
+              {Number(order.totalAmount).toLocaleString("en-US")}
             </span>
             <span className="text-sm">تومان</span>
           </div>

@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-
+import { useState } from "react";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useAppSelector } from "@/lib/store";
 import { useDispatch } from "react-redux";
@@ -12,7 +11,7 @@ import {
 } from "@/lib/store/slices/cart-slice";
 import { getCartItem, getCartItemQuantity } from "@/utils/helpers";
 import { CartItem } from "@/types";
-import { IProductWithBasePrice } from "@/types/model";
+import { IProductColorVariant, IProductWithBasePrice } from "@/types/model";
 
 import CarouselProductDetails from "./CarouselProductDetails";
 import { Button } from "../ui/button";
@@ -21,27 +20,38 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
   const dispatch = useDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
 
-  const [selectedVariant, setSelectedVariant] = useState(product.colorVariants[0]);
-  const { pricePerMeter, stockMeters } = selectedVariant;
+  const [selectedVariant, setSelectedVariant] = useState<IProductColorVariant | undefined>(product?.colorVariants?.[0]);
+  const { pricePerMeter, stockMeters, discountPercent } = selectedVariant as IProductColorVariant;
 
-  const productItem = useMemo(() => ({
-    id: `${product.id}-${selectedVariant.color?.id}`,
-    productId: product.id,
-    name: product.name,
-    image: product.images[0]?.url,
-    price: Number(pricePerMeter),
-    quantity: Number(stockMeters),
-    color: selectedVariant.color?.name,
-  }),
-    [product, selectedVariant, pricePerMeter, stockMeters]
-  );
+  const productItemId = `${product.id}-${selectedVariant?.color?.id}`;
 
-  const cartItem = getCartItem(cartItems, productItem.id) as CartItem;
-  const quantity = cartItem ? getCartItemQuantity(cartItems, productItem.id) : 0;
+  const cartItem = getCartItem(cartItems, productItemId) as CartItem;
+  const quantity = cartItem ? getCartItemQuantity(cartItems, productItemId) : 0;
 
   const handleAddToCart = () => {
     if (stockMeters === 0 || quantity >= Number(stockMeters)) return;
-    dispatch(addToCart(productItem));
+
+    const unitPrice = Number(pricePerMeter);
+    const discount = discountPercent ?? 0;
+    const discountedPrice =
+      discount > 0 ? unitPrice * (1 - discount / 100) : unitPrice;
+
+    const itemQuantity = 1;
+
+    dispatch(
+      addToCart({
+        id: productItemId,
+        name: product.name,
+        productId: String(product.id),
+        coverImage: product.images[0]?.url,
+        unitPrice,
+        discountedPrice,
+        discount,
+        quantity: itemQuantity,
+        color: selectedVariant?.color?.name ?? "نامشخص",
+        total: discountedPrice * itemQuantity
+      })
+    );
   };
 
   const handleRemoveFromCart = () => {
@@ -94,7 +104,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
                 <button
                   key={variant.id}
                   type="button"
-                  className={`px-4 py-1 rounded-lg flex_center ${selectedVariant.id === variant.id
+                  className={`px-4 py-1 rounded-lg flex_center ${selectedVariant?.id === variant.id
                     ? "border-2 bg-yellow_300 text-black border-primary-900"
                     : "border border-muted"
                     }`}
@@ -109,7 +119,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
 
           {/* price */}
           <div className="flex items-center gap-4">
-            {selectedVariant.discountPercent && selectedVariant.discountPercent > 0 ? (
+            {selectedVariant?.discountPercent && selectedVariant?.discountPercent > 0 ? (
               <div className="flex-column gap-1">
                 {/* Original price */}
                 <span className="font-medium text-red-600 line-through text-sm">

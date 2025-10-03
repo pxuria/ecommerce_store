@@ -6,20 +6,20 @@ import { signOut, useSession } from "next-auth/react";
 import { FaSignOutAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-import Orders from "@/components/dashboard/Orders";
-import Profile from "@/components/dashboard/Profile";
-import Bookmarks from "@/components/dashboard/Bookmarks";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardAdminTabs, dashboardTabs } from "@/constants";
-import Colors from "@/components/dashboard/colors/Colors";
-import Brands from "@/components/dashboard/brand/Brands";
-import Countries from "@/components/dashboard/country/Countries";
-import Products from "@/components/dashboard/products/Products";
-import Categories from "@/components/dashboard/category/Categories";
-import Users from "@/components/dashboard/users/Users";
-import Blogs from "@/components/dashboard/blog/Blogs";
 import { UserRole } from "@prisma/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Logs from "@/components/dashboard/Logs";
+import Profile from "@/components/dashboard/Profile";
+import Blogs from "@/components/dashboard/blog/Blogs";
+import Users from "@/components/dashboard/users/Users";
+import Bookmarks from "@/components/dashboard/Bookmarks";
+import Brands from "@/components/dashboard/brand/Brands";
+import Colors from "@/components/dashboard/colors/Colors";
+import Orders from "@/components/dashboard/orders/Orders";
+import Products from "@/components/dashboard/products/Products";
+import Countries from "@/components/dashboard/country/Countries";
+import Categories from "@/components/dashboard/category/Categories";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-secondary-700 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
 
