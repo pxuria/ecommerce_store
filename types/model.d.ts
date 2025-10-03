@@ -108,3 +108,29 @@ export interface IBlog {
     isPublished: boolean;
     createdAt: Date;
 }
+
+export interface IOrder {
+    id?: number;
+    userId?: number;
+    user: IUser;
+    items: IOrderItem[];
+    status: 'PENDING' | 'PAID' | 'CANCELED';
+    totalAmount: number;
+    totalQuantity?: number;
+    trackId?: string;
+    paymentRefId?: number;
+    shippingAddress?: string;
+    city?: string;
+    postalCode?: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IOrderItem {
+    id?: number;
+    orderId?: number;
+    order: IOrder;
+    quantity?: number;
+    productColorVariantId?: number;
+    productColorVariant: IProductColorVariant;
+}

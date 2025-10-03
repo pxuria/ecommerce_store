@@ -1,9 +1,10 @@
+import { OrderWithItems } from "@/types";
 import { paymentHandler } from "@/utils/helpers";
-import { Order, OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 interface Props {
-  order: Order;
+  order: OrderWithItems;
 }
 
 const OrderCard = ({ order }: Props) => {
@@ -53,16 +54,16 @@ const OrderCard = ({ order }: Props) => {
             key={index}
             className="rounded-md border px-4 py-2 bg-[#f9f9f9] border-muted flex items-center justify-between gap-2 flex-wrap w-full"
           >
-            <h4 className="font-medium text-lg text-black">{item.name}</h4>
+            <h4 className="font-medium text-lg text-black">{item.productColorVariantId}</h4>
 
             <div className="flex items-center justify-start gap-3 flex-wrap">
               <span className="font-medium bg-purple_800 px-4 py-1 text-white rounded-md flex_center w-fit select-none">
-                {item.quantity} عدد
+                {item.quantity.toString()} عدد
               </span>
 
               <div className="flex_center font-medium flex-nowrap gap-1">
                 <span className="text-lg">
-                  {item.price.toLocaleString("en-US")}
+                  {Number(item.unitPrice).toLocaleString("en-US")}
                 </span>
                 <span className="text-sm">تومان</span>
               </div>

@@ -1,9 +1,15 @@
+import { Prisma } from "@prisma/client";
+
 export type ParamsType = { params: { id: string } };
 export type FileWithPreview = File & { preview: string };
 
 export interface childrenProp {
   children: React.ReactNode;
 }
+
+export type OrderWithItems = Prisma.OrderGetPayload<{
+  include: { items: true };
+}>;
 
 export interface CartItem {
   id: string;
