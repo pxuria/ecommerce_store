@@ -1,33 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Types } from "mongoose";
-// import Order from "@/models/Order.model";
-import { connectDB } from "@/lib/db";
+import { asyncHandler, HttpError } from "@/utils/helpers";
+import { authOptions } from "@/utils/authOptions";
+import { getServerSession } from "next-auth";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { userId: string } }
-) {
-  try {
-    await connectDB();
-    const { userId } = params;
+export const GET = async () => asyncHandler(async () => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
 
-    if (!userId || !Types.ObjectId.isValid(userId))
-      return NextResponse.json({ message: "Invalid User ID" }, { status: 400 });
+  if (!userId) throw new HttpError('Invalid User ID', 400);
 
-    // const orders = await Order.find({ userId });
+  // const orders = await Order.find({ userId });
 
-    // if (!orders.length) {
-    //   return NextResponse.json(
-    //     { message: "No orders found for this user" },
-    //     { status: 404 }
-    //   );
-    // }
+  // if (!orders.length) {
+  //   return NextResponse.json(
+  //     { message: "No orders found for this user" },
+  //     { status: 404 }
+  //   );
+  // }
 
-    return NextResponse.json([], { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to fetch orders", error },
-      { status: 500 }
-    );
-  }
-}
+  return { data: '' };
+});
