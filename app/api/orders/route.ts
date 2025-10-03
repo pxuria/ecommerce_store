@@ -19,7 +19,6 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const limit = parseInt(searchParams.get("limit") || "20", 20);
 
   const session = await getServerSession(authOptions);
-
   if (!session) throw new HttpError('Unauthorized', 401);
 
   const where = session?.user.role === UserRole.ADMIN ? {} : { userId: session.user.id };

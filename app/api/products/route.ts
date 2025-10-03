@@ -48,7 +48,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let orderBy: any = { createdAt: "desc" };
+  let orderBy: any = { createdAt: sortOrder };
 
   if (sortBy === "price" && sortOrder === "asc") {
     orderBy = { colorVariants: { _min: { pricePerMeter: "asc" } } };

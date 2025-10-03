@@ -30,9 +30,16 @@ const page = () => {
 
       <Carousel
         title="محصولات پرفروش"
-        seeAllLink="products  "
+        seeAllLink="products"
         carouselClass="z-10"
         api="products?limit=16&sortBy=price&sortOrder=desc"
+      />
+
+      <Carousel
+        title="آخرین بلاگ‌ها"
+        seeAllLink="blogs"
+        carouselClass="z-10"
+        api="blogs?limit=16"
       />
 
       <HomeFeatures />
