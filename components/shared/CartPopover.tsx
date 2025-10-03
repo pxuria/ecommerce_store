@@ -15,28 +15,28 @@ const CartPopover = () => {
         <ul className="flex-column gap-1">
           {cartItems.length ? (
             cartItems.map((item) => {
-              const quantity = getCartItemQuantity(cartItems, item._id);
+              const quantity = getCartItemQuantity(cartItems, item.id);
               console.log(item);
               return (
                 <li
                   className="hover:bg-white rounded-lg transition-all ease-in p-2"
-                  key={item._id}
+                  key={item.id}
                 >
-                  <Link href={`/products/${item._id}`}>
+                  <Link href={`/products/${item.id}`}>
                     <div className="flex flex-nowrap items-start gap-2">
                       <Image
                         width={60}
                         height={60}
                         unoptimized
                         alt={item.name}
-                        src={item.image[0]}
+                        src={item.coverImage}
                         className="rounded-md object-cover w-16 h-full"
                       />
                       <div className="flex-column gap-2 w-full">
                         <span className="">{item.name}</span>
 
                         <span className="text-lg font-medium">
-                          {(+item.price * +item.quantity).toFixed(2)}
+                          {item.total.toFixed(2)}
                         </span>
 
                         <div className="flex items-center gap-2 flex-nowrap">

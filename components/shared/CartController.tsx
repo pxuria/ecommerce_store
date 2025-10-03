@@ -17,7 +17,7 @@ const CartController = ({ item }: Props) => {
 
   const handleAddToCart = () => dispatch(addToCart(item));
   const handleRemoveFromCart = () =>
-    dispatch(removeFromCart({ _id: item._id }));
+    dispatch(removeFromCart({ id: item.id }));
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ const CartController = ({ item }: Props) => {
     }
   };
 
-  const quantity = getCartItemQuantity(cartItems, item._id);
+  const quantity = getCartItemQuantity(cartItems, item.id);
 
   return (
     <div

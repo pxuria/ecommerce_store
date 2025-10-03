@@ -18,11 +18,11 @@ export const getCartItemQuantity = (
   cartItems: CartItem[],
   itemId: string
 ): number => {
-  return cartItems.find((cartItem) => cartItem._id === itemId)?.quantity ?? 0;
+  return cartItems.find((cartItem) => cartItem.id === itemId)?.quantity ?? 0;
 };
 
 export const getCartItem = (cartItems: CartItem[], itemId: string) => {
-  return cartItems.find((cartItem) => cartItem._id === itemId);
+  return cartItems.find((cartItem) => cartItem.id === itemId);
 };
 
 export const paymentHandler = async (

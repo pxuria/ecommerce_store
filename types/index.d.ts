@@ -1,4 +1,5 @@
-import { productSchema } from "@/utils/validations";
+export type ParamsType = { params: { id: string } };
+export type FileWithPreview = File & { preview: string };
 
 export interface childrenProp {
   children: React.ReactNode;
@@ -6,30 +7,21 @@ export interface childrenProp {
 
 export interface CartItem {
   id: string;
-  productId: string;
   name: string;
-  image: string[];
+  productId: string;
   quantity: number;
-  price: number;
-  color: string;
-  size: string;
+  discount: number;
+  discountedPrice: number;
+  unitPrice: number;
+  coverImage: string;
+  total: number;
 }
 
 export interface CartState {
   items: CartItem[];
+  totalAmount: number;
   totalQuantity: number;
-  totalPrice: number;
 }
-
-export interface ISize {
-  name: string;
-  stockCount: number;
-  price: number;
-}
-
-export type ProductFormValues = z.infer<typeof productSchema>;
-
-export type FileWithPreview = File & { preview: string };
 
 export interface ISideBlogs {
   id: string;
@@ -38,5 +30,3 @@ export interface ISideBlogs {
   author: { _id: string; first_name: string; last_name: string };
   createdAt: string;
 }
-
-export type ParamsType = { params: { id: string } };

@@ -28,13 +28,13 @@ const OrderSubmit = ({ cart, session }: Props) => {
       const { data } = await axiosInstance.post("orders", {
         userId: session.user.id,
         items: formattedItems,
-        totalPrice: cart.totalPrice,
+        totalPrice: cart.totalAmount,
       });
       console.log(data);
       dispatch(clearCart());
       await paymentHandler(
         data._id,
-        cart.totalPrice,
+        cart.totalAmount,
         session.user.email as string
       );
     } catch (error) {
@@ -56,7 +56,7 @@ const OrderSubmit = ({ cart, session }: Props) => {
         <span className="text-base sm:text-lg font-bold">مبلغ کل:</span>
         <div className="flex_center gap-1">
           <span className="text-base sm:text-lg font-bold">
-            {cart.totalPrice.toLocaleString("en-US")}
+            {cart.totalAmount.toLocaleString("en-US")}
           </span>
           <span className="text-sm sm:text-base font-bold text-black">
             تومان
