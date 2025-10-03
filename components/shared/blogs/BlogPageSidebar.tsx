@@ -33,9 +33,7 @@ const BlogPageSidebar = () => {
     return (
         <div className="w-1/3 bg-lightBlack rounded-3xl p-4 hidden xl:block">
             <div className="flex flex-col gap-4 w-full">
-                {sideBlogs?.map((item, index) => (
-                    <LatestBlogCard key={index} {...item} />
-                ))}
+                {sideBlogs?.map((item, index) => <LatestBlogCard key={index} {...item} />)}
             </div>
         </div>
     );

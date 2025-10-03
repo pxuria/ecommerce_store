@@ -1,21 +1,21 @@
-import { IOrder } from "@/types";
-import { paymentHandler } from "@/utils/helpers";
-import { useSession } from "next-auth/react";
+// import { paymentHandler } from "@/utils/helpers";
+import { Order, OrderStatus } from "@prisma/client";
+// import { useSession } from "next-auth/react";
 
 interface Props {
-  order: IOrder;
+  order: Order;
 }
 
 const OrderCard = ({ order }: Props) => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   const orderHandler = async () => {
     try {
-      await paymentHandler(
-        order._id!,
-        order.totalPrice,
-        session?.user.email || ""
-      );
+      // await paymentHandler(
+      // String(order.id),
+      // order.,
+      // session?.user.email || ""
+      // );
     } catch (error) {
       console.log(error);
     }
@@ -27,21 +27,21 @@ const OrderCard = ({ order }: Props) => {
         <h3 className="text-sm text-nowrap flex items-center gap-2 flex-wrap lg:flex-nowrap text-black font-medium">
           <span>شماره سفارش</span>
           <span className="text-xs md:text-sm text-white bg-pink_700 px-2 py-1 rounded">
-            {order._id}
+            {order.id}
           </span>
         </h3>
 
         <span
-          className={`rounded border-2 ${order.status === "pending"
-              ? "border-primary-900 bg-yellow_300 text-secondary-border-primary-900"
-              : order.status === "paid"
-                ? "border-green-800 bg-green-200 text-green-800"
-                : "border-red-700 bg-red-100 text-red-700"
+          className={`rounded border-2 ${order.status === OrderStatus.PENDING
+            ? "border-primary-900 bg-yellow_300 text-secondary-border-primary-900"
+            : order.status === OrderStatus.PAID
+              ? "border-green-800 bg-green-200 text-green-800"
+              : "border-red-700 bg-red-100 text-red-700"
             } text-xs font-medium text-nowrap px-2 py-1 select-none`}
         >
-          {order.status === "pending"
+          {order.status === OrderStatus.PENDING
             ? "در انتظار پرداخت"
-            : order.status === "paid"
+            : order.status === OrderStatus.PAID
               ? "پرداخت شده"
               : "ناموفق"}
         </span>
@@ -85,7 +85,7 @@ const OrderCard = ({ order }: Props) => {
         </div>
 
         {/* submit Button */}
-        {order.status === "pending" && (
+        {order.status === OrderStatus.PENDING && (
           <button
             className="flex_center w-full rounded-md text-white bg-purple_900 hover:bg-purple_800 primary_transition text-nowrap py-2"
             type="button"

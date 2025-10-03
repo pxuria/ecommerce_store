@@ -6,7 +6,7 @@ import { ISideBlogs } from "@/types";
 import { formatDate } from "@/utils/helpers";
 
 const LatestBlogCard = ({
-    _id,
+    id,
     title,
     wallpaper,
     author,
@@ -14,7 +14,7 @@ const LatestBlogCard = ({
 }: ISideBlogs) => {
     return (
         <Link
-            href={`/blog/${_id}`}
+            href={`/blog/${id}`}
             className="cursor-pointer rounded-2xl hover:bg-hoverBlack transition-all ease-in p-2"
         >
             <div className="flex flex-nowrap items-start justify-start gap-4">

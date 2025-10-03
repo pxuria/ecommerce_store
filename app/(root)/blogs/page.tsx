@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import BlogCard from "@/components/shared/blogs/BlogCard";
-import { IBlog } from "@/types";
 import CustomPagination from "@/components/shared/CustomPagination";
+import { Blog } from "@prisma/client";
 
 export const metadata: Metadata = {
     title: "مقالات آموزشی ترید | تحلیل و آموزش مبانی بازار | وبلاگ Daylight",
@@ -49,19 +49,8 @@ const page = async () => {
     return (
         <section className="container mx-auto px-10 mt-12">
             <div className="flex flex-wrap gap-4">
-                {Array.isArray(blogs.data as IBlog) &&
-                    blogs.data.map((item: IBlog) => (
-                        <BlogCard
-                            key={item._id as string}
-                            image={item.wallpaper}
-                            title={item.title}
-                            summary={item.content}
-                            link={item._id as string}
-                            author={`${item.author.first_name} ${item.author.last_name}`}
-                            createdAt={String(item.createdAt)}
-                            estimatedTimeToRead={item.estimatedTimeToRead}
-                        />
-                    ))}
+                {Array.isArray(blogs.data as Blog) &&
+                    blogs.data.map((item: Blog) => <BlogCard key={item.id} blog={item} />)}
             </div>
 
             <CustomPagination pagination={blogs.pagination} />

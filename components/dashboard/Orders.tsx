@@ -3,15 +3,16 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { CartState, IOrder } from "@/types";
+import { CartState } from "@/types";
 import axiosInstance from "@/lib/axiosInstance";
 import OrderCard from "../cards/OrderCard";
 import OrderSubmit from "./../shared/OrderSubmit";
 import { useAppSelector } from "@/lib/store";
 import { Session } from "next-auth";
+import { Order } from "@prisma/client";
 
 const Orders = () => {
-  const [orders, setOrders] = useState<IOrder[] | []>([]);
+  const [orders, setOrders] = useState<Order[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { data: session } = useSession();
   const cart = useAppSelector((state) => state.cart) as CartState;
