@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Carousel from "@/components/shared/Carousel";
 import HomeFeatures from "@/components/home/HomeFeatures";
 import HeroSlider from "@/components/home/HeroSlider";
+import ProductsList from "@/components/home/ProductsList";
 
 export const metadata: Metadata = {
   title: "فروشگاه آنلاین | صفحه اصلی",
@@ -41,6 +42,8 @@ const page = () => {
         carouselClass="z-10"
         api="blogs?limit=16"
       />
+
+      <ProductsList />
 
       <HomeFeatures />
     </>

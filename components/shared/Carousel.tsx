@@ -215,7 +215,7 @@ const Carousel = ({
     <section
       className={`my-10 w-full ${carouselBg ? `bg-${carouselBg}` : ""} ${side === "left" ? "pr-4 sm:pr-10 pl-0" : "pl-4 sm:pl-10 pr-0"
         } ${carouselClass} py-6`}
-      aria-label={`محصولات ${title}`}
+      aria-label={title}
     >
       {/* Header */}
       <div
