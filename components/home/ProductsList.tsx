@@ -37,10 +37,8 @@ const ProductsList = () => {
                 <h3 className='font-bold text-2xl text-black title relative select-none'>
                     محصولات
                 </h3>
-                <Link
-                    className='flex items-end gap-1 text-black font-normal text-base'
-                    href={'/products'}
-                >
+                <Link className='flex items-end gap-1 text-black font-normal text-base'
+                    href={'/products'}>
                     مشاهده همه
                     <ChevronLeft size={16} />
                 </Link>

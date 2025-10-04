@@ -76,18 +76,18 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
         </div>
 
         <div className="flex-column gap-5 mt-4">
-          <div className="flex gap-4 items-center">
-            <span className="text-white bg-secondary-700 px-4 py-2 rounded-lg font-medium w-fit">
+          <div className="flex gap-4 items-center flex-wrap">
+            <span className="text-white bg-secondary-700 px-4 py-2 rounded-lg font-medium w-fit text-nowrap">
               {product?.category?.name}
             </span>
 
-            <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg">
+            <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg text-nowrap">
               <span className="text-white font-medium">برند</span>
               <span className="text-secondary-700 bg-white px-2 py-1 rounded-md font-medium">
                 {product?.brand?.name}
               </span>
             </div>
-            <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg">
+            <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg text-nowrap">
               <span className="text-white font-medium">کشور</span>
               <span className="text-secondary-700 bg-white px-2 py-1 rounded-md font-medium">
                 {product?.country?.name}
@@ -148,21 +148,19 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
           <div className="flex gap-2 mt-2">
             <h2 className="font-medium text-base">موجودی :</h2>
             <span
-              className={`font-bold text-lg ${Number(stockMeters) > 0 ? "text-green-600" : "text-red-600"
-                }`}
-            >
+              className={`font-bold text-lg ${Number(stockMeters) > 0 ? "text-green-600" : "text-red-600"}`}>
               {Number(stockMeters) > 0
                 ? `${Number(stockMeters)} متر موجود است`
                 : "ناموجود"}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {quantity > 0 && (
-              <div className="w-1/5 flex items-center justify-between flex-nowrap rounded-lg bg-white">
+              <div className="flex items-center justify-between flex-nowrap rounded-lg bg-white gap-2">
                 <Button
                   type="button"
-                  className="py-3 px-4"
+                  className="py-3 px-4 bg-secondary-700 text-white"
                   onClick={handleAddToCart}
                   disabled={quantity >= Number(stockMeters)}
                 >
@@ -173,7 +171,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
 
                 <Button
                   type="button"
-                  className="py-3 px-4"
+                  className="py-3 px-4 bg-secondary-700 text-white"
                   onClick={handleRemoveFromCart}
                 >
                   <Minus size={16} />
@@ -183,11 +181,11 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
 
             <Button
               type="button"
-              className={`btn rounded-lg text-white flex_center gap-2 ${quantity === 0
+              className={`btn rounded-lg text-white flex_center flex-1 gap-2 ${quantity === 0
                 ? Number(stockMeters) === 0
                   ? "w-full bg-[#636363] hover:bg-black cursor-not-allowed"
                   : "w-full bg-secondary-600 hover:bg-secondary-700"
-                : "w-4/5 bg-red-500 hover:bg-red-600"
+                : "bg-red-500 hover:bg-red-600"
                 }`}
               onClick={quantity === 0 ? handleAddToCart : handleRemoveAllFromCart}
               disabled={Number(stockMeters) === 0}

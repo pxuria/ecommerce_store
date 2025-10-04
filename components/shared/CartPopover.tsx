@@ -30,13 +30,14 @@ const CartPopover = () => {
                         unoptimized
                         alt={item.name}
                         src={item.coverImage}
-                        className="rounded-md object-cover w-16 h-full"
+                        className="rounded-md object-cover w-16 h-full aspect-square"
                       />
+
                       <div className="flex-column gap-2 w-full">
                         <span className="">{item.name}</span>
 
-                        <span className="text-lg font-medium">
-                          {item.total.toFixed(2)}
+                        <span className="text-lg font-bold text-secondary-700">
+                          {item?.discountedPrice?.toFixed(2)}
                         </span>
 
                         <div className="flex items-center gap-2 flex-nowrap">
