@@ -3,9 +3,9 @@
 import { useState, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { toast } from "react-toastify";
 import { Bookmark, ShoppingBag } from "lucide-react";
 import { IProductWithBasePrice } from "@/types/model";
+import { handleShowToast } from "@/lib/toast";
 // import { enBrandName } from "@/constants";
 
 interface Props {
@@ -35,7 +35,7 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
       });
 
       if (res.status === 401) {
-        toast.success("خروج از حساب با موفقیت انجام شد.")
+        handleShowToast('خروج از حساب با موفقیت انجام شد');
         alert("ابتدا وارد حساب کاربری شوید");
         return;
       }

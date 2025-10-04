@@ -1,5 +1,3 @@
-import { Bounce, ToastOptions, ToastPosition } from "react-toastify";
-
 import supportLottie from "../public/assets/lotties/support.json";
 import originalLottie from "../public/assets/lotties/original.json";
 import returnLottie from "../public/assets/lotties/gift-on-the-way.json";
@@ -52,18 +50,6 @@ export const mobileNavbarLinks = [
     link: "/dashboard?tab=orders",
   },
 ];
-
-export const toasterOptions: ToastOptions = {
-  position: "top-right" as ToastPosition,
-  autoClose: 5000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: "light",
-  transition: Bounce,
-};
 
 export const socials = [
   {

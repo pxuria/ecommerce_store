@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { FaSignOutAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
 
 import { dashboardAdminTabs, dashboardTabs } from "@/constants";
+import { handleShowToast } from "@/lib/toast";
 import { UserRole } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Logs from "@/components/dashboard/Logs";
@@ -89,7 +89,7 @@ const Page = () => {
             className="text-sm font-medium flex_center gap-2 bg-[#EF4156] primary_transition w-full py-3 px-4 md:px-0 text-white rounded-lg text-nowrap"
             type="button"
             onClick={() => signOut({ callbackUrl: "/" }).then(() => {
-              toast.success("خروج از حساب با موفقیت انجام شد.")
+              handleShowToast('خروج از حساب با موفقیت انجام شد');
             })}
           >
             خروج از حساب کاربری

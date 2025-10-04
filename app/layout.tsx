@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ToastContainer } from "react-toastify";
 import ProgressBarProvider from "@/components/shared/ProgressBarProvider";
 import "./globals.css";
 import AuthProvider from "@/components/shared/AuthProvider";
@@ -26,7 +25,6 @@ export default function RootLayout({
           <AuthProvider>
             <ProgressBarProvider>
               {children}
-              <ToastContainer />
             </ProgressBarProvider>
           </AuthProvider>
         </ReduxProvider>

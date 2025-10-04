@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/select";
 import axiosInstance from "@/lib/axiosInstance";
 import { Control, FieldValues, Path } from "react-hook-form";
-import { toast } from "react-toastify";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form";
 import { Skeleton } from "./skeleton";
+import { handleShowToast } from "@/lib/toast";
 
 type SelectFieldProps<T extends FieldValues> = {
   name: Path<T>;
@@ -39,7 +39,7 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, itemCla
         const { data } = await axiosInstance.get(`/${url}`);
         setItems(data.data);
       } catch (error) {
-        toast.error(toastErrorText)
+        handleShowToast(toastErrorText, 'error');
         console.error("Failed to fetch categories:", error);
       } finally {
         setLoading(false);

@@ -4,10 +4,24 @@ import { useDispatch } from "react-redux";
 import { clearCart } from "@/lib/store/slices/cart-slice";
 import { useAppSelector } from "@/lib/store";
 import { getCartItemQuantity } from "@/utils/helpers";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { handleShowToast } from "@/lib/toast";
 
 const CartPopover = () => {
   const dispatch = useDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleCheckout = () => {
+    console.log(session)
+    if (!session) {
+      handleShowToast('برای ادامه، لطفاً ابتدا وارد حساب کاربری خود شوید', 'error');
+      return;
+    }
+    router.push("/dashboard?tab=orders");
+  };
 
   return (
     <>
@@ -58,14 +72,14 @@ const CartPopover = () => {
         </ul>
       </div>
       <div className="flex_center gap-2 flex-nowrap mt-4">
-        <Link className="w-1/2" href="/dashboard?tab=orders">
-          <button
-            type="button"
-            className="btn w-full flex_center text-sm font-medium bg-secondary-700 hover:bg-secondary-600 text-white py-2 rounded-lg"
-          >
-            تسویه حساب
-          </button>
-        </Link>
+        <button
+          type="button"
+          onClick={handleCheckout}
+          className="btn w-1/2 flex_center text-sm font-medium bg-secondary-700 hover:bg-secondary-600 text-white py-2 rounded-lg"
+        >
+          تسویه حساب
+        </button>
+
         <button
           type="button"
           className="btn w-1/2 flex_center border-2 border-[#ec2e5e] text-[#ec2e5e] hover:bg-[#ec2e5e] hover:text-white text-sm font-medium py-2 rounded-lg"

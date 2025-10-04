@@ -6,10 +6,9 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, signupValues } from "@/utils/validations/user.schema";
-import { toasterOptions } from "@/constants";
-import { toast } from "react-toastify";
 import PasswordField from "@/components/ui/PasswordField";
 import InputField from "@/components/dashboard/InputField";
+import { handleShowToast } from "@/lib/toast";
 
 interface Props {
   setOpen: (val: boolean) => void;
@@ -49,14 +48,14 @@ const Signup = ({ setOpen, setForm }: Props) => {
       });
 
       if (loginRes?.error) throw new Error(loginRes.error);
-      toast.success("ثبت نام با موفقیت انجام شد.", toasterOptions);
+      handleShowToast('ثبت نام با موفقیت انجام شد');
       setOpen(false);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
-        toast.error(error.message || "خطایی رخ داد.", toasterOptions);
+        handleShowToast(error.message || 'خطایی رخ داد', 'error');
       } else {
-        toast.error("خطایی رخ داد.", toasterOptions);
+        handleShowToast('خطایی رخ داد', 'error');
       }
     } finally {
       setLoading(false);
