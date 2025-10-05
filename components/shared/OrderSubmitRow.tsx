@@ -18,7 +18,7 @@ const OrderSubmitRow = ({ item }: Props) => {
         alt={item.name}
         width={65}
         height={65}
-        className="object-cover w-14 h-full rounded-md aspect-square"
+        className="object-cover h-full rounded-md aspect-square"
       />
 
       <div className="w-full">
@@ -27,7 +27,7 @@ const OrderSubmitRow = ({ item }: Props) => {
           <h3 className="text-base font-medium">{item.name}</h3>
 
           {/* quantity */}
-          <span className="px-3 text-sm font-medium bg-pink_600 text-white rounded w-fit">
+          <span className="px-3 text-sm bg-primary-300 flex_center text-black font-semibold rounded w-fit">
             {item.quantity} عدد
           </span>
         </div>
@@ -35,7 +35,7 @@ const OrderSubmitRow = ({ item }: Props) => {
         <div className="flex items-center justify-between gap-2 mt-4 flex-wrap">
           {/* size & color */}
           <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-center gap-1 flex-wrap">
-            <span className="px-3 pb-1 text-sm font-medium rounded bg-purple_700 text-white flex_center">
+            <span className="px-3 pb-1 text-sm font-medium rounded bg-secondary-700 text-white flex_center">
               {item.color}
             </span>
           </div>

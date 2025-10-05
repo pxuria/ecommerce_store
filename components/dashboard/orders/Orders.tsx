@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { CartState, OrderWithItems } from "@/types";
+import { OrderWithItems } from "@/types";
 import { useAppSelector } from "@/lib/store";
-// import axiosInstance from "@/lib/axiosInstance";
 import OrderCard from "@/components/cards/OrderCard";
 import OrderSubmit from "@/components/shared/OrderSubmit";
 import { redirect } from "next/navigation";
@@ -16,8 +15,7 @@ const Orders = () => {
     const [orders, setOrders] = useState<OrderWithItems[] | []>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const { data: session } = useSession();
-    const cart = useAppSelector((state) => state.cart) as CartState;
-    console.log(orders);
+    const cart = useAppSelector((state) => state.cart);
 
     useEffect(() => {
         const fetchOrders = async () => {

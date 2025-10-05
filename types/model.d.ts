@@ -117,7 +117,6 @@ export interface IOrder {
     status: 'PENDING' | 'PAID' | 'CANCELED';
     totalAmount: number;
     totalQuantity?: number;
-    trackId?: string;
     paymentRefId?: number;
     shippingAddress?: string;
     city?: string;

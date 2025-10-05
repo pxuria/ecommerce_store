@@ -64,7 +64,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
   if (!session) throw new HttpError('Unauthorized', 401);
 
   const userId = session.user.id;
-  const { items, shippingAddress, city, postalCode, trackId } = await req.json();
+  const { items, shippingAddress, city, postalCode } = await req.json();
 
   if (!items || items.length === 0) throw new HttpError('Order must contain items', 400);
 
@@ -78,14 +78,13 @@ export const POST = async (req: Request) => asyncHandler(async () => {
       quantity: item.quantity,
       unitPrice: item.unitPrice,
       discount: item.discount || null,
-      total,
+      total
     };
   });
 
   const order = await prisma.order.create({
     data: {
       userId,
-      trackId,
       shippingAddress,
       city,
       postalCode,

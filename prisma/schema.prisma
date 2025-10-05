@@ -31,7 +31,7 @@ model Order {
   items           OrderItem[]
   status          OrderStatus @default(PENDING)
   totalAmount     Decimal     @db.Decimal(12, 2)
-  trackId         String
+  trackId         String?
   paymentRefId    String?
   shippingAddress String?
   city            String?

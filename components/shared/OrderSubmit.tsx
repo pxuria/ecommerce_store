@@ -1,6 +1,7 @@
 import OrderSubmitRow from "./OrderSubmitRow";
 import axiosInstance from "@/lib/axiosInstance";
 import { clearCart } from "@/lib/store/slices/cart-slice";
+import { handleShowToast } from "@/lib/toast";
 import { CartState } from "@/types";
 import { paymentHandler } from "@/utils/helpers";
 import { Session } from "next-auth";
@@ -15,23 +16,33 @@ const OrderSubmit = ({ cart, session }: Props) => {
   const dispatch = useDispatch();
 
   const submitHandler = async () => {
+    if (session.user.address === '' || session.user.address === null)
+      handleShowToast('لطفا آدرس را از حساب کاربری تکمیل نمایید', 'error');
+
+    if (session.user.city === '' || session.user.city === null)
+      handleShowToast('لطفا شهر خود را از حساب کاربری تکمیل نمایید', 'error');
+
+    if (session.user.postalCode === '' || session.user.postalCode === null)
+      handleShowToast('لطفا کد پستی خود را از حساب کاربری تکمیل نمایید', 'error');
+
     try {
       const formattedItems = cart.items.map((item) => ({
-        productId: item.productId,
-        name: item.name,
+        productColorVariantId: item.color,
         quantity: item.quantity,
-        totalAmount: item.discountedPrice
+        unitPrice: item.unitPrice,
+        discount: item.discount || 0
       }));
 
       const { data } = await axiosInstance.post("orders", {
-        userId: session.user.id,
         items: formattedItems,
-        totalPrice: cart.totalAmount,
+        shippingAddress: session.user.address,
+        city: session.user.city,
+        postalCode: session.user.postalCode
       });
       console.log(data);
       dispatch(clearCart());
       await paymentHandler(
-        data._id,
+        data.id,
         cart.totalAmount,
         session.user.email as string
       );
@@ -63,9 +74,9 @@ const OrderSubmit = ({ cart, session }: Props) => {
       </div>
 
       <button
-        className="flex_center w-full rounded-md text-white bg-secondary-600 hover:bg-secondary-800 primary_transition text-nowrap py-2 mt-4"
         type="button"
         onClick={submitHandler}
+        className="flex_center w-full rounded-md text-white bg-secondary-600 hover:bg-secondary-800 primary_transition text-nowrap py-2 mt-4"
       >
         تسویه حساب
       </button>
