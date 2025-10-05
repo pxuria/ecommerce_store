@@ -37,8 +37,6 @@ export const POST = async (req: Request) => asyncHandler(async () => {
       include: { items: true }
     });
 
-    // ⚡️ Optional: reduce stock here for each order item
-
     return {
       success: true,
       ref_id: response.data.ref_id,

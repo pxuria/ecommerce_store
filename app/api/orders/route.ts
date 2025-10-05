@@ -73,7 +73,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
   const orderItemsData = items.map((item: OrderItemInput) => {
     const total = (Number(item.unitPrice) - (Number(item.discount) || 0)) * Number(item.quantity);
     totalAmount += total;
-    console.log("PRODUCTCOLORVARIANTID:::", item.productColorVariantId)
+
     return {
       productColorVariantId: parseInt(item.productColorVariantId),
       quantity: item.quantity,

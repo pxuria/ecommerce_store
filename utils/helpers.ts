@@ -38,8 +38,9 @@ export const paymentHandler = async (
       orderId,
       mobile
     });
-    if (data.url) {
-      window.location.href = data.url;
+
+    if (data.data) {
+      window.location.href = data.data;
     }
   } catch (error) {
     console.log(error);

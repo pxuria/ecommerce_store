@@ -80,7 +80,7 @@ const Navbar = () => {
               </div>
             </PopoverTrigger>
             <PopoverContent className="bg-[#fff] mt-1 p-2 rounded-xl outline-none border-light_muted">
-              <CartPopover />
+              <CartPopover onOpenChange={setCartTrigger} />
             </PopoverContent>
           </Popover>
 

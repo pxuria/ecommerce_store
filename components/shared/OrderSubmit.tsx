@@ -54,7 +54,7 @@ const OrderSubmit = ({ cart, session }: Props) => {
 
       dispatch(clearCart());
 
-      await paymentHandler(data.id, cart.totalAmount, email, phone);
+      await paymentHandler(data.data.id, cart.totalAmount, email, phone);
     } catch (error) {
       console.log(error);
       handleShowToast("خطایی در ارسال سفارش رخ داده است", "error");

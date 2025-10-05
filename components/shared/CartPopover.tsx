@@ -8,19 +8,23 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { handleShowToast } from "@/lib/toast";
 
-const CartPopover = () => {
+interface Props {
+  onOpenChange: (val: boolean) => void;
+}
+
+const CartPopover = ({ onOpenChange }: Props) => {
   const dispatch = useDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
   const { data: session } = useSession();
   const router = useRouter();
 
   const handleCheckout = () => {
-    console.log(session)
     if (!session) {
       handleShowToast('برای ادامه، لطفاً ابتدا وارد حساب کاربری خود شوید', 'error');
       return;
     }
     router.push("/dashboard?tab=orders");
+    onOpenChange(false);
   };
 
   return (
@@ -30,7 +34,6 @@ const CartPopover = () => {
           {cartItems.length ? (
             cartItems.map((item) => {
               const quantity = getCartItemQuantity(cartItems, item.id);
-              console.log(item);
               return (
                 <li
                   className="hover:bg-white rounded-lg transition-all ease-in p-2"

@@ -24,21 +24,15 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
   const { pricePerMeter, stockMeters, discountPercent } = selectedVariant as IProductColorVariant;
 
   const productItemId = `${product.id}-${selectedVariant?.id}`;
-
   const cartItem = getCartItem(cartItems, productItemId) as CartItem;
   const quantity = cartItem ? getCartItemQuantity(cartItems, productItemId) : 0;
-  console.log(product);
-  console.log(selectedVariant);
 
   const handleAddToCart = () => {
     if (stockMeters === 0 || quantity >= Number(stockMeters)) return;
 
     const unitPrice = Number(pricePerMeter);
     const discount = discountPercent ?? 0;
-    const discountedPrice =
-      discount > 0 ? unitPrice * (1 - discount / 100) : unitPrice;
-
-    const itemQuantity = 1;
+    const discountedPrice = discount > 0 ? unitPrice * (1 - discount / 100) : unitPrice;
 
     dispatch(
       addToCart({
@@ -49,23 +43,19 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
         unitPrice,
         discountedPrice,
         discount,
-        quantity: itemQuantity,
+        quantity: 1,
         color: selectedVariant?.color?.name ?? "نامشخص",
-        total: discountedPrice * itemQuantity
+        total: discountedPrice
       })
     );
   };
 
   const handleRemoveFromCart = () => {
-    if (quantity > 0 && cartItem) {
-      dispatch(removeFromCart({ id: cartItem.id }));
-    }
+    if (quantity > 0 && cartItem) dispatch(removeFromCart({ id: cartItem.id }));
   };
 
   const handleRemoveAllFromCart = () => {
-    if (cartItem) {
-      dispatch(removeAllFromCart({ id: cartItem.id }));
-    }
+    if (cartItem) dispatch(removeAllFromCart({ id: cartItem.id }));
   };
 
   return (
