@@ -19,10 +19,8 @@ const OrderSubmit = ({ cart, session }: Props) => {
       const formattedItems = cart.items.map((item) => ({
         productId: item.productId,
         name: item.name,
-        color: item.color,
-        size: item.size,
         quantity: item.quantity,
-        price: item.price,
+        totalAmount: item.discountedPrice
       }));
 
       const { data } = await axiosInstance.post("orders", {
@@ -65,7 +63,7 @@ const OrderSubmit = ({ cart, session }: Props) => {
       </div>
 
       <button
-        className="flex_center w-full rounded-md text-white bg-purple_900 hover:bg-purple_800 primary_transition text-nowrap py-2 mt-4"
+        className="flex_center w-full rounded-md text-white bg-secondary-600 hover:bg-secondary-800 primary_transition text-nowrap py-2 mt-4"
         type="button"
         onClick={submitHandler}
       >

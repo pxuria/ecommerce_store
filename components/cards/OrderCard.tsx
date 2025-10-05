@@ -88,9 +88,9 @@ const OrderCard = ({ order }: Props) => {
         {/* submit Button */}
         {order.status === OrderStatus.PENDING && (
           <button
-            className="flex_center w-full rounded-md text-white bg-purple_900 hover:bg-purple_800 primary_transition text-nowrap py-2"
             type="button"
             onClick={orderHandler}
+            className="flex_center w-full rounded-md text-white bg-purple_900 hover:bg-purple_800 primary_transition text-nowrap py-2"
           >
             تسویه حساب
           </button>
