@@ -6,7 +6,7 @@ import productLoading from "@/public/assets/lotties/product-loading.json";
 import ProductCard from "../shared/ProductCard"
 import LottieText from "../shared/LottieText";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ShoppingBag } from "lucide-react";
 
 const ProductsList = () => {
     const [products, setProducts] = useState<IProductWithBasePrice[]>([]);
@@ -37,8 +37,9 @@ const ProductsList = () => {
                 <h3 className='font-bold text-2xl text-black title relative select-none'>
                     محصولات
                 </h3>
-                <Link className='flex items-end gap-1 text-black font-normal text-base'
-                    href={'/products'}>
+                <Link
+                    href='/products'
+                    className='flex items-end gap-1 text-black font-normal text-base'>
                     مشاهده همه
                     <ChevronLeft size={16} />
                 </Link>
@@ -58,6 +59,13 @@ const ProductsList = () => {
                             ))}
                         </div>
                     ))}
+            </div>
+
+            <div className="flex_center mt-12">
+                <Link className="flex_center gap-2 bg-secondary-700 text-white px-4 py-2 rounded-lg" href='/products'>
+                    همه محصولات
+                    <ShoppingBag size={14} />
+                </Link>
             </div>
         </section >
     )
