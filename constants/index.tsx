@@ -238,17 +238,17 @@ export const dashboardTabs = [
   {
     name: "حساب کاربری",
     dashName: "profile",
-    icon: <User size={20} fill="#000" />
+    icon: User
   },
   {
     name: "سفارشات",
     dashName: "orders",
-    icon: <Gift size={20} fill="#000" />
+    icon: Gift
   },
   {
     name: "علاقه مندی ها",
     dashName: "bookmarks",
-    icon: <Bookmark size={20} fill="#000" />
+    icon: Bookmark
   }
 ];
 
@@ -256,42 +256,42 @@ export const dashboardAdminTabs = [
   {
     name: "گزارشات",
     dashName: "logs",
-    icon: <ChartColumnBig size={20} fill="#000" />
+    icon: ChartColumnBig
   },
   {
     name: "بلاگ ها",
     dashName: "blogs",
-    icon: <Newspaper size={20} fill="#000" />
+    icon: Newspaper
   },
   {
     name: "محصولات",
     dashName: "products",
-    icon: <Package size={20} fill="#000" />
+    icon: Package
   },
   {
     name: "دسته بندی محصولات",
     dashName: "product_category",
-    icon: <Boxes size={20} fill="#000" />
+    icon: Boxes
   },
   {
     name: "رنگ ها",
     dashName: "colors",
-    icon: <Palette size={20} fill="#000" />
+    icon: Palette
   },
   {
     name: "کشور ها",
     dashName: "countries",
-    icon: <LandPlot size={20} fill="#000" />
+    icon: LandPlot
   },
   {
     name: "برند ها",
     dashName: "brands",
-    icon: <Tag size={20} fill="#000" />
+    icon: Tag
   },
   {
     name: "لیست کاربران",
     dashName: "users-list",
-    icon: <Users size={20} fill="#000" />
+    icon: Users
   }
 ]
 

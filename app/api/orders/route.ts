@@ -7,7 +7,7 @@ import { asyncHandler, HttpError } from "@/utils/helpers";
 import { UserRole } from '@prisma/client';
 
 type OrderItemInput = {
-  productColorVariantId: number;
+  productColorVariantId: string;
   quantity: number;
   unitPrice: number;
   discount?: number | null;
@@ -73,8 +73,9 @@ export const POST = async (req: Request) => asyncHandler(async () => {
   const orderItemsData = items.map((item: OrderItemInput) => {
     const total = (Number(item.unitPrice) - (Number(item.discount) || 0)) * Number(item.quantity);
     totalAmount += total;
+    console.log("PRODUCTCOLORVARIANTID:::", item.productColorVariantId)
     return {
-      productColorVariantId: item.productColorVariantId,
+      productColorVariantId: parseInt(item.productColorVariantId),
       quantity: item.quantity,
       unitPrice: item.unitPrice,
       discount: item.discount || null,

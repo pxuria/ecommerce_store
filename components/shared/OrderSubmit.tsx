@@ -5,6 +5,7 @@ import { handleShowToast } from "@/lib/toast";
 import { CartState } from "@/types";
 import { paymentHandler } from "@/utils/helpers";
 import { Session } from "next-auth";
+import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 
 interface Props {
@@ -14,20 +15,30 @@ interface Props {
 
 const OrderSubmit = ({ cart, session }: Props) => {
   const dispatch = useDispatch();
+  const { address, city, postalCode, email, phone } = session?.user || {};
+
+  const validateUserInfo = useCallback((): boolean => {
+    if (!address) {
+      handleShowToast("لطفا آدرس را از حساب کاربری تکمیل نمایید", "error");
+      return false;
+    }
+    if (!city) {
+      handleShowToast("لطفا شهر خود را از حساب کاربری تکمیل نمایید", "error");
+      return false;
+    }
+    if (!postalCode) {
+      handleShowToast("لطفا کد پستی خود را از حساب کاربری تکمیل نمایید", "error");
+      return false;
+    }
+    return true;
+  }, [address, city, postalCode]);
 
   const submitHandler = async () => {
-    if (session.user.address === '' || session.user.address === null)
-      handleShowToast('لطفا آدرس را از حساب کاربری تکمیل نمایید', 'error');
-
-    if (session.user.city === '' || session.user.city === null)
-      handleShowToast('لطفا شهر خود را از حساب کاربری تکمیل نمایید', 'error');
-
-    if (session.user.postalCode === '' || session.user.postalCode === null)
-      handleShowToast('لطفا کد پستی خود را از حساب کاربری تکمیل نمایید', 'error');
+    if (!validateUserInfo()) return;
 
     try {
       const formattedItems = cart.items.map((item) => ({
-        productColorVariantId: item.color,
+        productColorVariantId: item.id.split('-')[1],
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         discount: item.discount || 0
@@ -36,18 +47,17 @@ const OrderSubmit = ({ cart, session }: Props) => {
       const { data } = await axiosInstance.post("orders", {
         items: formattedItems,
         shippingAddress: session.user.address,
-        city: session.user.city,
-        postalCode: session.user.postalCode
+        city,
+        postalCode
       });
       console.log(data);
+
       dispatch(clearCart());
-      await paymentHandler(
-        data.id,
-        cart.totalAmount,
-        session.user.email as string
-      );
+
+      await paymentHandler(data.id, cart.totalAmount, email, phone);
     } catch (error) {
       console.log(error);
+      handleShowToast("خطایی در ارسال سفارش رخ داده است", "error");
     }
   };
 
@@ -56,9 +66,7 @@ const OrderSubmit = ({ cart, session }: Props) => {
       <h2 className="text-lg font-medium mb-4">سبد خرید</h2>
 
       <div className="flex gap-4 flex-wrap">
-        {cart.items.map((item, index) => (
-          <OrderSubmitRow key={index} item={item} />
-        ))}
+        {cart.items.map((item, index) => <OrderSubmitRow key={index} item={item} />)}
       </div>
 
       <div className="flex items-center gap-1 mt-4 text-right">

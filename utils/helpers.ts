@@ -28,15 +28,16 @@ export const getCartItem = (cartItems: CartItem[], itemId: string) => {
 export const paymentHandler = async (
   orderId: string,
   amount: number,
-  email?: string
+  email?: string,
+  mobile?: string,
 ) => {
   try {
     const { data } = await axiosInstance.post("payment/request", {
       amount,
       email,
       orderId,
+      mobile
     });
-    console.log(data);
     if (data.url) {
       window.location.href = data.url;
     }

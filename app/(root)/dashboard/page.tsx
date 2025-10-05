@@ -21,7 +21,7 @@ import Products from "@/components/dashboard/products/Products";
 import Countries from "@/components/dashboard/country/Countries";
 import Categories from "@/components/dashboard/category/Categories";
 
-const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 hover:bg-muted data-[state=active]:bg-secondary-700 data-[state=active]:text-white rounded-lg shadow-sm bg-light_muted";
+const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 rounded-lg shadow-sm bg-light_muted group hover:bg-secondary-700 hover:text-white data-[state=active]:bg-secondary-700 data-[state=active]:text-white transition-all duration-200 ease-in-out";
 
 const tabContents = [
   { value: 'profile', component: <Profile /> },
@@ -47,10 +47,7 @@ const Page = () => {
     if (status === "unauthenticated") router.replace("/")
   }, [status, router])
 
-  useEffect(
-    () => router.replace(`?tab=${activeTab}`, { scroll: false }),
-    [activeTab, router]
-  );
+  useEffect(() => router.replace(`?tab=${activeTab}`, { scroll: false }), [activeTab, router]);
 
   return (
     <section className="px-10 mt-12">
@@ -61,28 +58,43 @@ const Page = () => {
         className="w-full flex items-start jusrify-start flex-col md:flex-row gap-4 my-10"
       >
         <TabsList className="flex flex-row md:flex-column justify-start items-start gap-2 w-full md:w-[calc(25%-8px)] bg-white overflow-y-hidden overflow-x-auto h-fit">
-          {dashboardTabs.map((item) => (
-            <TabsTrigger
-              key={item.dashName}
-              value={item.dashName}
-              className={tabsTriggerClass}
-            >
-              {item.icon}
-              {item.name}
-            </TabsTrigger>
-          ))}
-
-          {session?.user.role === UserRole.ADMIN && (
-            dashboardAdminTabs.map(item => (
+          {dashboardTabs.map((item) => {
+            const Icon = item.icon;
+            return (
               <TabsTrigger
                 key={item.dashName}
                 value={item.dashName}
                 className={tabsTriggerClass}
               >
-                {item.icon}
+                <Icon
+                  size={20}
+                  strokeWidth={1.75}
+                  className="text-black group-hover:text-white data-[state=active]:text-white transition-colors duration-200"
+                />
                 {item.name}
               </TabsTrigger>
-            ))
+            )
+          })}
+
+          {session?.user.role === UserRole.ADMIN && (
+            dashboardAdminTabs.map(item => {
+              const Icon = item.icon;
+              return (
+                <TabsTrigger
+                  key={item.dashName}
+                  value={item.dashName}
+                  className={tabsTriggerClass}
+                >
+                  <Icon
+                    size={20}
+                    strokeWidth={1.75}
+                    className="text-black group-hover:text-white data-[state=active]:text-white transition-colors duration-200"
+                  // fill="currentColor"
+                  />
+                  {item.name}
+                </TabsTrigger>
+              );
+            })
           )}
 
           <button

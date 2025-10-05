@@ -23,10 +23,12 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
   const [selectedVariant, setSelectedVariant] = useState<IProductColorVariant | undefined>(product?.colorVariants?.[0]);
   const { pricePerMeter, stockMeters, discountPercent } = selectedVariant as IProductColorVariant;
 
-  const productItemId = `${product.id}-${selectedVariant?.color?.id}`;
+  const productItemId = `${product.id}-${selectedVariant?.id}`;
 
   const cartItem = getCartItem(cartItems, productItemId) as CartItem;
   const quantity = cartItem ? getCartItemQuantity(cartItems, productItemId) : 0;
+  console.log(product);
+  console.log(selectedVariant);
 
   const handleAddToCart = () => {
     if (stockMeters === 0 || quantity >= Number(stockMeters)) return;
