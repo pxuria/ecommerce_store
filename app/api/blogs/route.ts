@@ -1,9 +1,13 @@
 export const runtime = 'nodejs';
 
+import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
+import { asyncHandler, cachedData, cacheWithTTL, delCachedData, HttpError, toSlug } from '@/utils/helpers';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
+    const cachedBlogs = await cachedData(redisKeys.blogs.all);
+    if (cachedBlogs) return { data: JSON.parse(cachedBlogs) };
+
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 20);
@@ -11,6 +15,8 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 
     const blogs = await prisma.blog.findMany({ skip, take: limit, orderBy: { createdAt: "desc" } });
     const total = await prisma.blog.count();
+
+    await cacheWithTTL(redisKeys.blogs.all, JSON.stringify(blogs), 300);
 
     return {
         data: blogs,
@@ -41,5 +47,6 @@ export const POST = async (req: Request) => asyncHandler(async () => {
         }
     });
 
+    await delCachedData(redisKeys.blogs.all);
     return { data: blog };
 }, { successStatus: 201, auth: true });
