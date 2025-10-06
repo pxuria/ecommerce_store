@@ -1,15 +1,15 @@
-export const blogsRedis = {
-    all: "blogs:all",
-    byId: "blog:",
-    latest: "blogs:latest"
-}
+const makeRedisKeys = (name: string) => ({
+    all: `${name}:all`,
+    byId: `${name}:`,
+});
 
-export const userRedis = {
-    all: "users:all",
-    byId: "users:",
-}
-
-export const productsRedis = {
-    all: "products:all",
-    byId: "products:",
-}
+export const redisKeys = {
+    blogs: { ...makeRedisKeys("blogs"), latest: "blogs:latest" },
+    brands: makeRedisKeys("brands"),
+    categories: makeRedisKeys("categories"),
+    colors: makeRedisKeys("colors"),
+    countries: makeRedisKeys("countries"),
+    orders: makeRedisKeys("orders"),
+    products: makeRedisKeys("products"),
+    users: makeRedisKeys("users"),
+};
