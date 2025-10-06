@@ -1,9 +1,13 @@
 export const runtime = 'nodejs';
 
+import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
+import { asyncHandler, cachedData, cacheWithTTL, delCachedData, HttpError, toSlug } from '@/utils/helpers';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
+    const cachedCountries = await cachedData(redisKeys.countries.all);
+    if (cachedCountries) return { data: JSON.parse(cachedCountries) };
+
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 20);
@@ -17,6 +21,8 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     });
 
     const total = await prisma.productColor.count();
+
+    await cacheWithTTL(redisKeys.brands.all, JSON.stringify(countries), 300);
 
     return {
         data: countries,
@@ -33,5 +39,7 @@ export const POST = async (request: Request) => asyncHandler(async () => {
     const { name, slug } = await request.json();
     if (!name || !slug) throw new HttpError('country name or slug is required', 400);
     const country = await prisma.productCountry.create({ data: { name, slug: toSlug(slug) } });
+
+    await delCachedData(redisKeys.countries.all);
     return { data: country };
 }, { auth: true, successStatus: 201 });

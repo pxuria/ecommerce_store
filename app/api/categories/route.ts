@@ -1,9 +1,13 @@
 export const runtime = 'nodejs';
 
+import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
+import { asyncHandler, cachedData, cacheWithTTL, delCachedData, HttpError, toSlug } from '@/utils/helpers';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
+    const cachedCategory = await cachedData(redisKeys.categories.all);
+    if (cachedCategory) return { data: JSON.parse(cachedCategory) };
+
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 20);
@@ -12,6 +16,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     const categories = await prisma.productCategory.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
     const total = await prisma.productCategory.count();
 
+    await cacheWithTTL(redisKeys.categories.all, JSON.stringify(categories), 300);
     return {
         data: categories,
         pagination: {
@@ -28,5 +33,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
     if (!name || !slug) throw new HttpError('category name or slug is required', 400);
 
     const category = await prisma.productCategory.create({ data: { name, slug: toSlug(slug) } });
+
+    await delCachedData(redisKeys.categories.all);
     return { data: category }
 }, { auth: true, successStatus: 201 });

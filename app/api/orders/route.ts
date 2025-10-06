@@ -22,7 +22,6 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   if (!session) throw new HttpError('Unauthorized', 401);
 
   const where = session?.user.role === UserRole.ADMIN ? {} : { userId: session.user.id };
-
   const skip = (page - 1) * limit;
 
   const orders = await prisma.order.findMany({

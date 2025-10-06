@@ -1,9 +1,9 @@
 export const runtime = 'nodejs';
 
-import prisma from '@/lib/db';
-import { authOptions } from '@/utils/authOptions';
-import { asyncHandler, toSlug } from "@/utils/helpers";
 import { getServerSession } from 'next-auth';
+import { asyncHandler, toSlug } from "@/utils/helpers";
+import { authOptions } from '@/utils/authOptions';
+import prisma from '@/lib/db';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
   const session = await getServerSession(authOptions);
