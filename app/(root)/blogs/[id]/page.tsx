@@ -2,11 +2,20 @@ import { Metadata } from "next";
 import Image from "next/image";
 import BlogPageSidebar from "@/components/shared/blogs/BlogPageSidebar";
 import { formatDate } from "@/utils/helpers";
-import { getBlogById } from "@/lib/actions/blog.action";
 import { IBlog } from "@/types/model";
 
+const fetchBlogById = async (id: string) => {
+  try {
+    const res = await fetch(`/api/blogs/${id}`);
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const blog: IBlog = await getBlogById(params.id);
+  const blog: IBlog = await fetchBlogById(params.id);
 
   if (!blog || "error" in blog || "message" in blog) {
     return {
@@ -27,7 +36,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 }
 
 const page = async ({ params }: { params: { id: string } }) => {
-  const blog: IBlog = await getBlogById(params.id)
+  const blog: IBlog = await fetchBlogById(params.id)
 
   return (
     <section className="md:container md:mx-auto mt-16">
