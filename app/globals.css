@@ -157,6 +157,18 @@ input[type="search"]::-webkit-search-results-decoration {
   display: none;
 }
 
+@media (max-width: 500px) {
+  .toast-container.top-right,
+  .toast-container.top-left,
+  .toast-container.bottom-right,
+  .toast-container.bottom-left {
+    max-width: 90vw;
+    right: 50% !important;
+    width: 100% !important;
+    transform: translate(50%) !important;
+  }
+}
+
 .toast-nextjs .close-toast {
   display: none !important;
 }
