@@ -18,14 +18,14 @@ export const metadata: Metadata = {
         url: "/assets/images/pic5.jpg",
         width: 4413,
         height: 6620,
-        alt: "Marin Fashion Store",
+        alt: `${enBrandName} Fashion Store`,
       },
     ],
     locale: "fa_IR",
     type: "website",
   },
   alternates: {
-    canonical: "https://marin.com/about-us",
+    canonical: 'https://${enBrandName}.com/about-us',
   },
   robots: {
     index: true,

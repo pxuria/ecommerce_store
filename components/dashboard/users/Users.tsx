@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { FaRegTrashCan, FaUserSecret } from "react-icons/fa6";
 import CustomPagination from "@/components/shared/CustomPagination";
+import { Trash2, UserStar } from "lucide-react";
 
 const COLUMNS = [
     { title: 'نام', className: 'text-right' },
@@ -119,7 +119,7 @@ const Users = () => {
                                                 setIsAdminDialogOpen(true);
                                             }}
                                         >
-                                            <FaUserSecret className="mr-1" /> تغییر نقش کاربر
+                                            <UserStar className="mr-1" /> تغییر نقش کاربر
                                         </Button>
                                         <Button
                                             className="bg-red-700 text-white !text-xs lg:text-base"
@@ -128,7 +128,7 @@ const Users = () => {
                                                 setIsDeleteDialogOpen(true);
                                             }}
                                         >
-                                            <FaRegTrashCan className="mr-1" /> حذف
+                                            <Trash2 className="mr-1" /> حذف
                                         </Button>
                                     </TableCell>
                                 </TableRow>

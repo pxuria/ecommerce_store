@@ -48,7 +48,7 @@ const Page = () => {
 
   const productQuery = (() => {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("showFilters"); // remove UI param
+    params.delete("showFilters");
     return params.toString();
   })();
 

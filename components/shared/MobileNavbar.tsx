@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Menu, User } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -12,8 +13,6 @@ import {
 } from "@/components/ui/sheet";
 import AuthForm from "../forms/auth/AuthForm";
 import { mobileNavbarLinks } from "@/constants";
-import { FaBars } from "react-icons/fa";
-import { IoPersonSharp } from "react-icons/io5";
 import { Button } from "../ui/button";
 
 const MobileNavbar = () => {
@@ -34,7 +33,7 @@ const MobileNavbar = () => {
     <>
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetTrigger aria-label="باز کردن منو موبایل">
-          <FaBars className="w-7 h-7 text-black" />
+          <Menu className="w-7 h-7 text-black" />
         </SheetTrigger>
 
         <SheetContent className="bg-white" side="right">
@@ -60,7 +59,7 @@ const MobileNavbar = () => {
               <span className="font-bold">
                 {isAuthenticated ? `${session.user.firstName} ${session.user.lastName}` : "ورود به حساب"}
               </span>
-              <IoPersonSharp className="w-6 h-6" />
+              <User fill="#111" className="w-6 h-6" />
             </Button>
           </div>
         </SheetContent>

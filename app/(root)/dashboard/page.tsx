@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { FaSignOutAlt } from "react-icons/fa";
 
 import { dashboardAdminTabs, dashboardTabs } from "@/constants";
 import { handleShowToast } from "@/lib/toast";
@@ -20,6 +19,7 @@ import Orders from "@/components/dashboard/orders/Orders";
 import Products from "@/components/dashboard/products/Products";
 import Countries from "@/components/dashboard/country/Countries";
 import Categories from "@/components/dashboard/category/Categories";
+import { LogOut } from "lucide-react";
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 rounded-lg shadow-sm bg-light_muted group hover:bg-secondary-700 hover:text-white data-[state=active]:bg-secondary-700 data-[state=active]:text-white transition-all duration-200 ease-in-out";
 
@@ -105,7 +105,7 @@ const Page = () => {
             })}
           >
             خروج از حساب کاربری
-            <FaSignOutAlt className="w-5 h-5" />
+            <LogOut size={20} />
           </button>
         </TabsList>
 

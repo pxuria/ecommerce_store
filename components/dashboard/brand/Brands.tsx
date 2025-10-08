@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
 import { IBrand } from "@/types/model";
@@ -11,8 +10,8 @@ import ConfirmBox from "@/components/ui/ConfirmBox";
 import BrandForm from "./BrandForm";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { FaRegTrashCan } from "react-icons/fa6";
 import CustomPagination from "@/components/shared/CustomPagination";
+import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 const COLUMNS = [
     { title: 'نام برند', className: 'text-right' },
@@ -110,7 +109,7 @@ const Brands = () => {
                             onClick={handleAdd}
                             className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
                             افزودن برند
-                            <FaRegPlusSquare />
+                            <SquarePlus />
                         </Button>
 
                         <div className="rounded-md border">
@@ -127,7 +126,7 @@ const Brands = () => {
                                                         className="bg-primary-500 text-black !text-xs lg:text-base"
                                                         onClick={() => handleEdit(brand)}
                                                     >
-                                                        <FaRegEdit className="mr-1" /> ویرایش
+                                                        <SquarePen className="mr-1" /> ویرایش
                                                     </Button>
                                                     <Button
                                                         className="bg-red-700 text-white !text-xs lg:text-base"
@@ -136,7 +135,7 @@ const Brands = () => {
                                                             setIsDeleteDialogOpen(true);
                                                         }}
                                                     >
-                                                        <FaRegTrashCan className="mr-1" /> حذف
+                                                        <Trash2 className="mr-1" /> حذف
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>

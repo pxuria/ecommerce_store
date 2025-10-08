@@ -3,7 +3,8 @@ export const runtime = 'nodejs';
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
 import { ParamsType } from '@/types';
-import { asyncHandler, cachedData, cacheWithTTL, delCachedData, HttpError, parseId } from '@/utils/helpers';
+import { asyncHandler, HttpError, parseId } from '@/utils/helpers';
+import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);

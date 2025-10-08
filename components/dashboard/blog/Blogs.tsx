@@ -1,18 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { CirclePlus, SquarePen, Trash2 } from 'lucide-react';
+import CustomPagination from '@/components/shared/CustomPagination';
 import ConfirmBox from '@/components/ui/ConfirmBox';
-import { FaRegEdit, FaRegPlusSquare } from 'react-icons/fa';
-import BlogForm from './BlogForm';
-import DashboardTable, { renderSkeletonRows } from '../DashboardTable';
+import { Button } from '@/components/ui/button';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { FaRegTrashCan } from 'react-icons/fa6';
 import { handleShowToast } from '@/lib/toast';
 import axiosInstance from '@/lib/axiosInstance';
 import { IBlog } from '@/types/model';
-import Image from 'next/image';
-import CustomPagination from '@/components/shared/CustomPagination';
+import DashboardTable, { renderSkeletonRows } from '../DashboardTable';
+import BlogForm from './BlogForm';
 
 const COLUMNS = [
     { title: 'تیتر بلاگ', className: 'text-right' },
@@ -109,7 +108,7 @@ const Blogs = () => {
                             onClick={handleAdd}
                             className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
                             افزودن بلاگ
-                            <FaRegPlusSquare />
+                            <CirclePlus />
                         </Button>
 
                         <div className="rounded-md border">
@@ -137,7 +136,7 @@ const Blogs = () => {
                                                         className="bg-primary-500 text-black !text-xs lg:text-base"
                                                         onClick={() => handleEdit(blog)}
                                                     >
-                                                        <FaRegEdit className="mr-1" /> ویرایش
+                                                        <SquarePen className="mr-1" /> ویرایش
                                                     </Button>
                                                     <Button
                                                         className="bg-red-700 text-white !text-xs lg:text-base"
@@ -146,7 +145,7 @@ const Blogs = () => {
                                                             setIsDeleteDialogOpen(true);
                                                         }}
                                                     >
-                                                        <FaRegTrashCan className="mr-1" /> حذف
+                                                        <Trash2 className="mr-1" /> حذف
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>

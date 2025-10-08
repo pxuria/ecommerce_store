@@ -1,22 +1,22 @@
 import { brandName } from "@/constants";
+import Image from "next/image";
 import Link from "next/link";
-import { FaInstagram, FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 
 const socials = [
   {
     href: 'https://instagram.com/marin',
     ariaLabel: `اینستاگرام ${brandName}`,
-    icon: <FaInstagram className="text-pink-600 hover:text-pink_800 transition" />
+    icon: '/assets/images/instagram.svg'
   },
   {
     href: 'https://t.me/marin',
     ariaLabel: `تلگرام ${brandName}`,
-    icon: <FaTelegramPlane className="text-[#3AA9EA] hover:text-secondary-700 transition" />
+    icon: '/assets/images/telegram.svg'
   },
   {
     href: 'https://wa.me/yourwhatsappnumber',
     ariaLabel: `واتساپ پشتیبانی ${brandName}`,
-    icon: <FaWhatsapp className="text-[#40C043] hover:text-green-600 transition" />
+    icon: '/assets/images/whatsapp.svg'
   }
 ]
 
@@ -39,7 +39,11 @@ const Socials = () => {
             rel="noopener noreferrer"
             aria-label={social.ariaLabel}
           >
-            {social.icon}
+            <Image
+              width={32}
+              height={32}
+              src={social.icon}
+              alt={social.ariaLabel} />
           </Link>
         ))}
       </div>

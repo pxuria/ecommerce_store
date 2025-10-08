@@ -1,16 +1,18 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { FiSearch } from "react-icons/fi";
+import { Search } from "lucide-react";
 
 const ProductsFilters = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || ""
-  );
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("search") || "");
+  }, [searchParams]);
 
   const updateQueryParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -21,45 +23,49 @@ const ProductsFilters = () => {
         else params.delete(key);
       });
 
+      params.delete("page");
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [router, pathname, searchParams]
   );
 
   const toggleFilters = () => {
-    const isFiltersVisible = searchParams.get("showFilters") === "true";
-    updateQueryParams({ showFilters: isFiltersVisible ? null : "true" });
+    const isFiltersVisible = searchParams.get("showFilters") === 'true';
+    updateQueryParams({ showFilters: isFiltersVisible ? null : 'true' });
   };
 
-  const handleSearch = () => updateQueryParams({ search: searchQuery || null });
+  const handleSearch = () => {
+    if (searchQuery.trim().length === 0) updateQueryParams({ search: null });
+    else updateQueryParams({ search: searchQuery.trim() });
+  };
 
   return (
     <div className="flex items-center gap-2 w-full">
       <button
         type="button"
-        className="text-nowrap text-white bg-secondary-600 hover:bg-secondary-700 px-4 py-2 rounded-lg"
         onClick={toggleFilters}
+        className="text-nowrap text-white bg-secondary-600 hover:bg-secondary-700 px-4 py-2 rounded-lg"
       >
         فیلتر ها
       </button>
 
       <div className="flex flex-nowrap w-full">
         <input
-          type="search"
-          className="w-full rounded-r-lg outline-none border border-light_muted px-4"
-          placeholder="جستجو محصولات"
-          name="search"
           id="search"
+          type="search"
+          name="search"
+          placeholder="جستجو محصولات"
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          className="w-full rounded-r-lg outline-none border border-light_muted px-4"
         />
         <button
-          className="bg-light_muted px-3 py-2 rounded-l duration-500 h-10 w-10 hover:bg-muted flex_center btn"
           type="button"
           aria-label="search"
           onClick={handleSearch}
+          className="bg-light_muted px-3 py-2 rounded-l duration-500 h-10 w-10 hover:bg-muted flex_center btn"
         >
-          <FiSearch />
+          <Search />
         </button>
       </div>
     </div>

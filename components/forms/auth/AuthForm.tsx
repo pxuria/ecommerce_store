@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import Login from "./Login";
 import Signup from "./Signup";
-import { FcGoogle } from "react-icons/fc";
 
 interface Props {
   open: boolean;
@@ -57,7 +56,7 @@ const AuthForm = ({ onOpen, open }: Props) => {
             type="button"
             onClick={() => signIn("google")}
           >
-            <FcGoogle className="w-5 h-5" />
+            {/* <FcGoogle className="w-5 h-5" /> */}
             ورود به حساب کاربری با گوگل
           </button>
         </DialogFooter>

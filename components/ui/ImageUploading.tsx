@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
+import { CircleX } from "lucide-react";
 import { useDropzone } from "react-dropzone";
-import { IoCloseCircle } from "react-icons/io5";
 import { FileWithPreview } from "@/types";
 
 interface ImageUploadingProps {
@@ -135,7 +135,7 @@ const ImageUploading = ({
             />
 
             {!disabled && (
-              <IoCloseCircle
+              <CircleX
                 onClick={() => removeFile(index)}
                 className="text-red-600 bg-white rounded-full w-6 h-6 absolute top-0 right-0 hover:text-red-700 transition cursor-pointer"
               />

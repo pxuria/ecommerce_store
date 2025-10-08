@@ -13,12 +13,12 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const limit = parseInt(searchParams.get("limit") || "20", 20);
   const skip = (page - 1) * limit;
 
-  const name = searchParams.get("name") || undefined;
-  const categoryIds = searchParams.getAll("categoryId").map(Number);
-  const brandIds = searchParams.getAll("brandId").map(Number);
-  const countryIds = searchParams.getAll("countryId").map(Number);
-  const isActive = searchParams.get("isActive") != null
-    ? searchParams.get("isActive") === "true"
+  const search = searchParams.get('search')?.trim() || undefined;
+  const categoryIds = searchParams.getAll('categoryId').map(Number);
+  const brandIds = searchParams.getAll('brandId').map(Number);
+  const countryIds = searchParams.getAll('countryId').map(Number);
+  const isActive = searchParams.get('isActive') != null
+    ? searchParams.get('isActive') === 'true'
     : undefined;
 
   const minPrice = searchParams.get("minPrice");
@@ -30,7 +30,15 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
-  if (name) where.name = { contains: name, mode: "insensitive" };
+  if (search) {
+    // Search by product name, brand name, or category name (case-insensitive)
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { brand: { name: { contains: search, mode: "insensitive" } } },
+      { category: { name: { contains: search, mode: "insensitive" } } },
+    ];
+  }
+
   if (categoryIds.length > 0) where.categoryId = { in: categoryIds };
   if (brandIds.length > 0) where.brandId = { in: brandIds };
   if (countryIds.length > 0) where.countryId = { in: countryIds };

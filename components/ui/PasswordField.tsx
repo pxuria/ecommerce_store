@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5"
+import { Eye, EyeOff } from "lucide-react";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form"
 import { Input } from "./input"
 
@@ -40,7 +40,7 @@ const PasswordField = <T extends FieldValues>({ control, loading, name, itemClas
                                 className="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer"
                                 onClick={toggleShowPass}
                             >
-                                {showPassword ? <IoEyeOutline className="w-5 h-5 text-primary" /> : <IoEyeOffOutline className="w-5 h-5 text-primary" />}
+                                {showPassword ? <Eye className="w-5 h-5 text-primary" /> : <EyeOff className="w-5 h-5 text-primary" />}
                             </span>
                         </div>
                     </FormControl>

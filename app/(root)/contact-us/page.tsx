@@ -4,7 +4,7 @@ import ContactusForm from "@/components/forms/ContactusForm";
 import FAQ from "@/components/shared/FAQ";
 import Socials from "@/components/shared/Socials";
 import ContactusText from "@/components/shared/ContactusText";
-import { enBrandName } from "@/constants";
+import { brandName, enBrandName } from "@/constants";
 
 export const metadata: Metadata = {
   // title: "تماس با مارین | ارتباط با فروشگاه آنلاین پوشاک زنانه | Contact Marin",
@@ -21,14 +21,14 @@ export const metadata: Metadata = {
         url: "/assets/images/pic5.jpg",
         width: 4413,
         height: 6620,
-        alt: "تماس با مارین - Contact Marin",
+        alt: `تماس با ${brandName} - Contact ${enBrandName}`,
       },
     ],
     locale: "fa_IR",
     type: "website",
   },
   alternates: {
-    canonical: "https://marin.com/contact-us",
+    canonical: `https://${enBrandName}.com/contact-us`,
   },
   robots: {
     index: true,

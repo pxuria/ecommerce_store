@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -14,6 +12,7 @@ import ProductForm from "./ProductForm";
 import Image from "next/image";
 import { toJalaliDate } from "@/utils/helpers";
 import CustomPagination from "@/components/shared/CustomPagination";
+import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 
 const COLUMNS = [
@@ -117,7 +116,7 @@ const Products = () => {
                             onClick={handleAdd}
                             className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
                             افزودن محصول
-                            <FaRegPlusSquare />
+                            <SquarePlus />
                         </Button>
 
                         <div className="rounded-md border">
@@ -151,7 +150,7 @@ const Products = () => {
                                                         className="bg-primary-500 text-black !text-xs lg:text-base"
                                                         onClick={() => handleEdit(product)}
                                                     >
-                                                        <FaRegEdit className="mr-1" /> ویرایش
+                                                        <SquarePen className="mr-1" /> ویرایش
                                                     </Button>
                                                     <Button
                                                         className="bg-red-700 text-white !text-xs lg:text-base"
@@ -160,7 +159,7 @@ const Products = () => {
                                                             setIsDeleteDialogOpen(true);
                                                         }}
                                                     >
-                                                        <FaRegTrashCan className="mr-1" /> حذف
+                                                        <Trash2 className="mr-1" /> حذف
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>

@@ -1,11 +1,11 @@
 "use client";
 
 import { useDispatch } from "react-redux";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import { addToCart, removeFromCart } from "@/lib/store/slices/cart-slice";
 import { useAppSelector } from "@/lib/store";
 import { getCartItemQuantity } from "@/utils/helpers";
 import { CartItem } from "@/types";
+import { Minus, Plus } from "lucide-react";
 
 interface Props {
   item: CartItem;
@@ -35,11 +35,11 @@ const CartController = ({ item }: Props) => {
       className="shadow rounded-md px-3 py-1 mb-2 flex flex-nowrap gap-2 items-center w-fit bg-[#fff]"
     >
       <button type="button" className="btn" onClick={handleAddToCart}>
-        <FaPlus className="w-3 h-3" />
+        <Plus className="w-3 h-3" />
       </button>
       <span className="">{quantity}</span>
       <button type="button" className="btn" onClick={handleRemoveFromCart}>
-        <FaMinus className="w-3 h-3" />
+        <Minus className="w-3 h-3" />
       </button>
     </div>
   );

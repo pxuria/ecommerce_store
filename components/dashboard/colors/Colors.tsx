@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
+import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
@@ -111,7 +110,7 @@ const Colors = () => {
                             onClick={handleAdd}
                             className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
                             افزودن رنگ
-                            <FaRegPlusSquare />
+                            <SquarePlus />
                         </Button>
 
                         {/* Colors Table */}
@@ -137,7 +136,7 @@ const Colors = () => {
                                                         className="bg-primary-500 text-black !text-xs lg:text-base"
                                                         onClick={() => handleEdit(color)}
                                                     >
-                                                        <FaRegEdit className="mr-1" /> ویرایش
+                                                        <SquarePen className="mr-1" /> ویرایش
                                                     </Button>
                                                     <Button
                                                         className="bg-red-700 text-white !text-xs lg:text-base"
@@ -146,7 +145,7 @@ const Colors = () => {
                                                             setIsDeleteDialogOpen(true);
                                                         }}
                                                     >
-                                                        <FaRegTrashCan className="mr-1" /> حذف
+                                                        <Trash2 className="mr-1" /> حذف
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>

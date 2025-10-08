@@ -2,7 +2,8 @@ export const runtime = 'nodejs';
 
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, cachedData, cacheWithTTL, delCachedData, HttpError } from '@/utils/helpers';
+import { asyncHandler, HttpError } from '@/utils/helpers';
+import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const cachedColor = await cachedData(redisKeys.colors.all);

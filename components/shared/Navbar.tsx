@@ -4,8 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { IoPersonSharp } from "react-icons/io5";
-import { FiSearch, FiShoppingBag } from "react-icons/fi";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import AuthForm from "./../forms/auth/AuthForm";
@@ -15,6 +13,7 @@ import CartPopover from "./CartPopover";
 import NavItems from "./NavItems";
 import MobileNavbar from "./MobileNavbar";
 import useMediaQuery from "@/utils/useMediaQuery";
+import { Search, ShoppingBag, User } from "lucide-react";
 
 const Navbar = () => {
   const [openAuth, setOpenAuth] = useState(false);
@@ -58,7 +57,7 @@ const Navbar = () => {
               type="button"
               aria-label="search"
             >
-              <FiSearch />
+              <Search />
             </Button>
           )}
 
@@ -75,7 +74,7 @@ const Navbar = () => {
                   aria-label="shopping_bag"
                   onClick={() => setCartTrigger(true)}
                 >
-                  <FiShoppingBag className="w-12 h-12" />
+                  <ShoppingBag className="w-12 h-12" />
                 </Button>
               </div>
             </PopoverTrigger>
@@ -92,7 +91,7 @@ const Navbar = () => {
               onClick={profileHandler}
             >
               <span className="font-bold">ورود به حساب</span>
-              <IoPersonSharp className="w-12 h-12" />
+              <User className="w-12 h-12" />
             </Button>
           ) : (
             <Link
@@ -100,7 +99,7 @@ const Navbar = () => {
               className="flex_center gap-1 font-bold border-2 border-black btn text-black text-sm rounded-md px-4 py-2 bg-transparent hover:text-white hover:bg-black"
             >
               {session.user.firstName} {session.user.lastName}
-              <IoPersonSharp className="w-5 h-5" />
+              <User className="w-5 h-5" />
             </Link>
           )}
         </div>
