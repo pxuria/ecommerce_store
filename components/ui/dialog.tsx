@@ -31,7 +31,7 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { closeDialog: boolean }
 >(({ className, closeDialog = true, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />

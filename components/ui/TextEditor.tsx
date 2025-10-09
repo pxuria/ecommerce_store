@@ -24,10 +24,10 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
             // const url = await uploadImage(file);
 
             const file = new File([blobInfo.blob()], blobInfo.filename(), { type: blobInfo.blob().type });
-            const url = await uploadImage(file);
-            if (!url) throw new Error("No URL returned from upload");
+            const urls = await uploadImage([file]);
+            if (!urls || urls.length === 0 || !urls[0]) throw new Error("No URL returned from upload");
 
-            return url;
+            return urls[0];
         } catch (error) {
             const message = error instanceof Error ? error.message : "Unknown error";
             console.error("TinyMCE image upload failed:", message);

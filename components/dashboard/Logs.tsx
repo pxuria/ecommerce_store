@@ -31,13 +31,13 @@ const salesData = [
     { date: "Sun", sales: 450 },
 ]
 
-const orderStatusData = [
-    { name: "Pending", value: 12 },
-    { name: "Processing", value: 30 },
-    { name: "Shipped", value: 22 },
-    { name: "Delivered", value: 50 },
-    { name: "Cancelled", value: 5 },
-]
+// const orderStatusData = [
+//     { name: "Pending", value: 12 },
+//     { name: "Processing", value: 30 },
+//     { name: "Shipped", value: 22 },
+//     { name: "Delivered", value: 50 },
+//     { name: "Cancelled", value: 5 },
+// ]
 
 const topProductsData = [
     { name: "T-shirt", sales: 120 },
@@ -52,12 +52,12 @@ const categoryRevenueData = [
     { category: "Accessories", revenue: 1200 },
 ]
 
-const customerData = [
-    { name: "New", value: 60 },
-    { name: "Returning", value: 40 },
-]
+// const customerData = [
+//     { name: "New", value: 60 },
+//     { name: "Returning", value: 40 },
+// ]
 
-const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"];
+// const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6"];
 
 const chartConfig = {
     visitors: {
