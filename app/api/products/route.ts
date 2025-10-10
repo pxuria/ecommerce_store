@@ -44,17 +44,6 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   if (countryIds.length > 0) where.countryId = { in: countryIds };
   if (isActive !== undefined) where.isActive = isActive;
 
-  if (minPrice || maxPrice) {
-    where.colorVariants = {
-      some: {
-        pricePerMeter: {
-          gte: minPrice ? Number(minPrice) : undefined,
-          lte: maxPrice ? Number(maxPrice) : undefined,
-        },
-      },
-    };
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let orderBy: any = { createdAt: sortOrder };
 
@@ -108,13 +97,23 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     };
   });
 
+  // Apply price filtering after calculating final prices
+  const filteredData = attachedData.filter(p => {
+    if (minPrice && p.finalPrice < Number(minPrice)) return false;
+    if (maxPrice && p.finalPrice > Number(maxPrice)) return false;
+    return true;
+  });
+
+  // Adjust total count for price filtering
+  const filteredTotal = (minPrice || maxPrice) ? filteredData.length : total;
+
   return {
-    data: attachedData,
+    data: filteredData,
     pagination: {
-      total,
+      total: filteredTotal,
       page,
       limit,
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(filteredTotal / limit),
     }
   };
 });

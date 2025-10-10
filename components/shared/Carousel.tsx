@@ -87,7 +87,7 @@ const Carousel = ({
       {/* Embla Carousel */}
       <div
         className={`w-full ${side === "left" ? "mr-auto justify-start" : "ml-auto justify-end"
-          } mt-8 flex flex-row-reverse items-center gap-8`}
+          } mt-8 flex flex-row-reverse items-center gap-4 md:gap-8`}
       >
         {side === "right" && (
           <CarouselBtn onClick={handleNext}>
@@ -105,11 +105,7 @@ const Carousel = ({
           {cards?.length > 0 && (
             <div className="embla" ref={emblaRef}>
               <div className="embla__container">
-                {cards.map((item, index) => (
-                  <div className="w-[calc(33%-16px)] mx-2" key={index}>
-                    <ProductCard product={item} />
-                  </div>
-                ))}
+                {cards.map((item, index) => <ProductCard key={index} product={item} itemClass="mx-1 md:mx-2" />)}
               </div>
             </div>
           )}

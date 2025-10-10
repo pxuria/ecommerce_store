@@ -25,7 +25,7 @@ html {
 .embla__slide__number {
   border-radius: 2rem;
   overflow: hidden;
-  height: var(--slide-height);
+  max-height: var(--slide-height);
   user-select: none;
 }
 .embla__controls {

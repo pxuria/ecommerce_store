@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
@@ -51,6 +51,7 @@ const Filter = () => {
 
   const [priceRange, setPriceRange] = useState(initialPriceRange);
   const [available, setAvailable] = useState(initialAvailability);
+  const priceDebounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const updateQueryParams = useCallback(
     (updates: Record<string, string | string[] | null>) => {
@@ -96,13 +97,31 @@ const Filter = () => {
   const handlePriceChange = useCallback(
     (newValue: [number, number]) => {
       setPriceRange(newValue);
-      updateQueryParams({
-        minPrice: String(newValue[0]),
-        maxPrice: String(newValue[1]),
-      });
+
+      // Clear existing timer
+      if (priceDebounceTimer.current) {
+        clearTimeout(priceDebounceTimer.current);
+      }
+
+      // Set new timer to update query params after 500ms
+      priceDebounceTimer.current = setTimeout(() => {
+        updateQueryParams({
+          minPrice: String(newValue[0]),
+          maxPrice: String(newValue[1]),
+        });
+      }, 500);
     },
     [updateQueryParams]
   );
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (priceDebounceTimer.current) {
+        clearTimeout(priceDebounceTimer.current);
+      }
+    };
+  }, []);
 
   const toggleAvailability = useCallback(() => {
     setAvailable((prev) => {

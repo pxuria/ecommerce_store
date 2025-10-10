@@ -107,7 +107,7 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-start gap-2 flex-wrap mt-2">
+        <div className="flex items-center justify-start gap-1 md:gap-2 flex-wrap mt-2">
           {tags.filter(item => item.label && item.value)
             .map((item, idx) => (
               <Link
@@ -120,7 +120,7 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
             ))}
         </div>
 
-        <div className="flex items-end justify-between gap-4 flex-wrap mt-2">
+        <div className="flex items-end justify-between gap-0 sm:gap-2 md:gap-4 flex-wrap mt-0 sm:mt-2">
           <Link href={`products/${product.id}`}>
             <h4 className="text-black text-sm sm:text-base font-medium text-right mt-2">
               {product.name}
@@ -164,9 +164,9 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
 
         <Link
           href={`products/${product.id}`}
-          className="block rounded-lg overflow-hidden w-full h-10 text-sm sm:text-base font-medium bg-secondary-600 hover:bg-secondary-700 transition-all ease-in text-white mt-2 flex_center gap-2"
+          className="block rounded-lg overflow-hidden w-full h-10 text-xs sm:text-sm md:text-base font-medium bg-secondary-600 hover:bg-secondary-700 transition-all ease-in text-white mt-2 flex_center gap-1 md:gap-2 text-nowrap"
         >
-          <ShoppingBag className="text-white w-5 h-5" />
+          <ShoppingBag className="text-white w-4 h-4 md:w-5 md:h-5" />
           مشاهده محصول
         </Link>
       </div>
