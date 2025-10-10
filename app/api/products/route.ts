@@ -68,9 +68,10 @@ export const GET = async (req: Request) => asyncHandler(async () => {
         images: true,
         attributes: true,
         colorVariants: { include: { color: true } },
-        favoredBy: session
-          ? { where: { id: session.user.id }, select: { id: true } }
-          : false,
+        favoredBy:
+          session?.user?.id
+            ? { where: { id: Number(session.user.id) }, select: { id: true } }
+            : false,
       }
     }),
     prisma.product.count({ where })

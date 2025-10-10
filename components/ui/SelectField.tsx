@@ -37,7 +37,13 @@ const SelectField = <T extends FieldValues>({ control, label, name, url, itemCla
       setLoading(true);
       try {
         const { data } = await axiosInstance.get(`/${url}`);
-        setItems(data.data);
+        const list = Array.isArray(data?.data)
+          ? data.data
+          : Array.isArray(data)
+            ? data
+            : [];
+
+        setItems(list);
       } catch (error) {
         handleShowToast(toastErrorText, 'error');
         console.error("Failed to fetch categories:", error);

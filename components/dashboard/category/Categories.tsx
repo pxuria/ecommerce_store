@@ -40,13 +40,14 @@ const Categories = () => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get(`categories?page=${page}&limit=${limit}`);
-            setCategories(data.data);
+            setCategories(Array.isArray(data.data) ? data.data : []);
             setPagination({
                 total: data.pagination.total,
                 currentPage: data.pagination.page,
                 totalPages: data.pagination.totalPages
             });
         } catch (error) {
+            console.log(error);
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
             setLoading(false);

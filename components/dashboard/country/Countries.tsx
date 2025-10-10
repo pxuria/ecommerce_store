@@ -39,7 +39,7 @@ const Countries = () => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get(`countries?page=${page}&limit=${limit}`);
-            setCountries(data.data);
+            setCountries(Array.isArray(data.data) ? data.data : []);
             setPagination({
                 total: data.pagination.total,
                 currentPage: data.pagination.page,

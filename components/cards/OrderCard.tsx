@@ -27,7 +27,7 @@ const OrderCard = ({ order }: Props) => {
       <div className="flex items-center justify-between gap-2 flex-wrap xl:flex-nowrap">
         <h3 className="text-sm text-nowrap flex items-center gap-2 flex-wrap lg:flex-nowrap text-black font-medium">
           <span>شماره سفارش</span>
-          <span className="text-xs md:text-sm text-white bg-pink_700 px-2 py-1 rounded">
+          <span className="text-xs md:text-sm text-white bg-secondary-700 px-2 py-1 rounded">
             {order.id}
           </span>
         </h3>
@@ -57,7 +57,7 @@ const OrderCard = ({ order }: Props) => {
             <h4 className="font-medium text-lg text-black">{item.productColorVariantId}</h4>
 
             <div className="flex items-center justify-start gap-3 flex-wrap">
-              <span className="font-medium bg-purple_800 px-4 py-1 text-white rounded-md flex_center w-fit select-none">
+              <span className="font-medium bg-secondary-500 px-4 py-1 text-white rounded-md flex_center w-fit select-none">
                 {item.quantity.toString()} عدد
               </span>
 
@@ -74,7 +74,7 @@ const OrderCard = ({ order }: Props) => {
 
       <div className="flex-column gap-2 flex-wrap xl:flex-nowrap mt-2">
         {/* total price */}
-        <div className="flex items-center justify-start gap-2 flex-wrap lg:flex-nowrap mt-4 text-black bg-pink_800 p-2 rounded-md w-fit">
+        <div className="flex items-center justify-start gap-2 flex-wrap lg:flex-nowrap mt-4 text-black bg-primary-700 p-2 rounded-md w-fit">
           <span className="font-medium text-lg text-white">مبلغ کل</span>
 
           <div className="flex_center font-medium flex-nowrap gap-1 bg-white px-4 py-1 rounded">
@@ -90,7 +90,7 @@ const OrderCard = ({ order }: Props) => {
           <button
             type="button"
             onClick={orderHandler}
-            className="flex_center w-full rounded-md text-white bg-purple_900 hover:bg-purple_800 primary_transition text-nowrap py-2"
+            className="flex_center w-full rounded-md text-white bg-secondary-700 hover:bg-secondary-800 primary_transition text-nowrap py-2"
           >
             تسویه حساب
           </button>
