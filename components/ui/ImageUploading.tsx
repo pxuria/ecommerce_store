@@ -121,27 +121,56 @@ const ImageUploading = ({
 
       {/* Preview */}
       <aside className="flex flex-wrap mt-4">
-        {previews.map((img, index) => (
-          <div
-            key={index}
-            className="relative m-4 w-24 h-24 border rounded-md overflow-hidden"
-          >
-            <Image
-              src={typeof img === "string" ? img : img.preview}
-              alt={`preview-${index}`}
-              fill
-              style={{ objectFit: "cover" }}
-              className="rounded-md"
-            />
-
-            {!disabled && (
-              <CircleX
-                onClick={() => removeFile(index)}
-                className="text-red-600 bg-white rounded-full w-6 h-6 absolute top-0 right-0 hover:text-red-700 transition cursor-pointer"
+        {/* existing images */}
+        {Array.isArray(existingImageUrls) &&
+          existingImageUrls.map((url, index) => (
+            <div
+              key={`existing-${index}`}
+              className="relative m-4 w-24 h-24 border rounded-md overflow-hidden"
+            >
+              <Image
+                src={url}
+                alt={`existing-${index}`}
+                fill
+                style={{ objectFit: "cover" }}
+                className="rounded-md"
               />
-            )}
-          </div>
-        ))}
+              {!disabled && (
+                <CircleX
+                  onClick={() => {
+                    if (setExistingImageUrls) {
+                      const updated = existingImageUrls.filter((_, i) => i !== index);
+                      setExistingImageUrls(updated.length ? updated : null);
+                    }
+                  }}
+                  className="text-red-600 bg-white rounded-full w-6 h-6 absolute top-0 right-0 hover:text-red-700 transition cursor-pointer"
+                />
+              )}
+            </div>
+          ))}
+
+        {/* new uploaded files */}
+        {Array.isArray(files) &&
+          files.map((file, index) => (
+            <div
+              key={`file-${index}`}
+              className="relative m-4 w-24 h-24 border rounded-md overflow-hidden"
+            >
+              <Image
+                src={file.preview}
+                alt={`file-${index}`}
+                fill
+                style={{ objectFit: "cover" }}
+                className="rounded-md"
+              />
+              {!disabled && (
+                <CircleX
+                  onClick={() => removeFile(index)}
+                  className="text-red-600 bg-white rounded-full w-6 h-6 absolute top-0 right-0 hover:text-red-700 transition cursor-pointer"
+                />
+              )}
+            </div>
+          ))}
       </aside>
     </div>
   );

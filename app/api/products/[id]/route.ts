@@ -4,6 +4,7 @@ import prisma from '@/lib/db';
 import { ParamsType } from "@/types";
 import { authOptions } from '@/utils/authOptions';
 import { asyncHandler, HttpError, parseId } from "@/utils/helpers";
+import { ProductColorVariant } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
 const defaultIncludes = {
@@ -96,16 +97,54 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
   }
 
   if (body.colorVariants) {
-    await prisma.productColorVariant.deleteMany({ where: { productId: id } });
-    await prisma.productColorVariant.createMany({
-      data: body.colorVariants.map((cv: { colorId: string; pricePerMeter: number; discountPercent: number; stockMeters: number; }) => ({
-        productId: id,
-        colorId: Number(cv.colorId),
-        pricePerMeter: cv.pricePerMeter,
-        discountPercent: cv.discountPercent,
-        stockMeters: cv.stockMeters,
-      })),
+    const existingVariants = await prisma.productColorVariant.findMany({
+      where: { productId: id },
     });
+    const incomingIds = body.colorVariants.map((cv: ProductColorVariant) => cv.id).filter(Boolean);
+
+    const deletableVariants = existingVariants.filter(v =>
+      !incomingIds.includes(v.id)
+    );
+
+    for (const v of deletableVariants) {
+      // check if variant is used in any order
+      const orderCount = await prisma.orderItem.count({
+        where: { productColorVariantId: v.id },
+      });
+      if (orderCount === 0) {
+        await prisma.productColorVariant.delete({ where: { id: v.id } });
+      }
+    }
+
+    for (const cv of body.colorVariants) {
+      const existingVariant = await prisma.productColorVariant.findFirst({
+        where: {
+          productId: id,
+          colorId: Number(cv.colorId),
+        },
+      });
+
+      if (existingVariant) {
+        await prisma.productColorVariant.update({
+          where: { id: existingVariant.id },
+          data: {
+            pricePerMeter: cv.pricePerMeter,
+            discountPercent: cv.discountPercent,
+            stockMeters: cv.stockMeters,
+          },
+        });
+      } else {
+        await prisma.productColorVariant.create({
+          data: {
+            productId: id,
+            colorId: Number(cv.colorId),
+            pricePerMeter: cv.pricePerMeter,
+            discountPercent: cv.discountPercent,
+            stockMeters: cv.stockMeters,
+          },
+        });
+      }
+    }
   }
 
   const updatedProduct = await prisma.product.findUnique({ where: { id }, include: defaultIncludes });

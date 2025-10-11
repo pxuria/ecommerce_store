@@ -26,7 +26,9 @@ interface Props {
 const ProductForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState(false);
     const [images, setImages] = useState<FileWithPreview[]>([]);
-    console.log(item);
+    const [existingImageUrls, setExistingImageUrls] = useState<string[]>(
+        item?.images?.map((img) => img.url) || []
+    );
 
     const defaultValues: productValues = {
         name: item?.name || '',
@@ -73,18 +75,26 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
             let uploadedImages: string[] = [];
             if (images.length > 0) uploadedImages = await uploadImage(images);
 
-
-            const finalImages = [...uploadedImages].filter(url => /^https?:\/\//.test(url));;
+            const finalImages = uploadedImages.length > 0
+                ? [...uploadedImages]
+                : existingImageUrls;
 
             const payload = {
                 ...values,
                 categoryId: values.categoryId || null,
                 brandId: values.brandId || null,
                 countryId: values.countryId || null,
-                images: finalImages,
                 attributes: values.attributes ?? [],
                 colorVariants: values.colorVariants ?? []
             };
+
+            if (
+                uploadedImages.length > 0 ||
+                existingImageUrls.length !== (item?.images?.length || 0) ||
+                !existingImageUrls.every((url, i) => url === item?.images?.[i]?.url)
+            ) {
+                payload.images = finalImages;
+            }
 
             if (onUpdated) {
                 const changed = getChangedFields(defaultValues, payload);
@@ -98,7 +108,10 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                 console.log(data);
             }
             else {
-                const { data } = await axiosInstance.post("products", payload);
+                const { data } = await axiosInstance.post("products", {
+                    ...payload,
+                    images: finalImages
+                });
                 console.log(data);
             }
 
@@ -165,12 +178,12 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     name="isActive"
                     render={({ field }) => (
                         <FormItem className="w-full sm:w-[calc(50%-8px)]">
-                            <FormLabel className="form_label">وضعیت محصول (فعال)</FormLabel>
+                            <FormLabel className="form_label">وضعیت محصول</FormLabel>
                             <FormControl>
                                 <Switch
                                     className="block"
                                     checked={field.value}
-                                    onCheckedChange={field.onChange}
+                                    onCheckedChange={checked => field.onChange(checked)}
                                     disabled={loading}
                                 />
                             </FormControl>
@@ -255,10 +268,12 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     multiple={true}
                     disabled={loading}
                     setFiles={files => setImages(files && Array.isArray(files) ? files : [])}
-                    existingImageUrls={item?.images?.map((img) => img.url) || []}
-                    setExistingImageUrls={(urls) =>
-                        form.setValue("images", urls && Array.isArray(urls) ? urls : undefined)
-                    }
+                    existingImageUrls={existingImageUrls}
+                    setExistingImageUrls={(urls) => {
+                        const newUrls = urls && Array.isArray(urls) ? urls : [];
+                        setExistingImageUrls(newUrls);
+                        form.setValue("images", newUrls);
+                    }}
                 />
 
                 {/* content */}
