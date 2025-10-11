@@ -97,7 +97,7 @@ const Page = () => {
           {loading
             ? <LottieText text="در حال بارگذاری" itemClass="w-64 h-64" file={productLoading} />
             : (products.length ? (
-              <div className="w-full flex items-start justify-start gap-2 sm:gap-4 flex-wrap">
+              <div className="w-full flex items-stretch justify-start gap-2 sm:gap-4 flex-wrap">
                 {products?.map((item: IProductWithBasePrice) => (
                   <ProductCard
                     key={item.id}

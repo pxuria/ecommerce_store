@@ -16,6 +16,7 @@ import { IProduct } from "@/types/model";
 import { FileWithPreview } from "@/types";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
+import { handleShowToast } from "@/lib/toast";
 
 interface Props {
     item?: IProduct;
@@ -106,6 +107,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
 
                 const { data } = await axiosInstance.put(`products/${item?.id}`, changed);
                 console.log(data);
+                handleShowToast('محصول با موفقیت ویرایش شد');
             }
             else {
                 const { data } = await axiosInstance.post("products", {
@@ -113,6 +115,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                     images: finalImages
                 });
                 console.log(data);
+                handleShowToast('محصول با موفقیت ساخته شد');
             }
 
         } catch (error) {
