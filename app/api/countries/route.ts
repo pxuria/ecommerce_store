@@ -7,7 +7,7 @@ import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const cachedCountries = await cachedData(redisKeys.countries.all);
-    if (cachedCountries) return { data: JSON.parse(cachedCountries) };
+    if (cachedCountries) return { ...JSON.parse(cachedCountries) };
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);

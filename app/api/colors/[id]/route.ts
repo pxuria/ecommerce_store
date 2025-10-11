@@ -11,7 +11,7 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
     const redisId = `${redisKeys.colors.byId}${id}`;
 
     const cachedColor = await cachedData(redisId);
-    if (cachedColor) return { data: JSON.parse(cachedColor) };
+    if (cachedColor) return { ...JSON.parse(cachedColor) };
 
     const color = await prisma.productColor.findUnique({ where: { id } });
     if (!color) throw new HttpError("Color not found", 404);

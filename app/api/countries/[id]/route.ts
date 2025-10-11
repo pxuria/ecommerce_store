@@ -11,7 +11,7 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
     const redisId = `${redisKeys.countries.byId}${id}`;
 
     const cachedCountry = await cachedData(redisId);
-    if (cachedCountry) return { data: JSON.parse(cachedCountry) };
+    if (cachedCountry) return { ...JSON.parse(cachedCountry) };
 
     const country = await prisma.productCountry.findUnique({ where: { id } });
     if (!country) throw new HttpError("Country not found", 404);

@@ -11,7 +11,7 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
     const redisId = `${redisKeys.categories.byId}${id}`;
 
     const cachedCategory = await cachedData(redisId);
-    if (cachedCategory) return { data: JSON.parse(cachedCategory) };
+    if (cachedCategory) return { ...JSON.parse(cachedCategory) };
 
     const category = await prisma.productCategory.findUnique({ where: { id } });
     if (!category) throw new HttpError("Category not found", 404);

@@ -10,7 +10,7 @@ export const GET = async () => asyncHandler(async () => {
     if (!session) throw new HttpError("ابتدا وارد حساب کاربری شوید", 401);
 
     const user = await prisma.user.findUnique({
-        where: { id: session.user.id },
+        where: { id: Number(session.user.id) },
         include: {
             favorites: {
                 include: {

@@ -11,7 +11,7 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
     const redisId = `${redisKeys.brands.byId}${id}`;
 
     const cachedBrand = await cachedData(redisId);
-    if (cachedBrand) return { data: JSON.parse(cachedBrand) };
+    if (cachedBrand) return { ...JSON.parse(cachedBrand) };
 
     const brand = await prisma.productBrand.findUnique({ where: { id } });
     if (!brand) throw new HttpError("Brand not found", 404);

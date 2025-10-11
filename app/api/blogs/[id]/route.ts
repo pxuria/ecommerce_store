@@ -11,7 +11,7 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
     const redisId = `${redisKeys.blogs.byId}${id}`;
 
     const cachedBlog = await cachedData(redisId);
-    if (cachedBlog) return { data: JSON.parse(cachedBlog) };
+    if (cachedBlog) return { ...JSON.parse(cachedBlog) };
 
     const blog = await prisma.blog.findUnique({ where: { id } });
     if (!blog) throw new HttpError('Blog not found', 404);

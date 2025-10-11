@@ -7,7 +7,7 @@ import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const cachedColor = await cachedData(redisKeys.colors.all);
-    if (cachedColor) return { data: JSON.parse(cachedColor) };
+    if (cachedColor) return { ...JSON.parse(cachedColor) };
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
