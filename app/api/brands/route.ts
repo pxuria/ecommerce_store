@@ -18,7 +18,15 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     const brands = await prisma.productBrand.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
     const total = await prisma.productBrand.count();
 
-    await cacheWithTTL(redisKeys.brands.all, JSON.stringify(brands), 300);
+    await cacheWithTTL(redisKeys.brands.all, JSON.stringify({
+        data: brands,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        }
+    }), 300);
 
     return {
         data: brands,

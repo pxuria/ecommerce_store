@@ -23,7 +23,15 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 
     const total = await prisma.productColor.count();
 
-    await cacheWithTTL(redisKeys.brands.all, JSON.stringify(countries), 300);
+    await cacheWithTTL(redisKeys.brands.all, JSON.stringify({
+        data: countries,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        }
+    }), 300);
 
     return {
         data: countries,

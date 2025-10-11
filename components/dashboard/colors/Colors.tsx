@@ -37,12 +37,11 @@ const Colors = () => {
     const limit = 10;
 
     const fetchColors = useCallback(async () => {
-        console.log(1)
         setLoading(true);
         try {
             const res = await fetch(`/api/colors?page=${page}&limit=${limit}`);
             const data = await res.json();
-            console.log(data)
+
             setColors(Array.isArray(data.data) ? data.data : []);
             setPagination({
                 total: data.pagination.total,

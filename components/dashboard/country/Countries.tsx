@@ -39,6 +39,7 @@ const Countries = () => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get(`countries?page=${page}&limit=${limit}`);
+
             setCountries(Array.isArray(data.data) ? data.data : []);
             setPagination({
                 total: data.pagination.total,
@@ -46,6 +47,7 @@ const Countries = () => {
                 totalPages: data.pagination.totalPages
             });
         } catch (error) {
+            console.log(error)
             if (error instanceof Error) handleShowToast(error.message, 'error');
         } finally {
             setLoading(false);

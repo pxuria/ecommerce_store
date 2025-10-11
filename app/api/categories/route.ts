@@ -17,7 +17,16 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     const categories = await prisma.productCategory.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
     const total = await prisma.productCategory.count();
 
-    await cacheWithTTL(redisKeys.categories.all, JSON.stringify(categories), 300);
+    await cacheWithTTL(redisKeys.categories.all, JSON.stringify({
+        data: categories,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        }
+    }), 300);
+
     return {
         data: categories,
         pagination: {
