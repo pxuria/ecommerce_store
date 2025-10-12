@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
 import { getServerSession } from 'next-auth';
-import { asyncHandler, toSlug } from "@/utils/helpers";
+import { asyncHandler, attachBaseProductData, toSlug } from "@/utils/helpers";
 import { authOptions } from '@/utils/authOptions';
 import prisma from '@/lib/db';
 
@@ -77,26 +77,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     prisma.product.count({ where })
   ]);
 
-  const attachedData = products.map(p => {
-    const basePrice = Math.min(...p.colorVariants.map(cv => cv.pricePerMeter.toNumber()));
-    const variant = p.colorVariants.find(cv => cv.pricePerMeter.toNumber() === basePrice);
-
-    let finalPrice = basePrice;
-    let discountPercent = 0;
-
-    if (variant?.discountPercent) {
-      discountPercent = variant.discountPercent.toNumber();
-      finalPrice = Math.round(basePrice * (1 - discountPercent / 100));
-    }
-
-    return {
-      ...p,
-      basePrice,
-      finalPrice,
-      discountPercent,
-      isBookmarked: session ? p.favoredBy.length > 0 : false
-    };
-  });
+  const attachedData = attachBaseProductData(products, session);
 
   // Apply price filtering after calculating final prices
   const filteredData = attachedData.filter(p => {

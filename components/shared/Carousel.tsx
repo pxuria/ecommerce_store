@@ -59,7 +59,7 @@ const Carousel = ({
 
   return (
     <section
-      className={`my-10 w-full ${carouselBg ? `bg-${carouselBg}` : ""} ${side === "left" ? "pr-4 sm:pr-10 pl-0" : "pl-4 sm:pl-10 pr-0"
+      className={`my-10 w-full ${carouselBg ? `bg-${carouselBg}` : ""} ${side === "left" ? "pr-4 sm:pr-10 pl-2" : "pl-4 sm:pl-10 pr-2"
         } ${carouselClass} py-6`}
       aria-label={title}
     >
@@ -85,13 +85,12 @@ const Carousel = ({
       </div>
 
       {/* Embla Carousel */}
-      <div
-        className={`w-full ${side === "left" ? "mr-auto justify-start" : "ml-auto justify-end"
-          } mt-8 flex flex-row-reverse items-center gap-4 md:gap-8`}
+      <div className={`w-full ${side === "left" ? "mr-auto justify-start" : "ml-auto justify-end"
+        } mt-8 flex flex-row-reverse items-center gap-4 md:gap-8`}
       >
         {side === "right" && (
           <CarouselBtn onClick={handleNext}>
-            <ChevronLeft className="text-black select-none w-5 h-5 absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2" />
+            <ChevronLeft className="text-black select-none w-5 h-5 absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 z-50" />
           </CarouselBtn>
         )}
 
@@ -105,7 +104,7 @@ const Carousel = ({
           {cards?.length > 0 && (
             <div className="embla" ref={emblaRef}>
               <div className="embla__container">
-                {cards.map((item, index) => <ProductCard key={index} product={item} itemClass="mx-1 md:mx-2" />)}
+                {cards.map((item, index) => <ProductCard key={index} product={item} itemClass="mx-1 md:mx-2 flex-[0_0_50%] md:flex-[0_0_30%]" />)}
               </div>
             </div>
           )}
@@ -113,7 +112,7 @@ const Carousel = ({
 
         {side === "left" && (
           <CarouselBtn onClick={handlePrev}>
-            <ChevronRight className="text-black select-none w-5 h-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            <ChevronRight className="text-black select-none w-5 h-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50" />
           </CarouselBtn>
         )}
       </div>

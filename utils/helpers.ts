@@ -6,6 +6,8 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { isAdmin } from "@/lib/auth";
 import slugify from "slugify";
+import { type Product, type ProductColorVariant } from "@prisma/client";
+import { Session } from "next-auth";
 
 type ActionFn<T> = () => Promise<T> | T;
 interface AsyncHandlerOptions {
@@ -13,6 +15,12 @@ interface AsyncHandlerOptions {
   successStatus?: number;
   errorMsg?: string;
 }
+
+type ProductWithRelations = Product & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  colorVariants: (ProductColorVariant & { discountPercent?: any })[];
+  favoredBy?: { id: number }[];
+};
 
 export const getCartItemQuantity = (
   cartItems: CartItem[],
@@ -180,3 +188,31 @@ export const toJalaliDate = (
 
 export const toSlug = (slug: string) => slugify(slug, { lower: true, strict: true });
 
+export function attachBaseProductData(
+  products: ProductWithRelations[],
+  session?: Session | null
+) {
+  return products.map((p) => {
+    // Find base price (minimum among color variants)
+    const basePrice = Math.min(...p.colorVariants.map(cv => cv.pricePerMeter.toNumber()));
+    const variant = p.colorVariants.find(
+      (cv) => cv.pricePerMeter.toNumber() === basePrice
+    );
+
+    let finalPrice = basePrice;
+    let discountPercent = 0;
+
+    if (variant?.discountPercent) {
+      discountPercent = variant.discountPercent.toNumber();
+      finalPrice = Math.round(basePrice * (1 - discountPercent / 100));
+    }
+
+    return {
+      ...p,
+      basePrice,
+      finalPrice,
+      discountPercent,
+      isBookmarked: session ? (p.favoredBy?.length ?? 0) > 0 : false,
+    };
+  });
+}

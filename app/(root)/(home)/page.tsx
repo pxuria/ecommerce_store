@@ -33,7 +33,7 @@ const page = () => {
         title="محصولات پرفروش"
         seeAllLink="products"
         carouselClass="z-10"
-        api="products?limit=16&sortBy=price&sortOrder=desc"
+        api="products/most-ordered"
       />
 
       <Carousel
