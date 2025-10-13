@@ -14,16 +14,16 @@ interface Props {
 
 const OPTIONS: EmblaOptionsType = {
   loop: true,
-  align: 'start',
+  align: 'center',
   dragFree: false,
-  containScroll: 'trimSnaps'
+  containScroll: 'trimSnaps',
+  direction: 'rtl'
 };
 
 const CarouselProductDetails = ({ product }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [emblaMainRef, emblaMainApi] = useEmblaCarousel(OPTIONS);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const onThumbClick = useCallback(
     (index: number) => {
@@ -42,8 +42,6 @@ const CarouselProductDetails = ({ product }: Props) => {
     if (!emblaMainApi) return;
 
     onSelect();
-    setScrollSnaps(emblaMainApi.scrollSnapList());
-
     emblaMainApi.on("select", onSelect);
     emblaMainApi.on("reInit", onSelect);
 
@@ -67,13 +65,16 @@ const CarouselProductDetails = ({ product }: Props) => {
     })) || [];
 
   return (
-    <div className="w-full min-[880px]:w-1/2 flex flex-row-reverse gap-4">
+    <div className="w-full min-[880px]:w-1/2 flex flex-col gap-4">
       {/* Main Carousel */}
-      <div className="embla w-[calc(75%-16px)]">
-        <div className="embla__viewport rounded-xl overflow-hidden" ref={emblaMainRef}>
+      <div className="embla">
+        <div className="embla__viewport rounded-xl" ref={emblaMainRef}>
           <div className="embla__container h-full">
             {images.map((item, idx) => (
-              <div className="embla__slide flex-[0_0_100%] min-w-0 relative" key={idx}>
+              <div
+                className="embla__slide flex-[0_0_100%] min-w-0 relative"
+                key={idx}
+              >
                 <div className="relative w-full h-full">
                   <Image
                     src={item.image}
@@ -81,7 +82,7 @@ const CarouselProductDetails = ({ product }: Props) => {
                     height={800}
                     unoptimized
                     alt={`${product.name} image ${idx + 1}`}
-                    className="w-full h-[480px] object-cover"
+                    className="w-full h-[480px] object-cover rounded-xl"
                     priority={idx === 0}
                   />
 
@@ -89,11 +90,16 @@ const CarouselProductDetails = ({ product }: Props) => {
                   <div className="absolute top-4 right-4">
                     <button
                       className="bg-[#f9fafbb3] hover:bg-[#f8f9fa] transition-all duration-200 cursor-pointer rounded-full p-2 z-40"
-                      aria-label={bookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
+                      aria-label={
+                        bookmarked ? "Remove from bookmarks" : "Add to bookmarks"
+                      }
                       onClick={handleBookmark}
                       type="button"
                     >
-                      <Bookmark size={24} fill={bookmarked ? '#000' : "none"} />
+                      <Bookmark
+                        size={24}
+                        fill={bookmarked ? "#000" : "none"}
+                      />
                     </button>
                   </div>
 
@@ -101,7 +107,9 @@ const CarouselProductDetails = ({ product }: Props) => {
                   <div className="absolute top-4 left-4">
                     <button
                       className="bg-[#f9fafbb3] hover:bg-[#f8f9fa] transition-all duration-200 cursor-pointer rounded-full p-2 z-40"
-                      onClick={() => navigator.share?.({ url: window.location.href })}
+                      onClick={() =>
+                        navigator.share?.({ url: window.location.href })
+                      }
                       type="button"
                     >
                       <Share2 size={20} />
@@ -116,28 +124,26 @@ const CarouselProductDetails = ({ product }: Props) => {
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="w-[calc(25%-16px)] max-h-[480px] overflow-y-auto">
-          <div className="flex flex-col gap-2">
-            {images.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => onThumbClick(index)}
-                className={`border-2 rounded-xl overflow-hidden transition-all duration-200 ${index === selectedIndex
-                  ? "border-black opacity-100"
-                  : "border-transparent opacity-70 hover:opacity-100"
-                  }`}
-                type="button"
-              >
-                <Image
-                  src={item.image}
-                  width={150}
-                  height={150}
-                  alt={item.alt}
-                  className="w-full h-[120px] object-cover"
-                />
-              </button>
-            ))}
-          </div>
+        <div className="flex gap-2 max-h-[480px] overflow-y-auto">
+          {images.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => onThumbClick(index)}
+              className={`border-2 rounded-xl overflow-hidden transition-all duration-200 ${index === selectedIndex
+                ? "border-black opacity-100"
+                : "border-transparent opacity-70 hover:opacity-100"
+                }`}
+              type="button"
+            >
+              <Image
+                src={item.image}
+                width={150}
+                height={150}
+                alt={item.alt}
+                className="w-full h-[120px] object-cover aspect-square"
+              />
+            </button>
+          ))}
         </div>
       )}
     </div>

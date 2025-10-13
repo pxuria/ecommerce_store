@@ -1,11 +1,12 @@
 /* carousel.css */
 .embla {
+  width: 100%;
   overflow: hidden;
   position: relative;
 }
 .embla__viewport {
-  overflow: hidden;
   width: 100%;
+  overflow: hidden;
 }
 .embla__container {
   display: flex;
@@ -13,9 +14,23 @@
   -webkit-touch-callout: none;
   -khtml-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  margin-left: -1rem; /* optional */
 }
 .embla__slide {
   position: relative;
   min-width: 100%;
   flex: 0 0 100%;
+  padding-left: 1rem;
+}
+
+.embla__slide > div {
+  width: 100%;
+  height: 480px; /* 👈 keeps consistent height */
+}
+
+.embla__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.75rem; /* rounded-xl */
 }
