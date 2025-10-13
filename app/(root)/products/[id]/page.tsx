@@ -58,6 +58,14 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
       <section className="w-full mt-8 container mx-auto px-10">
         <div className="p-4">
+          <h2 className="text-xl text-black font-medium mb-4 pb-1 w-fit border-b-2 border-secondary-700">توضیحات</h2>
+          <div
+            className="my-8 leading-normal font-normal"
+            dangerouslySetInnerHTML={{ __html: product.description as string }}
+          />
+        </div>
+
+        <div className="p-4">
           <h2 className="text-xl text-black font-medium mb-4 pb-1 w-fit border-b-2 border-secondary-700">مشخصات</h2>
 
           {product.attributes?.map(attr => (

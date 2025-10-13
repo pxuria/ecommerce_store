@@ -170,7 +170,7 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
 
         <Link
           href={`products/${product.id}`}
-          className="mt-auto block rounded-lg overflow-hidden w-full h-10 text-xs sm:text-sm md:text-base font-medium bg-secondary-600 hover:bg-secondary-700 transition-all ease-in text-white flex_center gap-1 md:gap-2 text-nowrap"
+          className="block rounded-lg overflow-hidden w-full h-10 text-xs sm:text-sm md:text-base font-medium bg-secondary-600 hover:bg-secondary-700 transition-all ease-in text-white flex_center gap-1 md:gap-2 text-nowrap mt-2"
         >
           <ShoppingBag className="text-white w-4 h-4 md:w-5 md:h-5" />
           مشاهده محصول

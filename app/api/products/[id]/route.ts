@@ -7,7 +7,7 @@ import { asyncHandler, HttpError, parseId } from "@/utils/helpers";
 import { ProductColorVariant } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
-const defaultIncludes = {
+export const defaultIncludes = {
   images: true,
   attributes: true,
   colorVariants: { include: { color: true } },

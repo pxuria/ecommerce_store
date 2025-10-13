@@ -10,6 +10,12 @@ html {
   --slide-height: 28rem;
   --slide-spacing: 1rem;
   --slide-size: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
 }
 .embla__container {
   display: flex;
@@ -21,11 +27,10 @@ html {
   flex: 0 0 var(--slide-size);
   min-width: 0;
   padding-left: var(--slide-spacing);
-}
-.embla__slide__number {
-  border-radius: 2rem;
+  position: relative;
+  /* border-radius: 2rem;
   overflow: hidden;
-  max-height: var(--slide-height);
+  max-height: var(--slide-height); */
   user-select: none;
 }
 .embla__controls {
