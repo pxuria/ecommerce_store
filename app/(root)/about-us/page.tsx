@@ -74,17 +74,9 @@ const page = () => {
           </p> */}
         </div>
 
-        <div className="relative w-full lg:w-1/2">
+        <div className="w-full lg:w-1/2">
           <Image
-            src="/assets/images/outlined_logo.png"
-            alt={enBrandName}
-            width={435}
-            height={142}
-            className="w-28 h-9 absolute left-4 top-4"
-            priority
-          />
-          <Image
-            src="/assets/images/pic5.jpg"
+            src="/assets/images/about.jpg"
             width={4413}
             height={6620}
             alt="contact us"

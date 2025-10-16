@@ -84,7 +84,7 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
               </button>
               <div className="group relative z-0">
                 <div className="carousel_item_img flex_center">
-                  <h4 className="font-bold text-white md:text-black hidden sm:block">Arshianbaft</h4>
+                  <h4 className="font-bold text-white md:text-black hidden sm:block">arshianbaft</h4>
                   {/* <Image
                   src="/assets/images/outlined_logo.png"
                   alt={enBrandName}

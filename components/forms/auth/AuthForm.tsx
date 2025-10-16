@@ -26,7 +26,7 @@ const AuthForm = ({ onOpen, open }: Props) => {
       <DialogContent className="bg-white min-h-[450px] overflow-hidden !rounded-2xl auth_dialog w-[90%] mx-auto">
         <DialogHeader>
           <DialogTitle className="text-nowrap w-fit text-[32px] font-bold mx-auto mb-4">
-            Arshian Baft
+            arshian baft
           </DialogTitle>
         </DialogHeader>
 
