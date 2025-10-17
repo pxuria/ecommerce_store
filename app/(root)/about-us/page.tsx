@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     //   "مارین، فروشگاه آنلاین تخصصی پوشاک زنانه و دخترانه با ارائه جدیدترین و باکیفیت‌ترین محصولات از برندهای معتبر جهانی",
     images: [
       {
-        url: "/assets/images/pic5.jpg",
+        url: "/assets/images/about.jpg",
         width: 4413,
         height: 6620,
         alt: `${enBrandName} Fashion Store`,

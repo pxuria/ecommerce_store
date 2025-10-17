@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     //   "با ما در ارتباط باشید - پشتیبانی ۲۴/۷ فروشگاه مارین، متخصص در ارائه پوشاک زنانه و دخترانه",
     images: [
       {
-        url: "/assets/images/pic5.jpg",
+        url: "/assets/images/about.jpg",
         width: 4413,
         height: 6620,
         alt: `تماس با ${brandName} - Contact ${enBrandName}`,
