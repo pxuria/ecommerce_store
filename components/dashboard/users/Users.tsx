@@ -41,7 +41,7 @@ const Users = () => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get(`users?page=${page}&limit=${limit}`);
-            setUsers(data);
+            setUsers(data.data);
             setPagination({
                 total: data.pagination.total,
                 currentPage: data.pagination.page,
