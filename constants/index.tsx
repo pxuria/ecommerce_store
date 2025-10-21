@@ -44,11 +44,7 @@ export const mobileNavbarLinks = [
   {
     label: "تماس با ما",
     link: "/contact-us",
-  },
-  {
-    label: "سبد خرید",
-    link: "/dashboard?tab=orders",
-  },
+  }
 ];
 
 export const socials = [

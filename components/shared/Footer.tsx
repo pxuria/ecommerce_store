@@ -15,13 +15,13 @@ const Footer = () => {
             height={480}
             className="w-20 h-20 rounded-xl"
           /> */}
-          <h2 className="text-black text-2xl font-bold">LOGO</h2>
+          {/* <h2 className="text-black text-2xl font-bold">LOGO</h2>
           <p className="text-base text-black">
             لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
             استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در
             ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و
             کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
-          </p>
+          </p> */}
           <div className="flex_center gap-8">
             {/* socials */}
             <ul className="flex_center gap-4 mt-3">

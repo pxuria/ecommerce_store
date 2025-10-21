@@ -82,7 +82,7 @@ const CarouselProductDetails = ({ product }: Props) => {
                     height={800}
                     unoptimized
                     alt={`${product.name} image ${idx + 1}`}
-                    className="w-full h-[480px] object-cover rounded-xl"
+                    className="w-full h-[480px] object-contain rounded-xl"
                     priority={idx === 0}
                   />
 

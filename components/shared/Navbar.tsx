@@ -5,22 +5,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "../ui/button";
-import { Popover, PopoverContent } from "@/components/ui/popover";
 import AuthForm from "./../forms/auth/AuthForm";
-import { useAppSelector } from "@/lib/store";
-import { PopoverTrigger } from "@radix-ui/react-popover";
 import CartPopover from "./CartPopover";
 import NavItems from "./NavItems";
 import MobileNavbar from "./MobileNavbar";
 import useMediaQuery from "@/utils/useMediaQuery";
-import { Search, ShoppingBag, User } from "lucide-react";
+import { Search, User } from "lucide-react";
 
 const Navbar = () => {
   const [openAuth, setOpenAuth] = useState(false);
-  const [cartTrigger, setCartTrigger] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
-  const cart = useAppSelector((state) => state.cart);
 
   const isProductsPage = useMemo(() => pathname === "/products", [pathname]);
   const isMobile = useMediaQuery("(max-width: 1024px)");
@@ -61,7 +56,7 @@ const Navbar = () => {
             </Button>
           )}
 
-          <Popover onOpenChange={setCartTrigger} open={cartTrigger}>
+          {/* <Popover onOpenChange={setCartTrigger} open={cartTrigger}>
             <PopoverTrigger asChild>
               <div className="relative cursor-pointer">
                 <span className="absolute -top-2 -right-2 w-5 h-5 flex_center rounded-full z-10 bg-secondary-700 text-xs text-white">
@@ -78,10 +73,10 @@ const Navbar = () => {
                 </Button>
               </div>
             </PopoverTrigger>
-            <PopoverContent className="bg-[#fff] mt-1 p-2 rounded-xl outline-none border-light_muted">
-              <CartPopover onOpenChange={setCartTrigger} />
-            </PopoverContent>
-          </Popover>
+            <PopoverContent className="bg-[#fff] mt-1 p-2 rounded-xl outline-none border-light_muted"> */}
+          <CartPopover />
+          {/* </PopoverContent>
+          </Popover> */}
 
           {!session ? (
             <Button

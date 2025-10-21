@@ -14,6 +14,7 @@ import {
 import AuthForm from "../forms/auth/AuthForm";
 import { mobileNavbarLinks } from "@/constants";
 import { Button } from "../ui/button";
+import CartPopover from "./CartPopover";
 
 const MobileNavbar = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -32,9 +33,13 @@ const MobileNavbar = () => {
   return (
     <>
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger aria-label="باز کردن منو موبایل">
-          <Menu className="w-7 h-7 text-black" />
-        </SheetTrigger>
+        <div className="flex_center gap-2">
+          <CartPopover />
+
+          <SheetTrigger aria-label="باز کردن منو موبایل">
+            <Menu className="w-7 h-7 text-black" />
+          </SheetTrigger>
+        </div>
 
         <SheetContent className="bg-white" side="right">
           <SheetTitle className="hidden">منو موبایل</SheetTitle>
