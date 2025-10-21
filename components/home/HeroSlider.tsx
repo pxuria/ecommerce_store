@@ -9,10 +9,9 @@ import "../shared/carousel/embla.css";
 
 const OPTIONS: EmblaOptionsType = { loop: true }
 const SLIDES = [
-    { image: '/assets/images/bg-1.png', alt: 'banner1' },
-    { image: '/assets/images/bg-2.png', alt: 'banner2' },
-    { image: '/assets/images/bg-3.png', alt: 'banner3' },
-    { image: '/assets/images/bg-4.png', alt: 'banner4' },
+    { image: '/assets/images/banner1.jpg', alt: 'banner2' },
+    { image: '/assets/images/banner2.jpg', alt: 'banner3' },
+    { image: '/assets/images/banner.jpg', alt: 'banner1' }
 ]
 
 const HeroSlider = () => {
@@ -32,9 +31,7 @@ const HeroSlider = () => {
                 <div className="embla__container">
                     {SLIDES.map((item, index) => (
                         <div className="embla__slide" key={index}>
-                            <div className="embla__slide__number">
-                                <Image src={item.image} alt={item.alt} width={900} height={450} className="w-full object-cover max-h-[450px]" />
-                            </div>
+                            <Image src={item.image} alt={item.alt} width={900} height={450} className="w-full object-cover max-h-[450px]" />
                         </div>
                     ))}
                 </div>

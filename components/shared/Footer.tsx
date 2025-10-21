@@ -1,4 +1,4 @@
-import { footerLinks, footerPages, socials } from "@/constants";
+import { socials } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -67,7 +67,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-secondary-700 min-w-[140px]">
+        {/* <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-secondary-700 min-w-[140px]">
           <h4 className="text-2xl font-bold text-secondary-700 mb-5">صفحات</h4>
           <ul className="flex-column gap-4">
             {footerPages.map((item, index) => (
@@ -89,9 +89,9 @@ const Footer = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
 
-        <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-secondary-700 min-w-[140px]">
+        {/* <div className="w-[calc(50%-8px)] md:w-2/12 border-r-2 pr-4 border-secondary-700 min-w-[140px]">
           <h4 className="text-2xl font-bold text-secondary-700 mb-5">
             محصولات جدید
           </h4>
@@ -102,7 +102,7 @@ const Footer = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </div>
 
       {/* copy rights */}

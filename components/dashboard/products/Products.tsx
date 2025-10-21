@@ -133,7 +133,7 @@ const Products = () => {
                                                         height={80}
                                                         alt={product?.images?.[0]?.alt ?? product.name}
                                                         src={product?.images?.[0]?.url ?? "/assets/images/placeholder.webp"}
-                                                        className="rounded-lg object-cover"
+                                                        className="rounded-lg object-cover aspect-square"
                                                     />
                                                 </TableCell>
                                                 <TableCell>{product.slug}</TableCell>

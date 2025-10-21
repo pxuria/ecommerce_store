@@ -22,6 +22,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
 
   const [selectedVariant, setSelectedVariant] = useState<IProductColorVariant | undefined>(product?.colorVariants?.[0]);
   const { pricePerMeter, stockMeters, discountPercent } = selectedVariant as IProductColorVariant;
+  const hasStock = product.colorVariants?.some((variant) => variant.stockMeters > 0) ?? false;
 
   const productItemId = `${product.id}-${selectedVariant?.id}`;
   const cartItem = getCartItem(cartItems, productItemId) as CartItem;
@@ -68,28 +69,37 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
         </div>
 
         <div className="flex-column gap-5 mt-4">
-          <div className="flex gap-4 items-center flex-wrap">
-            <span className="text-white bg-secondary-700 px-4 py-2 rounded-lg font-medium w-fit text-nowrap">
-              {product?.category?.name}
-            </span>
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 items-center flex-wrap">
+              <span className="text-white bg-secondary-700 px-4 py-2 rounded-lg font-medium w-fit text-nowrap">
+                {product?.category?.name}
+              </span>
 
-            <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg text-nowrap">
-              <span className="text-white font-medium">برند</span>
-              <span className="text-secondary-700 bg-white px-2 py-1 rounded-md font-medium">
-                {product?.brand?.name}
-              </span>
+              <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg text-nowrap">
+                <span className="text-white font-medium">برند</span>
+                <span className="text-secondary-700 bg-white px-2 py-1 rounded-md font-medium">
+                  {product?.brand?.name}
+                </span>
+              </div>
+              <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg text-nowrap">
+                <span className="text-white font-medium">کشور</span>
+                <span className="text-secondary-700 bg-white px-2 py-1 rounded-md font-medium">
+                  {product?.country?.name}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center justify-start gap-2 bg-secondary-700 p-1 w-fit rounded-lg text-nowrap">
-              <span className="text-white font-medium">کشور</span>
-              <span className="text-secondary-700 bg-white px-2 py-1 rounded-md font-medium">
-                {product?.country?.name}
-              </span>
-            </div>
+
+            <span
+              className={`text-[10px] sm:text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${(product.isActive && hasStock) ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                }`}
+            >
+              {(product.isActive && hasStock) ? "موجود" : "ناموجود"}
+            </span>
           </div>
 
           <div>
             <span className="text-black font-medium select-none">
-              انتخاب رنگ
+              کد رنگ
             </span>
             <div className="flex gap-4 items-center flex-wrap w-1/2 mt-3">
               {product?.colorVariants?.map((variant) => (
@@ -101,7 +111,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
                     : "border border-muted"
                     }`}
                   onClick={() => setSelectedVariant(variant)}
-                  aria-label={`انتخاب رنگ ${variant.color?.name}`}
+                  aria-label={`کد رنگ ${variant.color?.name}`}
                 >
                   {variant.color?.name}
                 </button>
@@ -137,7 +147,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
             )}
           </div>
 
-          <div className="flex gap-2 mt-2">
+          {/* <div className="flex gap-2 mt-2">
             <h2 className="font-medium text-base">موجودی :</h2>
             <span
               className={`font-bold text-lg ${Number(stockMeters) > 0 ? "text-green-600" : "text-red-600"}`}>
@@ -145,7 +155,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
                 ? `${Number(stockMeters)} متر موجود است`
                 : "ناموجود"}
             </span>
-          </div>
+          </div> */}
 
           <div className="flex items-center gap-2 flex-wrap">
             {quantity > 0 && (
