@@ -129,7 +129,7 @@ const CarouselProductDetails = ({ product }: Props) => {
             <button
               key={index}
               onClick={() => onThumbClick(index)}
-              className={`border-2 rounded-xl overflow-hidden transition-all duration-200 ${index === selectedIndex
+              className={`border-2 rounded-xl overflow-hidden transition-all duration-200 min-w-24 md:min-w-fit pb-1 md:pb-0 ${index === selectedIndex
                 ? "border-black opacity-100"
                 : "border-transparent opacity-70 hover:opacity-100"
                 }`}
