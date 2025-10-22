@@ -154,6 +154,9 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
 
 export const DELETE = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
   const id = parseId(params);
-  await prisma.product.delete({ where: { id } });
+  await prisma.product.update({
+    where: { id },
+    data: { deletedAt: new Date(), isActive: false }
+  });
   return { message: "Product deleted successfully" };
 }, { auth: true });

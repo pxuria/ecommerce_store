@@ -57,7 +57,7 @@ const Page = () => {
       setLoading(true);
 
       try {
-        const res = await fetch(`/api/products?${productQuery}`);
+        const res = await fetch(`/api/products?isActive=true&${productQuery}`);
         const data = await res.json();
 
         setProducts(data.data || []);
