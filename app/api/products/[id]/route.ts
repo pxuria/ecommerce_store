@@ -4,6 +4,7 @@ import prisma from '@/lib/db';
 import { ParamsType } from "@/types";
 import { authOptions } from '@/utils/authOptions';
 import { asyncHandler, HttpError, parseId } from "@/utils/helpers";
+import { deleteFromS3 } from '@/utils/server-helpers';
 import { ProductColorVariant } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
@@ -75,7 +76,15 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
 
   // Replace images (if provided)
   if (body.images) {
+    const existingImages = await prisma.productImage.findMany({ where: { productId: id } });
+    const removedImages = existingImages.filter(img => !body.images.includes(img.url));
+
+    for (const img of removedImages) {
+      await deleteFromS3(img.url);
+    }
+
     await prisma.productImage.deleteMany({ where: { productId: id } });
+
     await prisma.productImage.createMany({
       data: body.images.map((url: string, index: number) => ({
         productId: id,
