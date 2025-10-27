@@ -7,8 +7,8 @@ import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const cachedBrand = await cachedData(redisKeys.brands.all);
-    if (cachedBrand) return { ...JSON.parse(cachedBrand) };
     console.log('CACHEDBRAND::', cachedBrand)
+    if (cachedBrand) return { ...JSON.parse(cachedBrand) };
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);

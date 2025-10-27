@@ -90,8 +90,9 @@ const Products = () => {
         setFormMode("add");
     }
 
-    const handleCancelForm = () => {
+    const handleCancelForm = async () => {
         setFormMode(null);
+        await fetchProducts();
     };
 
     const onUpdated = async () => {

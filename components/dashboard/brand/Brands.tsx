@@ -83,8 +83,9 @@ const Brands = () => {
         setFormMode("add");
     }
 
-    const handleCancelForm = () => {
+    const handleCancelForm = async () => {
         setFormMode(null);
+        await fetchBrands();
     };
 
     const onUpdated = async () => {
@@ -162,7 +163,7 @@ const Brands = () => {
                             isDialogOpen={isDeleteDialogOpen}
                             setIsDialogOpen={setIsDeleteDialogOpen}
                             content={
-                                <p className="text-sm md:text-md text-white">
+                                <p className="text-sm md:text-md">
                                     آیا مطمئن هستید که می‌خواهید برند{" "}
                                     <span className="font-bold text-base md:text-md">{selectedBrand?.name}</span>{" "}
                                     را حذف کنید؟

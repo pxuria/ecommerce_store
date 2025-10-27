@@ -85,8 +85,9 @@ const Countries = () => {
         setFormMode("add");
     }
 
-    const handleCancelForm = () => {
+    const handleCancelForm = async () => {
         setFormMode(null);
+        await fetchCountries();
     };
 
     const onUpdated = async () => {

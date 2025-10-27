@@ -85,8 +85,9 @@ const Categories = () => {
         setFormMode("add");
     }
 
-    const handleCancelForm = () => {
+    const handleCancelForm = async () => {
         setFormMode(null);
+        await fetchCategories();
     };
 
     const onUpdated = async () => {

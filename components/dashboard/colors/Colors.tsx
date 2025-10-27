@@ -86,8 +86,9 @@ const Colors = () => {
         setFormMode("add");
     }
 
-    const handleCancelForm = () => {
+    const handleCancelForm = async () => {
         setFormMode(null);
+        await fetchColors();
     };
 
     const onUpdated = async () => {

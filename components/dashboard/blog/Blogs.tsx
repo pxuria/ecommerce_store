@@ -82,8 +82,9 @@ const Blogs = () => {
         setFormMode("add");
     }
 
-    const handleCancelForm = () => {
+    const handleCancelForm = async () => {
         setFormMode(null);
+        await fetchBlogs();
     };
 
     const onUpdated = async () => {
