@@ -138,8 +138,7 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
           where: { id: existingVariant.id },
           data: {
             pricePerMeter: cv.pricePerMeter,
-            discountPercent: cv.discountPercent,
-            stockMeters: cv.stockMeters,
+            discountPercent: cv.discountPercent
           },
         });
       } else {
@@ -148,8 +147,7 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
             productId: id,
             colorId: Number(cv.colorId),
             pricePerMeter: cv.pricePerMeter,
-            discountPercent: cv.discountPercent,
-            stockMeters: cv.stockMeters,
+            discountPercent: cv.discountPercent
           },
         });
       }

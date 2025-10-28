@@ -49,12 +49,12 @@ const ProductsList = () => {
                 {loading
                     ? <LottieText text="در حال بارگذاری" itemClass="w-64 h-64" file={productLoading} />
                     : (products.length && (
-                        <div className="w-full flex items-stretch justify-start gap-2 sm:gap-4 flex-wrap">
+                        <div className="w-full flex items-stretch justify-center gap-2 sm:gap-4 flex-wrap">
                             {products?.map((item: IProductWithBasePrice) => (
                                 <ProductCard
                                     key={item.id}
                                     product={item}
-                                    itemClass='w-[calc(50%-8px)] sm:w-[calc(50%-16px)] lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]'
+                                    itemClass='w-[calc(50%-8px)] sm:w-[calc(50%-16px)] lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)] flex-1'
                                 />
                             ))}
                         </div>

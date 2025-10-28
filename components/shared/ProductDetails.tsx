@@ -21,16 +21,13 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
   const cartItems = useAppSelector((state) => state.cart.items);
 
   const [selectedVariant, setSelectedVariant] = useState<IProductColorVariant | undefined>(product?.colorVariants?.[0]);
-  const { pricePerMeter, stockMeters, discountPercent } = selectedVariant as IProductColorVariant;
-  const hasStock = product.colorVariants?.some((variant) => variant.stockMeters > 0) ?? false;
+  const { pricePerMeter, discountPercent } = selectedVariant as IProductColorVariant;
 
   const productItemId = `${product.id}-${selectedVariant?.id}`;
   const cartItem = getCartItem(cartItems, productItemId) as CartItem;
   const quantity = cartItem ? getCartItemQuantity(cartItems, productItemId) : 0;
 
   const handleAddToCart = () => {
-    if (stockMeters === 0 || quantity >= Number(stockMeters)) return;
-
     const unitPrice = Number(pricePerMeter);
     const discount = discountPercent ?? 0;
     const discountedPrice = discount > 0 ? unitPrice * (1 - discount / 100) : unitPrice;
@@ -90,10 +87,10 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
             </div>
 
             <span
-              className={`text-[10px] sm:text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${(product.isActive && hasStock) ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              className={`text-[10px] sm:text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${product.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                 }`}
             >
-              {(product.isActive && hasStock) ? "موجود" : "ناموجود"}
+              {product.isActive ? "موجود" : "ناموجود"}
             </span>
           </div>
 
@@ -147,16 +144,6 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
             )}
           </div>
 
-          {/* <div className="flex gap-2 mt-2">
-            <h2 className="font-medium text-base">موجودی :</h2>
-            <span
-              className={`font-bold text-lg ${Number(stockMeters) > 0 ? "text-green-600" : "text-red-600"}`}>
-              {Number(stockMeters) > 0
-                ? `${Number(stockMeters)} متر موجود است`
-                : "ناموجود"}
-            </span>
-          </div> */}
-
           <div className="flex items-center gap-2 flex-wrap">
             {quantity > 0 && (
               <div className="flex items-center justify-between flex-nowrap rounded-lg bg-white gap-2">
@@ -164,7 +151,7 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
                   type="button"
                   className="py-3 px-4 bg-secondary-700 text-white"
                   onClick={handleAddToCart}
-                  disabled={quantity >= Number(stockMeters)}
+                  disabled={quantity >= 0}
                 >
                   <Plus size={16} />
                 </Button>
@@ -184,20 +171,17 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
             <Button
               type="button"
               className={`btn rounded-lg text-white flex_center flex-1 gap-2 ${quantity === 0
-                ? Number(stockMeters) === 0
-                  ? "w-full bg-[#636363] hover:bg-black cursor-not-allowed"
-                  : "w-full bg-secondary-600 hover:bg-secondary-700"
+                ? "w-full bg-secondary-600 hover:bg-secondary-700"
                 : "bg-red-500 hover:bg-red-600"
                 }`}
               onClick={quantity === 0 ? handleAddToCart : handleRemoveAllFromCart}
-              disabled={Number(stockMeters) === 0}
             >
-              {Number(stockMeters) === 0
-                ? "ناموجود"
-                : quantity === 0
-                  ? "افزودن به سبد خرید"
-                  : "حذف از سبد خرید"}
-              {Number(stockMeters) === 0 ? null : quantity === 0 ? (
+              {
+                true ? "ناموجود"
+                  : quantity === 0
+                    ? "افزودن به سبد خرید"
+                    : "حذف از سبد خرید"}
+              {quantity === 0 ? (
                 <ShoppingBag size={16} />
               ) : (
                 <Trash2 size={16} />

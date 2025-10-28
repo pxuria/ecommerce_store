@@ -13,10 +13,7 @@ export const productColorVariantSchema = z.object({
         .number()
         .min(0, { message: "نمی‌تواند منفی باشد" })
         .max(100, { message: "حداکثر 100%" })
-        .optional(),
-    stockMeters: z.coerce
-        .number()
-        .min(0, { message: "موجودی نمی‌تواند منفی باشد" }),
+        .optional()
 });
 
 export const productSchema = z.object({

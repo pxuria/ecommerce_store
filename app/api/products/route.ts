@@ -125,11 +125,10 @@ export const POST = async (req: Request) => asyncHandler(async () => {
         }))
       },
       colorVariants: {
-        create: body.colorVariants?.map((cv: { colorId: string; pricePerMeter: number; discountPercent: number; stockMeters: number }) => ({
+        create: body.colorVariants?.map((cv: { colorId: string; pricePerMeter: number; discountPercent: number; }) => ({
           colorId: parseInt(cv.colorId),
           pricePerMeter: cv.pricePerMeter,
-          discountPercent: cv.discountPercent,
-          stockMeters: cv.stockMeters,
+          discountPercent: cv.discountPercent
         })),
       },
     },

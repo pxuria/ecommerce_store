@@ -79,7 +79,7 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
 
     return (
         <Editor
-            apiKey={process.env.NEXT_PUBLIC_TINYMCE_API}
+            // apiKey={process.env.NEXT_PUBLIC_TINYMCE_API}
             onInit={(_evt, editor) => editorRef.current = editor}
             value={value}
             initialValue={value}
@@ -107,7 +107,10 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
                 content_style: "body { font-size:16px }",
                 skin: 'oxide',
                 content_css: 'default',
-                images_upload_handler: handleImage
+                images_upload_handler: handleImage,
+                file_picker_callback(callback, value, meta) {
+
+                },
             }}
         />
     );

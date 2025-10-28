@@ -62,10 +62,6 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
     { label: product.country?.name, key: "countryId", value: product.country?.id },
   ];
 
-
-  const hasStock = product.colorVariants?.some((variant) => variant.stockMeters > 0) ?? false;
-  console.log(hasStock, product.isActive)
-
   return (
     <div className={itemClass}>
       <div className={`rounded-2xl overflow-hidden pb-2 px-2 pt-2 border border-muted bg-white shadow-none sm:shadow-md h-full flex flex-col`}>
@@ -133,10 +129,9 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
             </Link>
 
             <span
-              className={`text-[10px] sm:text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${(product.isActive && hasStock) ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                }`}
+              className={`text-[10px] sm:text-xs font-medium text-nowrap border-2 px-3 py-[2px] flex_center rounded-md ${product.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
             >
-              {(product.isActive && hasStock) ? "موجود" : "ناموجود"}
+              {product.isActive ? "موجود" : "ناموجود"}
             </span>
           </div>
 

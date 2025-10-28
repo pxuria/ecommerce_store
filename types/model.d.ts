@@ -50,7 +50,6 @@ export interface IProductColorVariant {
     colorId: string;
     pricePerMeter: number;
     discountPercent?: number;
-    stockMeters: number;
 
     product?: IProduct;
     color?: IColor;

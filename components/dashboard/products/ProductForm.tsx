@@ -42,8 +42,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
         colorVariants: item?.colorVariants?.map(cv => ({
             colorId: cv.colorId != null ? String(cv.colorId) : "",
             pricePerMeter: Number(cv.pricePerMeter ?? 0),
-            discountPercent: Number(cv.discountPercent ?? 0),
-            stockMeters: Number(cv.stockMeters ?? 0),
+            discountPercent: Number(cv.discountPercent ?? 0)
         })) ?? [],
         attributes: item?.attributes?.map(a => ({ key: a.key, value: a.value })) ?? [],
         isActive: item?.isActive ? !!item?.isActive : true
@@ -230,14 +229,6 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                                 isPercent
                             />
 
-                            <InputField
-                                itemClass="w-full lg:w-[calc(50%-16px)]"
-                                name={`colorVariants.${index}.stockMeters`}
-                                label="موجودی (متر)"
-                                control={form.control}
-                                loading={loading}
-                            />
-
                             <Button
                                 type="button"
                                 className="bg-red-500 text-white text-sm"
@@ -252,7 +243,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
                         type="button"
                         className="px-4 py-2 bg-blue-500 text-white rounded"
                         onClick={() =>
-                            append({ colorId: "", pricePerMeter: 0, discountPercent: 0, stockMeters: 0 })
+                            append({ colorId: "", pricePerMeter: 0, discountPercent: 0 })
                         }
                     >
                         افزودن رنگ
