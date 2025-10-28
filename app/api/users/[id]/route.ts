@@ -61,7 +61,7 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
     data: updateData
   });
 
-  return { dara: user };
+  return { data: user };
 });
 
 export const DELETE = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {

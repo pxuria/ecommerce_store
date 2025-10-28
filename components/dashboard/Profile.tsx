@@ -21,8 +21,9 @@ import { handleShowToast } from "@/lib/toast";
 import Loading from "../shared/Loading";
 
 const Profile = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [loading, setLoading] = useState(false);
+  console.log(session)
 
   const form = useForm({
     resolver: zodResolver(profileSchema),
@@ -77,6 +78,19 @@ const Profile = () => {
       const { data } = await axiosInstance.put(`users/${session.user.id}`, {
         id: session.user.id,
         ...values
+      });
+
+      await update({
+        user: {
+          ...session.user,
+          firstName: data.data.firstName,
+          lastName: data.data.lastName,
+          email: data.data.email,
+          phone: data.data.phone,
+          address: data.data.address,
+          city: data.data.city,
+          postalCode: data.data.postalCode,
+        },
       });
 
       handleShowToast("اطلاعات شما با موفقیت به‌روز شد");

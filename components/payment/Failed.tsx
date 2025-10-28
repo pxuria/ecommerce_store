@@ -17,7 +17,7 @@ const Failed = () => {
       <h1 className="text-2xl font-bold text-[#ec2e5e]">پرداخت ناموفق</h1>
       <p className="mt-2 text-base text-black">مشکلی در پرداخت پیش آمده است.</p>
       <Link
-        href="/dashboard?tab=order"
+        href="/"
         className="mt-6 px-4 py-2 bg-[#ec2e5e] text-white rounded-lg"
       >
         بازگشت به صفحه اصلی

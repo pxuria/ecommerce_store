@@ -62,7 +62,7 @@ export const POST = async (req: Request) => asyncHandler(async () => {
   const session = await getServerSession(authOptions);
   if (!session) throw new HttpError('Unauthorized', 401);
 
-  const userId = session.user.id;
+  const userId = Number(session.user.id);
   const { items, shippingAddress, city, postalCode } = await req.json();
 
   if (!items || items.length === 0) throw new HttpError('Order must contain items', 400);

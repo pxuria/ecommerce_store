@@ -27,12 +27,9 @@ export const authOptions: NextAuthOptions = {
         const parsed = credentialsSchema.safeParse(creds)
         if (!parsed.success) return null
 
-        const phone = parsed.data.phone.trim()
-
-        const user = await prisma.user.findUnique({
-          where: { phone },
-        })
-        if (!user) return null
+        const phone = parsed.data.phone.trim();
+        const user = await prisma.user.findUnique({ where: { phone } });
+        if (!user) return null;
         console.log(parsed)
 
         const valid = await compare(parsed.data.password, user.password)
@@ -40,27 +37,28 @@ export const authOptions: NextAuthOptions = {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...userSafe } = user
-        return {
-          ...userSafe,
-          id: user.id.toString()
-        }
+        return { ...userSafe, id: user.id.toString() };
       },
     }),
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       // First login → attach full user
-      if (user) {
-        token.user = user
+      if (user) token.user = user
+
+      if (trigger === "update" && session?.user) {
+        token.user = {
+          ...(token.user as Record<string, unknown>),
+          ...(session.user as Record<string, unknown>),
+        };
       }
+
       return token
     },
     async session({ session, token }) {
-      if (token.user) {
-        // expose whole user object
-        session.user = token.user as unknown as User
-      }
+      if (token.user) session.user = token.user as unknown as User
+
       return session
     },
   },
