@@ -2,23 +2,23 @@ export const runtime = 'nodejs';
 
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
+import { asyncHandler, HttpError } from '@/utils/helpers';
 import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
-    const cachedBrand = await cachedData(redisKeys.brands.all);
-    if (cachedBrand) return { ...JSON.parse(cachedBrand) };
+    const cachedBanner = await cachedData(redisKeys.banners.all);
+    if (cachedBanner) return { ...JSON.parse(cachedBanner) };
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 20);
 
     const skip = (page - 1) * limit;
-    const brands = await prisma.productBrand.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
-    const total = await prisma.productBrand.count();
+    const banners = await prisma.Banner.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
+    const total = await prisma.Banner.count();
 
-    await cacheWithTTL(redisKeys.brands.all, JSON.stringify({
-        data: brands,
+    await cacheWithTTL(redisKeys.banners.all, JSON.stringify({
+        data: banners,
         pagination: {
             total,
             page,
@@ -28,7 +28,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     }), 300);
 
     return {
-        data: brands,
+        data: banners,
         pagination: {
             total,
             page,
@@ -39,11 +39,11 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 });
 
 export const POST = async (request: Request) => asyncHandler(async () => {
-    const { name, slug } = await request.json();
-    if (!name || !slug) throw new HttpError('brand name or slug is required', 400);
+    const { image, alt, displayOrder, isActive } = await request.json();
+    if (!image || !alt || !displayOrder || !isActive) throw new HttpError('some fields are required', 400);
 
-    const brand = await prisma.productBrand.create({ data: { name, slug: toSlug(slug) } });
+    const banner = await prisma.Banner.create({ data: { image, alt, displayOrder, isActive } });
 
-    await delCachedData(redisKeys.brands.all);
-    return { data: brand };
+    await delCachedData(redisKeys.banners.all);
+    return { data: banner };
 }, { successStatus: 201, auth: true });

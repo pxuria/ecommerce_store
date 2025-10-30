@@ -190,3 +190,16 @@ model Blog {
 
   @@index([slug])
 }
+
+model Banner {
+  id           Int      @id @default(autoincrement())
+  image        String
+  alt          String?
+  displayOrder Int?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
+  @@map("banners")
+}

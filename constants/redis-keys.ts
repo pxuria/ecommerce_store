@@ -4,6 +4,7 @@ const makeRedisKeys = (name: string) => ({
 });
 
 export const redisKeys = {
+    banners: makeRedisKeys("banners"),
     blogs: makeRedisKeys("blogs"),
     brands: makeRedisKeys("brands"),
     categories: makeRedisKeys("categories"),
