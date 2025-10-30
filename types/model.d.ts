@@ -14,6 +14,16 @@ export interface IBrand {
     products?: IProduct[];
 }
 
+export interface IBanner {
+    id: string;
+    image: string;
+    alt?: string;
+    displayOrder?: number;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface ICountry {
     id: string;
     name: string;

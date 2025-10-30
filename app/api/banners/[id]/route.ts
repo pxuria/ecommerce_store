@@ -13,7 +13,7 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
     const cachedBanner = await cachedData(redisId);
     if (cachedBanner) return { ...JSON.parse(cachedBanner) };
 
-    const banner = await prisma.Banner.findUnique({ where: { id } });
+    const banner = await prisma.banner.findUnique({ where: { id } });
     if (!banner) throw new HttpError("banner not found", 404);
 
     await cacheWithTTL(redisId, JSON.stringify(banner), 300);
@@ -23,7 +23,7 @@ export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(as
 export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
     const data = await req.json();
-    const banner = await prisma.Banner.update({ where: { id }, data });
+    const banner = await prisma.banner.update({ where: { id }, data });
 
     await delCachedData(`${redisKeys.banners.byId}${id}`);
     await delCachedData(redisKeys.banners.all);
@@ -32,7 +32,7 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
 
 export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
-    await prisma.Banner.delete({ where: { id } });
+    await prisma.banner.delete({ where: { id } });
     await delCachedData(`${redisKeys.banners.byId}${id}`);
     await delCachedData(redisKeys.banners.all);
     return { message: 'Banner deleted' };

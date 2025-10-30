@@ -14,8 +14,8 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     const limit = parseInt(searchParams.get("limit") || "20", 20);
 
     const skip = (page - 1) * limit;
-    const banners = await prisma.Banner.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
-    const total = await prisma.Banner.count();
+    const banners = await prisma.banner.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
+    const total = await prisma.banner.count();
 
     await cacheWithTTL(redisKeys.banners.all, JSON.stringify({
         data: banners,
@@ -42,7 +42,7 @@ export const POST = async (request: Request) => asyncHandler(async () => {
     const { image, alt, displayOrder, isActive } = await request.json();
     if (!image || !alt || !displayOrder || !isActive) throw new HttpError('some fields are required', 400);
 
-    const banner = await prisma.Banner.create({ data: { image, alt, displayOrder, isActive } });
+    const banner = await prisma.banner.create({ data: { image, alt, displayOrder, isActive } });
 
     await delCachedData(redisKeys.banners.all);
     return { data: banner };
