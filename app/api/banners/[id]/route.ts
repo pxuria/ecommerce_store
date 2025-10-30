@@ -8,32 +8,32 @@ import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
-    const redisId = `${redisKeys.brands.byId}${id}`;
+    const redisId = `${redisKeys.banners.byId}${id}`;
 
-    const cachedBrand = await cachedData(redisId);
-    if (cachedBrand) return { ...JSON.parse(cachedBrand) };
+    const cachedBanner = await cachedData(redisId);
+    if (cachedBanner) return { ...JSON.parse(cachedBanner) };
 
-    const brand = await prisma.productBrand.findUnique({ where: { id } });
-    if (!brand) throw new HttpError("Brand not found", 404);
+    const banner = await prisma.Banner.findUnique({ where: { id } });
+    if (!banner) throw new HttpError("banner not found", 404);
 
-    await cacheWithTTL(redisId, JSON.stringify(brand), 300);
-    return { data: brand };
+    await cacheWithTTL(redisId, JSON.stringify(banner), 300);
+    return { data: banner };
 });
 
 export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
     const data = await req.json();
-    const brand = await prisma.productBrand.update({ where: { id }, data });
+    const banner = await prisma.Banner.update({ where: { id }, data });
 
-    await delCachedData(`${redisKeys.brands.byId}${id}`);
-    await delCachedData(redisKeys.brands.all);
-    return { data: brand };
+    await delCachedData(`${redisKeys.banners.byId}${id}`);
+    await delCachedData(redisKeys.banners.all);
+    return { data: banner };
 }, { auth: true })
 
 export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
-    await prisma.productBrand.delete({ where: { id } });
-    await delCachedData(`${redisKeys.brands.byId}${id}`);
-    await delCachedData(redisKeys.brands.all);
-    return { message: 'Brand deleted' };
+    await prisma.Banner.delete({ where: { id } });
+    await delCachedData(`${redisKeys.banners.byId}${id}`);
+    await delCachedData(redisKeys.banners.all);
+    return { message: 'Banner deleted' };
 }, { auth: true });
