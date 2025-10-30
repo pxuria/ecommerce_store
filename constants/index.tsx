@@ -3,7 +3,7 @@ import originalLottie from "../public/assets/lotties/original.json";
 import returnLottie from "../public/assets/lotties/gift-on-the-way.json";
 import deliveryLottie from "../public/assets/lotties/delivery-service.json";
 import payLottie from "../public/assets/lotties/pay.json";
-import { Bookmark, Boxes, ChartColumnBig, Gift, LandPlot, Newspaper, Package, Palette, Tag, User, Users } from "lucide-react";
+import { Bookmark, Boxes, ChartColumnBig, Gift, Images, LandPlot, Newspaper, Package, Palette, Tag, User, Users } from "lucide-react";
 
 
 export const brandName = 'عرشیان بافت';
@@ -166,6 +166,11 @@ export const dashboardAdminTabs = [
     name: "گزارشات",
     dashName: "logs",
     icon: ChartColumnBig
+  },
+  {
+    name: "بنر ها",
+    dashName: "banners",
+    icon: Images
   },
   {
     name: "بلاگ ها",
