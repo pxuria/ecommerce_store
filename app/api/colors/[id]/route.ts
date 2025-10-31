@@ -4,7 +4,7 @@ import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
 import { ParamsType } from '@/types';
 import { asyncHandler, HttpError, parseId } from '@/utils/helpers';
-import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
+import { cachedData, cacheWithTTL, delCachedPrefix } from '@/utils/serverCache';
 
 export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
@@ -25,15 +25,13 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
     const data = await req.json();
     const color = await prisma.productColor.update({ where: { id }, data });
 
-    await delCachedData(`${redisKeys.colors.byId}${id}`);
-    await delCachedData(redisKeys.colors.all);
+    await delCachedPrefix(redisKeys.colors.base);
     return { data: color };
 }, { auth: true });
 
 export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
     await prisma.productColor.delete({ where: { id } });
-    await delCachedData(`${redisKeys.colors.byId}${id}`);
-    await delCachedData(redisKeys.colors.all);
+    await delCachedPrefix(redisKeys.colors.base);
     return { message: 'Color deleted' };
 }, { auth: true });

@@ -2,22 +2,36 @@ export const runtime = 'nodejs';
 
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
+import { asyncHandler, generateFilterKeyPart, generateOrderKeyPart, HttpError, parseFilters, toSlug } from '@/utils/helpers';
 import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
-    const cachedBrand = await cachedData(redisKeys.brands.all);
-    if (cachedBrand) return { ...JSON.parse(cachedBrand) };
+    const filters = [
+        { name: "name", type: "string" as const },
+        { name: "slug", type: "string" as const }
+    ];
 
-    const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "20", 20);
+    const { where, orderBy, page, limit, skip } = parseFilters(req.url, filters, {
+        defaultSortBy: "name",
+        defaultSortOrder: "asc",
+        allowedSorts: {
+            id: { id: "asc" },
+            name: { name: "asc" },
+            slug: { slug: "asc" }
+        }
+    });
 
-    const skip = (page - 1) * limit;
-    const brands = await prisma.productBrand.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
+    const filterKeyPart = generateFilterKeyPart(where);
+    const orderKeyPart = generateOrderKeyPart(orderBy);
+    const cacheKey = `${redisKeys.brands.all}:page=${page}:limit=${limit}:${filterKeyPart}:${orderKeyPart}`;
+
+    const cachedBrands = await cachedData(cacheKey);
+    if (cachedBrands) return { ...JSON.parse(cachedBrands) };
+
+    const brands = await prisma.productBrand.findMany({ where, skip, take: limit, orderBy });
     const total = await prisma.productBrand.count();
 
-    await cacheWithTTL(redisKeys.brands.all, JSON.stringify({
+    await cacheWithTTL(cacheKey, JSON.stringify({
         data: brands,
         pagination: {
             total,

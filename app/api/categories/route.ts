@@ -2,22 +2,37 @@ export const runtime = 'nodejs';
 
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
+import { asyncHandler, generateFilterKeyPart, generateOrderKeyPart, HttpError, parseFilters, toSlug } from '@/utils/helpers';
 import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
-    const cachedCategory = await cachedData(redisKeys.categories.all);
+    const filters = [
+        { name: "name", type: "string" as const },
+        { name: "slug", type: "string" as const }
+    ];
+
+    const { where, orderBy, page, limit, skip } = parseFilters(req.url, filters, {
+        defaultSortBy: "name",
+        defaultSortOrder: "asc",
+        allowedSorts: {
+            id: { id: "asc" },
+            name: { name: "asc" },
+            slug: { slug: "asc" }
+        }
+    });
+
+    const filterKeyPart = generateFilterKeyPart(where);
+    const orderKeyPart = generateOrderKeyPart(orderBy);
+    const cacheKey = `${redisKeys.categories.all}:page=${page}:limit=${limit}:${filterKeyPart}:${orderKeyPart}`;
+
+    const cachedCategory = await cachedData(cacheKey);
     if (cachedCategory) return { ...JSON.parse(cachedCategory) };
 
-    const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "20", 20);
 
-    const skip = (page - 1) * limit;
-    const categories = await prisma.productCategory.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
+    const categories = await prisma.productCategory.findMany({ where, skip, take: limit, orderBy });
     const total = await prisma.productCategory.count();
 
-    await cacheWithTTL(redisKeys.categories.all, JSON.stringify({
+    await cacheWithTTL(cacheKey, JSON.stringify({
         data: categories,
         pagination: {
             total,

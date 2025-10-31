@@ -4,7 +4,7 @@ import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
 import { ParamsType } from '@/types';
 import { asyncHandler, HttpError, parseId } from '@/utils/helpers';
-import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
+import { cachedData, cacheWithTTL, delCachedPrefix } from '@/utils/serverCache';
 
 export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
@@ -25,8 +25,7 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
     const data = await req.json();
     const category = await prisma.productCategory.update({ where: { id }, data });
 
-    await delCachedData(`${redisKeys.categories.byId}${id}`);
-    await delCachedData(redisKeys.categories.all);
+    await delCachedPrefix(redisKeys.categories.base);
     return { data: category };
 }, { auth: true });
 
@@ -34,7 +33,6 @@ export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHand
     const id = parseId(params);
     await prisma.productCategory.delete({ where: { id } });
 
-    await delCachedData(`${redisKeys.categories.byId}${id}`);
-    await delCachedData(redisKeys.categories.all);
+    await delCachedPrefix(redisKeys.categories.base);
     return { message: 'Category deleted' };
 }, { auth: true });

@@ -2,35 +2,28 @@ export const runtime = 'nodejs';
 
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError } from '@/utils/helpers';
+import { asyncHandler, generateFilterKeyPart, generateOrderKeyPart, HttpError, parseFilters } from '@/utils/helpers';
 import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
-    const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "20", 20);
-    const isActiveParam = searchParams.get("isActive");
-    const displayOrderParam = searchParams.get("displayOrder") || null;
+    const filters = [{ name: "isActive", type: "boolean" as const }];
 
-    const cacheKey = `${redisKeys.banners.all}:${page}:${limit}:${isActiveParam ?? "all"}:${displayOrderParam ?? ''}`;
+    const { where, orderBy, page, limit, skip } = parseFilters(req.url, filters, {
+        defaultSortBy: "displayOrder",
+        defaultSortOrder: "asc",
+        allowedSorts: {
+            displayOrder: { displayOrder: "asc" },
+            createdAt: { createdAt: "asc" }
+        }
+    });
+
+    const filterKeyPart = generateFilterKeyPart(where);
+    const orderKeyPart = generateOrderKeyPart(orderBy);
+    const cacheKey = `${redisKeys.banners.all}:page=${page}:limit=${limit}:${filterKeyPart}:${orderKeyPart}`;
+
     const cachedBanner = await cachedData(cacheKey);
     if (cachedBanner) return { ...JSON.parse(cachedBanner) };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: Record<string, any> = {};
-    if (isActiveParam !== null) {
-        where.isActive = isActiveParam === "true";
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const orderBy: Record<string, any> = [];
-    if (displayOrderParam && ["asc", "desc"].includes(displayOrderParam)) {
-        orderBy.push({ displayOrder: displayOrderParam });
-    } else {
-        orderBy.push({ id: "asc" });
-    }
-
-    const skip = (page - 1) * limit;
     const banners = await prisma.banner.findMany({
         where,
         skip,
