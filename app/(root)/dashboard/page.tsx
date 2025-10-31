@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { LogOut } from "lucide-react";
@@ -9,18 +10,104 @@ import { dashboardAdminTabs, dashboardTabs } from "@/constants";
 import { handleShowToast } from "@/lib/toast";
 import { UserRole } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Logs from "@/components/dashboard/Logs";
-import Profile from "@/components/dashboard/Profile";
-import Blogs from "@/components/dashboard/blog/Blogs";
-import Users from "@/components/dashboard/users/Users";
-import Bookmarks from "@/components/dashboard/Bookmarks";
-import Brands from "@/components/dashboard/brand/Brands";
-import Colors from "@/components/dashboard/colors/Colors";
-import Orders from "@/components/dashboard/orders/Orders";
-import Products from "@/components/dashboard/products/Products";
-import Countries from "@/components/dashboard/country/Countries";
-import Categories from "@/components/dashboard/category/Categories";
-import Banners from "@/components/dashboard/banner/Banner";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
+
+const Logs = dynamic(() => import("@/components/dashboard/Logs"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Profile = dynamic(() => import("@/components/dashboard/Profile"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Blogs = dynamic(() => import("@/components/dashboard/blog/Blogs"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Users = dynamic(() => import("@/components/dashboard/users/Users"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Bookmarks = dynamic(() => import("@/components/dashboard/Bookmarks"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Brands = dynamic(() => import("@/components/dashboard/brand/Brands"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Colors = dynamic(() => import("@/components/dashboard/colors/Colors"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Orders = dynamic(() => import("@/components/dashboard/orders/Orders"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Products = dynamic(() => import("@/components/dashboard/products/Products"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Countries = dynamic(() => import("@/components/dashboard/country/Countries"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Categories = dynamic(() => import("@/components/dashboard/category/Categories"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
+const Banners = dynamic(() => import("@/components/dashboard/banner/Banner"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex_center h-[50vh]">
+      <LoadingSpinner />
+    </div>
+  )
+});
 
 const tabsTriggerClass = "w-full flex items-center justify-start gap-2 py-3 px-5 rounded-lg shadow-sm bg-light_muted group hover:bg-secondary-700 hover:text-white data-[state=active]:bg-secondary-700 data-[state=active]:text-white transition-all duration-200 ease-in-out";
 

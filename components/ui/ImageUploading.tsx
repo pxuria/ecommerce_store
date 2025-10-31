@@ -150,12 +150,10 @@ const ImageUploading = ({
           ))}
 
         {/* new uploaded files */}
-        {Array.isArray(files) &&
+        {multiple ? (
+          Array.isArray(files) &&
           files.map((file, index) => (
-            <div
-              key={`file-${index}`}
-              className="relative m-4 w-24 h-24 border rounded-md overflow-hidden"
-            >
+            <div key={`file-${index}`} className="relative m-4 w-24 h-24 border rounded-md overflow-hidden">
               <Image
                 src={file.preview}
                 alt={`file-${index}`}
@@ -170,7 +168,26 @@ const ImageUploading = ({
                 />
               )}
             </div>
-          ))}
+          ))
+        ) : (
+          files && !Array.isArray(files) && (
+            <div className="relative m-4 w-24 h-24 border rounded-md overflow-hidden">
+              <Image
+                src={files.preview}
+                alt="file"
+                fill
+                style={{ objectFit: "cover" }}
+                className="rounded-md"
+              />
+              {!disabled && (
+                <CircleX
+                  onClick={() => removeFile()}
+                  className="text-red-600 bg-white rounded-full w-6 h-6 absolute top-0 right-0 hover:text-red-700 transition cursor-pointer"
+                />
+              )}
+            </div>
+          )
+        )}
       </aside>
     </div>
   );

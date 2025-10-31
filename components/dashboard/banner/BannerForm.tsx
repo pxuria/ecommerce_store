@@ -22,6 +22,7 @@ interface Props {
 const BannerForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [image, setImage] = useState<FileWithPreview | null>(null);
+    const [existingImageUrl, setExistingImageUrl] = useState<string>(item?.image || '');
 
     const defaultValues: bannerValues = {
         image: item?.image || "",
@@ -72,13 +73,21 @@ const BannerForm = ({ item, onClose, onUpdated }: Props) => {
                 onSubmit={form.handleSubmit(submitHandler)}
             >
                 {/* banner image Field */}
-                <ImageUploading
-                    setValue={(value) => form.setValue("image", value as unknown as File | string, { shouldValidate: true })
-                    }
-                    files={image}
-                    setFiles={file => setImage(file && !Array.isArray(file) ? file : null)}
-                    disabled={loading}
-                />
+                <div className="w-full mt-8">
+                    <FormLabel className="form_label">عکس بلاگ</FormLabel>
+                    <ImageUploading
+                        setValue={(value) => form.setValue("image", value as unknown as File | string, { shouldValidate: true })
+                        }
+                        files={image}
+                        setFiles={file => setImage(file && !Array.isArray(file) ? file : null)}
+                        existingImageUrls={existingImageUrl}
+                        setExistingImageUrls={(url: string) => {
+                            setExistingImageUrl(url as string);
+                            form.setValue("image", url as string);
+                        }}
+                        disabled={loading}
+                    />
+                </div>
 
                 {/* banner alt Field */}
                 <InputField
@@ -101,7 +110,7 @@ const BannerForm = ({ item, onClose, onUpdated }: Props) => {
                     control={form.control}
                     name="isActive"
                     render={({ field }) => (
-                        <FormItem className="w-full sm:w-[calc(50%-8px)]">
+                        <FormItem className="w-full">
                             <FormLabel className="form_label">وضعیت بنر</FormLabel>
                             <FormControl>
                                 <Switch

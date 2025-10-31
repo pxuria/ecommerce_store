@@ -23,7 +23,7 @@ const OrderCard = ({ order }: Props) => {
   };
 
   return (
-    <div className="w-full lg:w-[calc(50%-16px)] rounded-xl shadow-md p-4 bg-[#fff]">
+    <div className="w-full lg:w-[calc(50%-16px)] rounded-xl shadow-md p-4 bg-[#fff] flex-column">
       <div className="flex items-center justify-between gap-2 flex-wrap xl:flex-nowrap">
         <h3 className="text-sm text-nowrap flex items-center gap-2 flex-wrap lg:flex-nowrap text-black font-medium">
           <span>شماره سفارش</span>
@@ -48,7 +48,7 @@ const OrderCard = ({ order }: Props) => {
         </span>
       </div>
 
-      <div className="flex-column items-start gap-2 mt-4">
+      <div className="flex-column items-start gap-2 mt-4 flex-1">
         {order.items.map((item, index) => (
           <div
             key={index}

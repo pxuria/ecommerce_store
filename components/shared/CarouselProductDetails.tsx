@@ -107,9 +107,7 @@ const CarouselProductDetails = ({ product }: Props) => {
                   <div className="absolute top-4 left-4">
                     <button
                       className="bg-[#f9fafbb3] hover:bg-[#f8f9fa] transition-all duration-200 cursor-pointer rounded-full p-2 z-40"
-                      onClick={() =>
-                        navigator.share?.({ url: window.location.href })
-                      }
+                      onClick={() => navigator.share?.({ url: window.location.href })}
                       type="button"
                     >
                       <Share2 size={20} />

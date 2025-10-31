@@ -46,7 +46,7 @@ const Orders = () => {
         <>
             {cart.items.length > 0 && <OrderSubmit cart={cart} session={session as Session} />}
 
-            <div className="flex items-start justify-start gap-4 flex-wrap mt-8">
+            <div className="flex items-stretch justify-start gap-4 flex-wrap mt-8">
                 {orders.length > 0 ? (
                     orders.map((order, index) => <OrderCard key={index} order={order} />)
                 ) : (

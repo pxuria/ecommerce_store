@@ -159,11 +159,15 @@ export function getFinalPrice(pricePerMeter: Decimal, discountPercent?: Decimal)
   return pricePerMeter.mul(discountMultiplier);
 }
 
-export const uploadImage = async (files: (File | Blob)[]): Promise<string[]> => {
+export const uploadImage = async (files: (File | Blob)[], isSingle?: boolean): Promise<string[]> => {
   const formData = new FormData();
-  files.forEach((file, i) => {
-    formData.append(`file-${i + 1}`, file);
-  });
+  if (!isSingle) {
+    formData.append(`file-1`, files[0]);
+  } else {
+    files.forEach((file, i) => {
+      formData.append(`file-${i + 1}`, file);
+    });
+  }
 
   try {
     const { data } = await axiosInstance.post("storage/upload", formData, {
