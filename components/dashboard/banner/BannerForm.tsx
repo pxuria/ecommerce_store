@@ -12,6 +12,7 @@ import { bannerSchema, bannerValues } from "@/utils/validations/banner.schema";
 import ImageUploading from "@/components/ui/ImageUploading";
 import { FileWithPreview } from "@/types";
 import { Switch } from "@/components/ui/switch";
+import { uploadImage } from "@/utils/helpers";
 
 interface Props {
     item?: IBanner;
@@ -45,8 +46,18 @@ const BannerForm = ({ item, onClose, onUpdated }: Props) => {
 
         setLoading(true);
         try {
+            let finalImageUrl: string | null = null;
+            if (image) {
+                const uploaded = await uploadImage([image as FileWithPreview]);
+                finalImageUrl = uploaded[0];
+            } else {
+                finalImageUrl = existingImageUrl || null;
+            }
+
+            if (!finalImageUrl) throw new Error('image is required');
+
             const payload = {
-                image: values.image,
+                image: finalImageUrl,
                 alt: values.alt,
                 displayOrder: values.displayOrder,
                 isActive: values.isActive,
@@ -80,11 +91,13 @@ const BannerForm = ({ item, onClose, onUpdated }: Props) => {
                         }
                         files={image}
                         setFiles={file => setImage(file && !Array.isArray(file) ? file : null)}
-                        existingImageUrls={existingImageUrl}
-                        setExistingImageUrls={(url: string) => {
-                            setExistingImageUrl(url as string);
-                            form.setValue("image", url as string);
+                        existingImageUrls={existingImageUrl ? [existingImageUrl] : null}
+                        setExistingImageUrls={(urls) => {
+                            const url = Array.isArray(urls) ? urls[0] ?? null : urls ?? null;
+                            setExistingImageUrl(url || '');
+                            form.setValue("image", url || "");
                         }}
+
                         disabled={loading}
                     />
                 </div>

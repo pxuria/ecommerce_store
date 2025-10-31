@@ -40,8 +40,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 
 export const POST = async (request: Request) => asyncHandler(async () => {
     const { image, alt, displayOrder, isActive } = await request.json();
-    console.log({ image, alt, displayOrder, isActive })
-    if (!image || !alt || !displayOrder || !isActive) throw new HttpError('some fields are required', 400);
+    if (!image || !alt?.trim() || displayOrder == null || isActive == null) throw new HttpError('some fields are required', 400);
 
     const banner = await prisma.banner.create({ data: { image, alt, displayOrder, isActive } });
 

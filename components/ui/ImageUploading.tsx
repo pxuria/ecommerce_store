@@ -86,19 +86,33 @@ const ImageUploading = ({
     };
   }, [files, multiple]);
 
-  const previews = multiple
-    ? [
-      ...(Array.isArray(files) ? files : []),
-      ...(Array.isArray(existingImageUrls) ? existingImageUrls : []),
-    ]
-    : [
-      ...(files && !Array.isArray(files) ? [files] : []),
-      ...(existingImageUrls && !Array.isArray(existingImageUrls)
-        ? [existingImageUrls]
-        : []),
-    ];
+  // const normalizedExisting = Array.isArray(existingImageUrls)
+  //   ? existingImageUrls.filter(Boolean)
+  //   : existingImageUrls ? [existingImageUrls] : [];
 
-  console.log(previews)
+  // const previews = multiple
+  //   ? [
+  //     ...(Array.isArray(files) ? files : []),
+  //     ...normalizedExisting,
+  //   ]
+  //   : [
+  //     ...(files && !Array.isArray(files) ? [files] : []),
+  //     ...(normalizedExisting.length ? [normalizedExisting[0]] : []),
+  //   ];
+
+  // const previews = multiple
+  //   ? [
+  //     ...(Array.isArray(files) ? files : []),
+  //     ...(Array.isArray(existingImageUrls) ? existingImageUrls : []),
+  //   ]
+  //   : [
+  //     ...(files && !Array.isArray(files) ? [files] : []),
+  //     ...(existingImageUrls && !Array.isArray(existingImageUrls)
+  //       ? [existingImageUrls]
+  //       : []),
+  //   ];
+
+  // console.log(previews)
 
   return (
     <div className={`mt-2 ${className}`}>
@@ -139,7 +153,9 @@ const ImageUploading = ({
                 <CircleX
                   onClick={() => {
                     if (setExistingImageUrls) {
-                      const updated = existingImageUrls.filter((_, i) => i !== index);
+                      const updated = Array.isArray(existingImageUrls)
+                        ? existingImageUrls.filter((_, i) => i !== index)
+                        : [];
                       setExistingImageUrls(updated.length ? updated : null);
                     }
                   }}

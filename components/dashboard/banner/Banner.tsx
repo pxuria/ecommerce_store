@@ -12,6 +12,7 @@ import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import { TableCell, TableRow } from "@/components/ui/table";
 import CustomPagination from "@/components/shared/CustomPagination";
 import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import Image from "next/image";
 
 const COLUMNS = [
     { title: 'عکس', className: 'text-right' },
@@ -122,7 +123,13 @@ const Banners = () => {
                                     : banners.length > 0
                                         ? banners.map(banner => (
                                             <TableRow key={banner.id}>
-                                                <TableCell>{banner.image}</TableCell>
+                                                <Image
+                                                    width={80}
+                                                    height={80}
+                                                    alt={banner?.alt || 'بنر'}
+                                                    src={banner.image ?? "/assets/images/placeholder.webp"}
+                                                    className="rounded-lg object-cover aspect-square"
+                                                />
                                                 <TableCell>{banner.alt}</TableCell>
                                                 <TableCell>{banner.displayOrder}</TableCell>
                                                 <TableCell>{banner.isActive}</TableCell>
