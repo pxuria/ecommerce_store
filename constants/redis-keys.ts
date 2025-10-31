@@ -1,4 +1,5 @@
 const makeRedisKeys = (name: string) => ({
+    base: name,
     all: `${name}:all`,
     byId: `${name}:`,
 });

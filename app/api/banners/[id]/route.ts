@@ -4,7 +4,7 @@ import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
 import { ParamsType } from '@/types';
 import { asyncHandler, HttpError, parseId } from '@/utils/helpers';
-import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
+import { cachedData, cacheWithTTL, delCachedPrefix } from '@/utils/serverCache';
 
 export const GET = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
@@ -25,15 +25,13 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
     const data = await req.json();
     const banner = await prisma.banner.update({ where: { id }, data });
 
-    await delCachedData(`${redisKeys.banners.byId}${id}`);
-    await delCachedData(redisKeys.banners.all);
+    await delCachedPrefix(redisKeys.banners.base);
     return { data: banner };
 }, { auth: true })
 
 export const DELETE = async (_req: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
     await prisma.banner.delete({ where: { id } });
-    await delCachedData(`${redisKeys.banners.byId}${id}`);
-    await delCachedData(redisKeys.banners.all);
+    await delCachedPrefix(redisKeys.banners.base);
     return { message: 'Banner deleted' };
 }, { auth: true });

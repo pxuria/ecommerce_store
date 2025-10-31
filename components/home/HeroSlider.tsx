@@ -5,8 +5,8 @@ import Image from "next/image"
 import useEmblaCarousel from "embla-carousel-react"
 import { EmblaOptionsType } from 'embla-carousel'
 import { NextButton, PrevButton, usePrevNextButtons } from "../shared/carousel/EmblaCarouselArrowButtons"
-import "../shared/carousel/embla.css";
 import { IBanner } from "@/types/model";
+import "../shared/carousel/embla.css";
 
 
 const OPTIONS: EmblaOptionsType = { loop: true }
@@ -25,7 +25,7 @@ const HeroSlider = () => {
     useEffect(() => {
         const fetchBanners = async () => {
             try {
-                const res = await fetch('/api/banners');
+                const res = await fetch('/api/banners?limit=7&isActive=true&displayOrder=asc');
                 const data = await res.json();
 
                 setBanners(data.data);
@@ -44,7 +44,13 @@ const HeroSlider = () => {
                 <div className="embla__container">
                     {bannners.map((item, index) => (
                         <div className="embla__slide" key={index}>
-                            <Image src={item.image} alt={item.alt || 'بنر'} width={900} height={450} className="w-full object-cover max-h-[450px]" />
+                            <Image
+                                priority
+                                width={900}
+                                height={450}
+                                src={item.image}
+                                alt={item.alt || 'بنر'}
+                                className="w-full object-cover max-h-[450px]" />
                         </div>
                     ))}
                 </div>

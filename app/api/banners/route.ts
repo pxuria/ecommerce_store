@@ -6,18 +6,41 @@ import { asyncHandler, HttpError } from '@/utils/helpers';
 import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
-    const cachedBanner = await cachedData(redisKeys.banners.all);
-    if (cachedBanner) return { ...JSON.parse(cachedBanner) };
-
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "20", 20);
+    const isActiveParam = searchParams.get("isActive");
+    const displayOrderParam = searchParams.get("displayOrder") || null;
+
+    const cacheKey = `${redisKeys.banners.all}:${page}:${limit}:${isActiveParam ?? "all"}:${displayOrderParam ?? ''}`;
+    const cachedBanner = await cachedData(cacheKey);
+    if (cachedBanner) return { ...JSON.parse(cachedBanner) };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: Record<string, any> = {};
+    if (isActiveParam !== null) {
+        where.isActive = isActiveParam === "true";
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const orderBy: Record<string, any> = [];
+    if (displayOrderParam && ["asc", "desc"].includes(displayOrderParam)) {
+        orderBy.push({ displayOrder: displayOrderParam });
+    } else {
+        orderBy.push({ id: "asc" });
+    }
 
     const skip = (page - 1) * limit;
-    const banners = await prisma.banner.findMany({ skip, take: limit, orderBy: { id: 'asc' } });
-    const total = await prisma.banner.count();
+    const banners = await prisma.banner.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy
+    });
 
-    await cacheWithTTL(redisKeys.banners.all, JSON.stringify({
+    const total = await prisma.banner.count({ where });
+
+    await cacheWithTTL(cacheKey, JSON.stringify({
         data: banners,
         pagination: {
             total,

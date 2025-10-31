@@ -8,7 +8,7 @@ html {
 
 .embla {
   --slide-height: 28rem;
-  --slide-spacing: 1rem;
+  --slide-spacing: 0.1rem;
   --slide-size: 100%;
   overflow: hidden;
   width: 100%;
