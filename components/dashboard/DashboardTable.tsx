@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ArrowUpDown } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Skeleton } from '../ui/skeleton';
-import { useMemo, useState } from 'react';
-import { cn } from '@/lib/utils';
-import { ArrowUpDown } from 'lucide-react';
 import { Input } from '../ui/input';
 
 export interface Column {
@@ -20,7 +22,6 @@ interface Props {
     data: any[];
     loading?: boolean;
     skeletonCount?: number;
-    children: React.ReactNode;
 }
 
 export const renderSkeletonRows = (count: number, COLUMNS: Column[]) => {
@@ -36,63 +37,62 @@ export const renderSkeletonRows = (count: number, COLUMNS: Column[]) => {
 };
 
 const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) => {
-    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
-    const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [localFilters, setLocalFilters] = useState<Record<string, string>>({});
+    const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+    const updateQuery = (params: Record<string, string | null>) => {
+        const newParams = new URLSearchParams(searchParams.toString());
+        Object.entries(params).forEach(([key, value]) => {
+            if (value === null || value === '') newParams.delete(key);
+            else newParams.set(key, value);
+        });
+        router.replace(`?${newParams.toString()}`);
+    };
 
     const handleSort = (key: string) => {
-        setSortConfig((prev) => {
-            if (prev?.key === key) {
-                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
-            }
-            return { key, direction: 'asc' };
-        });
+        const currentSort = searchParams.get('sort');
+        const currentDir = searchParams.get('dir') || 'asc';
+
+        let newDir: 'asc' | 'desc' = 'asc';
+        if (currentSort === key && currentDir === 'asc') newDir = 'desc';
+
+        updateQuery({ sort: key, dir: newDir });
     };
 
-    // Handle per-column search
     const handleSearchChange = (key: string, value: string) => {
-        setSearchFilters((prev) => ({ ...prev, [key]: value }));
+        setLocalFilters(prev => ({ ...prev, [key]: value }));
+
+        // debounce query updates
+        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        debounceTimer.current = setTimeout(() => {
+            updateQuery({ [key]: value, page: '1' });
+        }, 500); // ⏱ debounce delay (ms)
     };
 
-    // Apply sorting + filtering
-    const processedData = useMemo(() => {
-        let filtered = [...data];
-
-        // Apply search filters
-        Object.entries(searchFilters).forEach(([key, value]) => {
-            if (value.trim()) {
-                filtered = filtered.filter((row) =>
-                    String(row[key] ?? '').toLowerCase().includes(value.toLowerCase())
-                );
-            }
-        });
-
-        // Apply sorting
-        if (sortConfig) {
-            filtered.sort((a, b) => {
-                const valA = a[sortConfig.key];
-                const valB = b[sortConfig.key];
-                if (valA === valB) return 0;
-                if (valA == null) return 1;
-                if (valB == null) return -1;
-                return sortConfig.direction === 'asc'
-                    ? String(valA).localeCompare(String(valB))
-                    : String(valB).localeCompare(String(valA));
-            });
-        }
-
-        return filtered;
-    }, [data, searchFilters, sortConfig]);
+    useEffect(() => {
+        return () => {
+            if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        };
+    }, []);
 
     return (
         <div className="space-y-4 overflow-x-auto">
             <Table>
                 <TableHeader>
+                    {/* Sortable headers */}
                     <TableRow>
                         {columns.map(col => (
                             <TableHead
                                 key={col.title}
-                                className={cn(col.className, col.sortable && 'cursor-pointer select-none')}
-                                onClick={() => col.sortable && handleSort(col.key)}>
+                                className={cn(
+                                    'min-w-24',
+                                    col.className,
+                                    col.sortable && 'cursor-pointer select-none'
+                                )}
+                                onClick={() => col.sortable && handleSort(col.key)}
+                            >
                                 <div className="flex items-center justify-between">
                                     <span>{col.title}</span>
                                     {col.sortable && <ArrowUpDown size={14} className="ml-1" />}
@@ -103,14 +103,14 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
 
                     {/* Search row */}
                     <TableRow>
-                        {columns.map((col) => (
+                        {columns.map(col => (
                             <TableCell key={col.key}>
                                 {col.searchable ? (
                                     <Input
                                         placeholder={`جستجو ${col.title}...`}
-                                        value={searchFilters[col.key] || ''}
-                                        onChange={(e) => handleSearchChange(col.key, e.target.value)}
-                                        className="h-8 text-xs"
+                                        value={localFilters[col.key] ?? searchParams.get(col.key) ?? ''}
+                                        onChange={e => handleSearchChange(col.key, e.target.value)}
+                                        className="h-8 text-xs outline-none border border-[#efefef]"
                                     />
                                 ) : null}
                             </TableCell>
@@ -121,27 +121,27 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
                 <TableBody>
                     {loading
                         ? renderSkeletonRows(skeletonCount, columns)
-                        : processedData.length > 0
-                            ? processedData.map((row, i) => (
+                        : data.length > 0 ? (
+                            data.map((row, i) => (
                                 <TableRow key={i}>
-                                    {columns.map((col) => (
+                                    {columns.map(col => (
                                         <TableCell key={col.key}>
                                             {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? '-')}
                                         </TableCell>
                                     ))}
                                 </TableRow>
                             ))
-                            : (
-                                <TableRow>
-                                    <TableCell colSpan={columns.length} className="text-center text-gray-500">
-                                        هیچ داده‌ای یافت نشد.
-                                    </TableCell>
-                                </TableRow>
-                            )}
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="text-center text-gray-500">
+                                    هیچ داده‌ای یافت نشد.
+                                </TableCell>
+                            </TableRow>
+                        )}
                 </TableBody>
             </Table>
         </div>
-    )
-}
+    );
+};
 
-export default DashboardTable
+export default DashboardTable;

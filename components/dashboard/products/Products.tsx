@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -13,6 +14,16 @@ import Image from "next/image";
 import { toJalaliDate } from "@/utils/helpers";
 import CustomPagination from "@/components/shared/CustomPagination";
 import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+
+interface ProductsParams {
+    sort: string | null;
+    dir: string | null;
+    category: string | null;
+    brand: string | null;
+    search: string | null;
+    page: string | null
+}
 
 
 const COLUMNS = [
@@ -20,7 +31,7 @@ const COLUMNS = [
     {
         title: 'عکس محصول',
         key: 'image',
-        render: (_, product: IProduct) => (
+        render: (_: any, product: IProduct) => (
             <Image
                 width={120}
                 height={80}
@@ -39,14 +50,14 @@ const COLUMNS = [
         title: 'وضعیت محصول',
         key: 'isActive',
         sortable: true,
-        render: (v) => (v ? 'فعال' : 'غیرفعال'),
+        render: (v: any) => (v ? 'فعال' : 'غیرفعال'),
         className: 'text-right'
     },
     {
         title: 'تاریخ ایجاد',
         key: 'createdAt',
         sortable: true,
-        render: (v) => toJalaliDate(v, 'jYYYY/jMM/jDD'),
+        render: (v: any) => toJalaliDate(v, 'jYYYY/jMM/jDD'),
         className: 'text-right'
     },
     { title: 'تاریخ حذف', className: 'text-right' },
@@ -54,6 +65,7 @@ const COLUMNS = [
 ];
 
 const Products = () => {
+    const searchParams = useSearchParams();
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -67,26 +79,48 @@ const Products = () => {
 
     const dateFormat = 'jYYYY/jMM/jDD';
 
-    const fetchProducts = async () => {
+    const getParams = useCallback((): ProductsParams => {
+        const decode = (val: string | null) => (val ? decodeURIComponent(val) : null);
+        console.log({
+            sort: decode(searchParams.get("sort")),
+            dir: decode(searchParams.get("dir")),
+            category: decode(searchParams.get("category")),
+            brand: decode(searchParams.get("brand")),
+            name: decode(searchParams.get("name")),
+            page: decode(searchParams.get("page")) || "1",
+        })
+
+        return {
+            sort: decode(searchParams.get("sort")),
+            dir: decode(searchParams.get("dir")),
+            category: decode(searchParams.get("category")),
+            brand: decode(searchParams.get("brand")),
+            search: decode(searchParams.get("name")),
+            page: decode(searchParams.get("page")) || "1",
+        };
+    }, [searchParams]);
+
+    const fetchProducts = useCallback(async (filters: ProductsParams) => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get('products');
+            const { data } = await axiosInstance.get("products", { params: filters });
+
             setProducts(data.data);
             setPagination({
                 total: data.pagination.total,
                 currentPage: data.pagination.page,
-                totalPages: data.pagination.totalPages
+                totalPages: data.pagination.totalPages,
             });
         } catch (error) {
-            if (error instanceof Error) handleShowToast(error.message, 'error');
+            if (error instanceof Error) handleShowToast(error.message, "error");
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        fetchProducts();
-    }, [])
+        fetchProducts(getParams());
+    }, [searchParams, getParams, fetchProducts]);
 
     const handleDelete = async () => {
         if (!selectedPrduct?.id) return;
@@ -94,7 +128,7 @@ const Products = () => {
             await axiosInstance.delete(`products/${selectedPrduct?.id}`);
             handleShowToast("محصول با موفقیت حذف شد.", "success");
             setSelectedProduct(null);
-            await fetchProducts();
+            await fetchProducts(getParams());
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
@@ -117,12 +151,12 @@ const Products = () => {
 
     const handleCancelForm = async () => {
         setFormMode(null);
-        await fetchProducts();
+        await fetchProducts(getParams());
     };
 
     const onUpdated = async () => {
         setFormMode(null);
-        await fetchProducts();
+        await fetchProducts(getParams());
     };
 
     return (
