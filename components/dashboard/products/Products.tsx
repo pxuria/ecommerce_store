@@ -2,18 +2,19 @@
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
+import CustomPagination from "@/components/shared/CustomPagination";
 import { handleShowToast } from "@/lib/toast";
-import axiosInstance from "@/lib/axiosInstance";
 import { type IProduct } from "@/types/model";
+import { toJalaliDate } from "@/utils/helpers";
+import axiosInstance from "@/lib/axiosInstance";
 import DashboardTable, { dateFormat } from "../DashboardTable";
 import ProductForm from "./ProductForm";
-import Image from "next/image";
-import { toJalaliDate } from "@/utils/helpers";
-import CustomPagination from "@/components/shared/CustomPagination";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 
 interface ProductsParams {
     sort: string | null;
@@ -110,7 +111,13 @@ const Products = () => {
     };
 
     const COLUMNS = [
-        { title: 'نام محصول', key: 'name', searchable: true, sortable: true, className: 'text-right' },
+        {
+            title: 'نام محصول',
+            key: 'name',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
         {
             title: 'عکس محصول',
             key: 'image',
@@ -125,10 +132,31 @@ const Products = () => {
             ),
             className: 'text-right'
         },
-        { title: 'محصول (نشانی کوتاه)', key: 'slug', className: 'text-right' },
-        { title: 'دسته بندی محصول', key: 'category.name', searchable: true, sortable: true, className: 'text-right' },
-        { title: 'برند محصول', key: 'brand.name', searchable: true, sortable: true, className: 'text-right' },
-        { title: 'کشور محصول', key: 'country.name', searchable: true, className: 'text-right' },
+        {
+            title: 'محصول (نشانی کوتاه)',
+            key: 'slug',
+            className: 'text-right'
+        },
+        {
+            title: 'دسته بندی محصول',
+            key: 'category.name',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'برند محصول',
+            key: 'brand.name',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'کشور محصول',
+            key: 'country.name',
+            searchable: true,
+            className: 'text-right'
+        },
         {
             title: 'وضعیت محصول',
             key: 'isActive',

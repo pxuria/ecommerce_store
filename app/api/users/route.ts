@@ -1,18 +1,31 @@
 export const runtime = 'nodejs';
 
 import { prisma } from "@/lib/prisma";
-import { asyncHandler } from "@/utils/helpers";
+import { asyncHandler, parseFilters } from "@/utils/helpers";
 
 export const GET = async (req: Request) => asyncHandler(async () => {
-  const { searchParams } = new URL(req.url);
+  const filters = [
+    { name: "firstName", type: "string" as const },
+    { name: "lastName", type: "string" as const },
+    { name: "email", type: "string" as const },
+    { name: "phone", type: "string" as const },
+    { name: "role", type: "string" as const },
+    { name: "address", type: "string" as const },
+    { name: "city", type: "string" as const },
+    { name: "postalCode", type: "string" as const }
+  ];
 
-  const page = parseInt(searchParams.get("page") || "1", 10);
-  const limit = parseInt(searchParams.get("limit") || "20", 20);
-  const skip = (page - 1) * limit;
+  const { where, orderBy, page, limit, skip } = parseFilters(req.url, filters, {
+    defaultSortBy: "id",
+    defaultSortOrder: "asc",
+    allowedSorts: { id: { id: "asc" } }
+  });
 
   const users = await prisma.user.findMany({
+    where,
     skip,
     take: limit,
+    orderBy,
     select: {
       id: true,
       firstName: true,

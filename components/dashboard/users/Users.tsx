@@ -1,25 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Trash2, UserStar } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
+import { UserRole } from "@prisma/client";
 import { handleShowToast } from "@/lib/toast";
-import { IUser } from "@/types/model";
+import { type IUser } from "@/types/model";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
-import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
-import { TableCell, TableRow } from "@/components/ui/table";
 import CustomPagination from "@/components/shared/CustomPagination";
-import { Trash2, UserStar } from "lucide-react";
-
-const COLUMNS = [
-    { title: 'نام', className: 'text-right' },
-    { title: 'نام خانوادگی', className: 'text-right' },
-    { title: 'تلفن همراه', className: 'text-right' },
-    { title: 'ایمیل', className: 'text-right' },
-    { title: 'نقش', className: 'text-right' },
-    { title: 'عملیات', className: 'text-center' }
-];
+import DashboardTable from "../DashboardTable";
 
 const Users = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -96,52 +88,93 @@ const Users = () => {
         }
     }
 
+    const COLUMNS = [
+        {
+            title: 'نام',
+            key: 'firstName',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'نام خانوادگی',
+            key: 'lastName',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'تلفن همراه',
+            key: 'phone',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'ایمیل',
+            key: 'email',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'نقش',
+            key: 'role',
+            className: 'text-right',
+            searchable: true,
+            render: (v: any) => v === UserRole.ADMIN ? 'ادمین' : 'کاربر'
+        },
+        {
+            title: 'شهر',
+            key: 'city',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'کد پستی',
+            key: 'postalCode',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'آدرس',
+            key: 'address',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'عملیات',
+            key: 'actions',
+            className: 'text-center',
+            render: (_: any, user: IUser) => (
+                <div className="flex_center gap-2">
+                    <Button
+                        className="bg-secondary-500 text-white !text-xs lg:text-base"
+                        onClick={() => {
+                            console.log(user)
+                            setSelectedUser(user);
+                            setIsAdminDialogOpen(true);
+                        }}
+                    >
+                        <UserStar className="mr-1" /> تغییر نقش کاربر
+                    </Button>
+                    <Button
+                        className="bg-red-700 text-white !text-xs lg:text-base"
+                        onClick={() => {
+                            setSelectedUser(user);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                    >
+                        <Trash2 className="mr-1" /> حذف
+                    </Button>
+                </div>
+            ),
+        }
+    ];
+
     return (
         <section>
             <div className="rounded-md border">
-                <DashboardTable columns={COLUMNS}>
-                    {loading
-                        ? renderSkeletonRows(3, COLUMNS)
-                        : users.length > 0
-                            ? users.map(user => (
-                                <TableRow key={user.id}>
-                                    <TableCell>{user.firstName}</TableCell>
-                                    <TableCell>{user.lastName}</TableCell>
-                                    <TableCell>{user.phone}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.role === 'ADMIN' ? 'ادمین' : 'کاربر'}</TableCell>
-                                    <TableCell className="flex_center gap-2">
-                                        <Button
-                                            className="bg-secondary-500 text-white !text-xs lg:text-base"
-                                            onClick={() => {
-                                                console.log(user)
-                                                setSelectedUser(user);
-                                                setIsAdminDialogOpen(true);
-                                            }}
-                                        >
-                                            <UserStar className="mr-1" /> تغییر نقش کاربر
-                                        </Button>
-                                        <Button
-                                            className="bg-red-700 text-white !text-xs lg:text-base"
-                                            onClick={() => {
-                                                setSelectedUser(user);
-                                                setIsDeleteDialogOpen(true);
-                                            }}
-                                        >
-                                            <Trash2 className="mr-1" /> حذف
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                            : (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="text-center text-gray-500">
-                                        هیچ کاربری ثبت نشده است.
-                                    </TableCell>
-                                </TableRow>
-                            )
-                    }
-                </DashboardTable>
+                <DashboardTable
+                    data={users}
+                    loading={loading}
+                    columns={COLUMNS} />
             </div>
 
             <CustomPagination pagination={pagination} />
