@@ -10,7 +10,7 @@ import { Input } from '../ui/input';
 
 export interface Column {
     title: string;
-    key: string;
+    key?: string;
     className?: string;
     sortable?: boolean;
     searchable?: boolean;
@@ -24,6 +24,8 @@ interface Props {
     skeletonCount?: number;
 }
 
+export const dateFormat = 'jYYYY/jMM/jDD';
+
 export const renderSkeletonRows = (count: number, COLUMNS: Column[]) => {
     return Array.from({ length: count }).map((_, idx) => (
         <TableRow key={`skeleton-${idx}`}>
@@ -36,15 +38,29 @@ export const renderSkeletonRows = (count: number, COLUMNS: Column[]) => {
     ));
 };
 
+const getValueByKey = (obj: any, path?: string) => {
+    if (!path) return undefined;
+    const parts = path.split('.');
+    let acc = obj;
+    for (const part of parts) {
+        if (acc == null) return undefined;
+        acc = acc[part];
+    }
+    return acc;
+};
+
+
 const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
+
     const [localFilters, setLocalFilters] = useState<Record<string, string>>({});
-    const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+    const debounceTimer = useRef<number | null>(null);
 
     const updateQuery = (params: Record<string, string | null>) => {
         const newParams = new URLSearchParams(searchParams.toString());
         Object.entries(params).forEach(([key, value]) => {
+            if (!key) return;
             if (value === null || value === '') newParams.delete(key);
             else newParams.set(key, value);
         });
@@ -52,8 +68,9 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
     };
 
     const handleSort = (key: string) => {
+        if (!key) return;
         const currentSort = searchParams.get('sort');
-        const currentDir = searchParams.get('dir') || 'asc';
+        const currentDir = (searchParams.get('dir') as 'asc' | 'desc' | null) || 'asc';
 
         let newDir: 'asc' | 'desc' = 'asc';
         if (currentSort === key && currentDir === 'asc') newDir = 'desc';
@@ -62,18 +79,24 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
     };
 
     const handleSearchChange = (key: string, value: string) => {
+        if (!key) return;
         setLocalFilters(prev => ({ ...prev, [key]: value }));
 
-        // debounce query updates
-        if (debounceTimer.current) clearTimeout(debounceTimer.current);
-        debounceTimer.current = setTimeout(() => {
-            updateQuery({ [key]: value, page: '1' });
-        }, 500); // ⏱ debounce delay (ms)
+        if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
+        debounceTimer.current = window.setTimeout(() => {
+            updateQuery({ [key]: value || null, page: '1' });
+        }, 500);
+
+        // // debounce query updates
+        // if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        // debounceTimer.current = setTimeout(() => {
+        //     updateQuery({ [key]: value, page: '1' });
+        // }, 500); // ⏱ debounce delay (ms)
     };
 
     useEffect(() => {
         return () => {
-            if (debounceTimer.current) clearTimeout(debounceTimer.current);
+            if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
         };
     }, []);
 
@@ -91,7 +114,7 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
                                     col.className,
                                     col.sortable && 'cursor-pointer select-none'
                                 )}
-                                onClick={() => col.sortable && handleSort(col.key)}
+                                onClick={() => col.sortable && handleSort(col.key as string)}
                             >
                                 <div className="flex items-center justify-between">
                                     <span>{col.title}</span>
@@ -104,12 +127,12 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
                     {/* Search row */}
                     <TableRow>
                         {columns.map(col => (
-                            <TableCell key={col.key}>
+                            <TableCell key={col.key ?? col.title}>
                                 {col.searchable ? (
                                     <Input
-                                        placeholder={`جستجو ${col.title}...`}
-                                        value={localFilters[col.key] ?? searchParams.get(col.key) ?? ''}
-                                        onChange={e => handleSearchChange(col.key, e.target.value)}
+                                        placeholder='جستجو'
+                                        value={localFilters[col.key ?? ''] ?? searchParams.get(col.key ?? '') ?? ''}
+                                        onChange={e => handleSearchChange(col.key as string, e.target.value)}
                                         className="h-8 text-xs outline-none border border-[#efefef]"
                                     />
                                 ) : null}
@@ -121,23 +144,27 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
                 <TableBody>
                     {loading
                         ? renderSkeletonRows(skeletonCount, columns)
-                        : data.length > 0 ? (
-                            data.map((row, i) => (
+                        : data.length > 0
+                            ? data.map((row, i) => (
                                 <TableRow key={i}>
-                                    {columns.map(col => (
-                                        <TableCell key={col.key}>
-                                            {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? '-')}
-                                        </TableCell>
-                                    ))}
+                                    {columns.map(col => {
+                                        // get value safely (supports nested key with dot notation)
+                                        const value = getValueByKey(row, col.key);
+                                        // if a render function is provided, prefer it and pass both value & full row
+                                        if (col.render) return <TableCell key={col.key ?? `${i}-${col.title}`}>{col.render(value, row)}</TableCell>;
+                                        // otherwise show the primitive value (or '-' when missing)
+                                        const display = value === undefined || value === null ? '-' : String(value);
+                                        return <TableCell key={col.key ?? `${i}-${col.title}`}>{display}</TableCell>;
+                                    })}
                                 </TableRow>
                             ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="text-center text-gray-500">
-                                    هیچ داده‌ای یافت نشد.
-                                </TableCell>
-                            </TableRow>
-                        )}
+                            : (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="text-center text-gray-500">
+                                        هیچ داده‌ای یافت نشد.
+                                    </TableCell>
+                                </TableRow>
+                            )}
                 </TableBody>
             </Table>
         </div>

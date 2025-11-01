@@ -4,11 +4,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
-import { TableCell, TableRow } from "@/components/ui/table";
 import { handleShowToast } from "@/lib/toast";
 import axiosInstance from "@/lib/axiosInstance";
 import { type IProduct } from "@/types/model";
-import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
+import DashboardTable, { dateFormat } from "../DashboardTable";
 import ProductForm from "./ProductForm";
 import Image from "next/image";
 import { toJalaliDate } from "@/utils/helpers";
@@ -25,45 +24,6 @@ interface ProductsParams {
     page: string | null
 }
 
-
-const COLUMNS = [
-    { title: 'نام محصول', key: 'name', searchable: true, sortable: true, className: 'text-right' },
-    {
-        title: 'عکس محصول',
-        key: 'image',
-        render: (_: any, product: IProduct) => (
-            <Image
-                width={120}
-                height={80}
-                alt={product?.images?.[0]?.alt ?? product.name}
-                src={product?.images?.[0]?.url ?? '/assets/images/placeholder.webp'}
-                className="rounded-lg object-cover aspect-square"
-            />
-        ),
-        className: 'text-right'
-    },
-    { title: 'محصول (نشانی کوتاه)', key: 'slug', className: 'text-right' },
-    { title: 'دسته بندی محصول', key: 'category', searchable: true, sortable: true, className: 'text-right' },
-    { title: 'برند محصول', key: 'brand', searchable: true, sortable: true, className: 'text-right' },
-    { title: 'کشور محصول', key: 'country', searchable: true, className: 'text-right' },
-    {
-        title: 'وضعیت محصول',
-        key: 'isActive',
-        sortable: true,
-        render: (v: any) => (v ? 'فعال' : 'غیرفعال'),
-        className: 'text-right'
-    },
-    {
-        title: 'تاریخ ایجاد',
-        key: 'createdAt',
-        sortable: true,
-        render: (v: any) => toJalaliDate(v, 'jYYYY/jMM/jDD'),
-        className: 'text-right'
-    },
-    { title: 'تاریخ حذف', className: 'text-right' },
-    { title: 'عملیات', className: 'text-center' }
-];
-
 const Products = () => {
     const searchParams = useSearchParams();
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
@@ -77,18 +37,8 @@ const Products = () => {
         totalPages: 1
     });
 
-    const dateFormat = 'jYYYY/jMM/jDD';
-
     const getParams = useCallback((): ProductsParams => {
         const decode = (val: string | null) => (val ? decodeURIComponent(val) : null);
-        console.log({
-            sort: decode(searchParams.get("sort")),
-            dir: decode(searchParams.get("dir")),
-            category: decode(searchParams.get("category")),
-            brand: decode(searchParams.get("brand")),
-            name: decode(searchParams.get("name")),
-            page: decode(searchParams.get("page")) || "1",
-        })
 
         return {
             sort: decode(searchParams.get("sort")),
@@ -159,6 +109,72 @@ const Products = () => {
         await fetchProducts(getParams());
     };
 
+    const COLUMNS = [
+        { title: 'نام محصول', key: 'name', searchable: true, sortable: true, className: 'text-right' },
+        {
+            title: 'عکس محصول',
+            key: 'image',
+            render: (_: any, product: IProduct) => (
+                <Image
+                    width={120}
+                    height={80}
+                    alt={product?.images?.[0]?.alt ?? product.name}
+                    src={product?.images?.[0]?.url ?? '/assets/images/placeholder.webp'}
+                    className="rounded-lg object-cover aspect-square"
+                />
+            ),
+            className: 'text-right'
+        },
+        { title: 'محصول (نشانی کوتاه)', key: 'slug', className: 'text-right' },
+        { title: 'دسته بندی محصول', key: 'category.name', searchable: true, sortable: true, className: 'text-right' },
+        { title: 'برند محصول', key: 'brand.name', searchable: true, sortable: true, className: 'text-right' },
+        { title: 'کشور محصول', key: 'country.name', searchable: true, className: 'text-right' },
+        {
+            title: 'وضعیت محصول',
+            key: 'isActive',
+            sortable: true,
+            render: (v: any) => (v ? 'فعال' : 'غیرفعال'),
+            className: 'text-right'
+        },
+        {
+            title: 'تاریخ ایجاد',
+            key: 'createdAt',
+            sortable: true,
+            render: (v: any) => toJalaliDate(v, dateFormat),
+            className: 'text-right'
+        },
+        {
+            title: 'تاریخ حذف',
+            key: 'deletedAt',
+            className: 'text-right',
+            render: (v: any) => toJalaliDate(v, dateFormat),
+        },
+        {
+            title: 'عملیات',
+            key: 'actions',
+            className: 'text-center',
+            render: (_: any, product: IProduct) => (
+                <div className="flex_center gap-2">
+                    <Button
+                        className="bg-primary-500 text-black !text-xs lg:text-base"
+                        onClick={() => handleEdit(product)}
+                    >
+                        <SquarePen className="mr-1" /> ویرایش
+                    </Button>
+                    <Button
+                        className="bg-red-700 text-white !text-xs lg:text-base"
+                        onClick={() => {
+                            setSelectedProduct(product);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                    >
+                        <Trash2 className="mr-1" /> حذف
+                    </Button>
+                </div>
+            ),
+        }
+    ];
+
     return (
         <section>
             {formMode === "edit" && selectedPrduct && (
@@ -180,59 +196,10 @@ const Products = () => {
                         </Button>
 
                         <div className="rounded-md border">
-                            <DashboardTable columns={COLUMNS} data={products}>
-                                {loading
-                                    ? renderSkeletonRows(3, COLUMNS)
-                                    : products.length > 0
-                                        ? products.map(product => (
-                                            <TableRow key={product.id}>
-                                                <TableCell>{product.name}</TableCell>
-                                                <TableCell>
-                                                    <Image
-                                                        width={120}
-                                                        height={80}
-                                                        alt={product?.images?.[0]?.alt ?? product.name}
-                                                        src={product?.images?.[0]?.url ?? "/assets/images/placeholder.webp"}
-                                                        className="rounded-lg object-cover aspect-square"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>{product.slug}</TableCell>
-                                                <TableCell>{product!.category!.name}</TableCell>
-                                                <TableCell>{product!.brand!.name}</TableCell>
-                                                <TableCell>{product!.country!.name}</TableCell>
-                                                <TableCell>{product.isActive ? 'فعال' : 'غیرفعال'}</TableCell>
-                                                <TableCell>{toJalaliDate(product.createdAt, dateFormat)}</TableCell>
-                                                <TableCell className={`${!product.deletedAt && "text-center"}`}>
-                                                    {toJalaliDate(product.deletedAt as Date, dateFormat) || '-'}
-                                                </TableCell>
-                                                <TableCell className="flex_center gap-2">
-                                                    <Button
-                                                        className="bg-primary-500 text-black !text-xs lg:text-base"
-                                                        onClick={() => handleEdit(product)}
-                                                    >
-                                                        <SquarePen className="mr-1" /> ویرایش
-                                                    </Button>
-                                                    <Button
-                                                        className="bg-red-700 text-white !text-xs lg:text-base"
-                                                        onClick={() => {
-                                                            setSelectedProduct(product);
-                                                            setIsDeleteDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Trash2 className="mr-1" /> حذف
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                        : (
-                                            <TableRow>
-                                                <TableCell colSpan={4} className="text-center text-gray-500">
-                                                    هیچ محصولی ثبت نشده است.
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                }
-                            </DashboardTable>
+                            <DashboardTable
+                                data={products}
+                                columns={COLUMNS}
+                                loading={loading} />
                         </div>
 
                         <CustomPagination pagination={pagination} />
@@ -254,10 +221,11 @@ const Products = () => {
                             }
                         />
                     </>
-                )}
+                )
+            }
 
-        </section>
+        </section >
     )
 }
 
-export default Products
+export default Products;
