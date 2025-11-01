@@ -16,15 +16,6 @@ import axiosInstance from "@/lib/axiosInstance";
 import DashboardTable, { dateFormat } from "../DashboardTable";
 import ProductForm from "./ProductForm";
 
-interface ProductsParams {
-    sort: string | null;
-    dir: string | null;
-    category: string | null;
-    brand: string | null;
-    search: string | null;
-    page: string | null
-}
-
 const Products = () => {
     const searchParams = useSearchParams();
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
@@ -38,20 +29,21 @@ const Products = () => {
         totalPages: 1
     });
 
-    const getParams = useCallback((): ProductsParams => {
+    const getParams = useCallback((): Record<any, string | null> => {
         const decode = (val: string | null) => (val ? decodeURIComponent(val) : null);
 
         return {
-            sort: decode(searchParams.get("sort")),
+            sortBy: decode(searchParams.get("sortBy")),
             dir: decode(searchParams.get("dir")),
-            category: decode(searchParams.get("category")),
-            brand: decode(searchParams.get("brand")),
-            search: decode(searchParams.get("name")),
+            name: decode(searchParams.get("name")),
+            category_name: decode(searchParams.get("category_name")),
+            brand_name: decode(searchParams.get("brand_name")),
+            country_name: decode(searchParams.get("country_name")),
             page: decode(searchParams.get("page")) || "1",
         };
     }, [searchParams]);
 
-    const fetchProducts = useCallback(async (filters: ProductsParams) => {
+    const fetchProducts = useCallback(async (filters: Record<any, string | null>) => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.get("products", { params: filters });
@@ -139,21 +131,21 @@ const Products = () => {
         },
         {
             title: 'دسته بندی محصول',
-            key: 'category.name',
+            key: 'category_name',
             searchable: true,
             sortable: true,
             className: 'text-right'
         },
         {
             title: 'برند محصول',
-            key: 'brand.name',
+            key: 'brand_name',
             searchable: true,
             sortable: true,
             className: 'text-right'
         },
         {
             title: 'کشور محصول',
-            key: 'country.name',
+            key: 'country_name',
             searchable: true,
             className: 'text-right'
         },

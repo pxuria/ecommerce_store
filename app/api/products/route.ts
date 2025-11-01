@@ -13,10 +13,12 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const limit = parseInt(searchParams.get("limit") || "20", 20);
   const skip = (page - 1) * limit;
 
-  const search = searchParams.get('search')?.trim() || undefined;
-  const categoryIds = searchParams.getAll('categoryId').map(Number);
-  const brandIds = searchParams.getAll('brandId').map(Number);
-  const countryIds = searchParams.getAll('countryId').map(Number);
+
+  const name = searchParams.get('name')?.trim();
+  const category = searchParams.get('category_name')?.trim();
+  const brand = searchParams.get('brand_name')?.trim();
+  const country = searchParams.get('country_name')?.trim();
+
   const isActive = searchParams.get('isActive') != null
     ? searchParams.get('isActive') === 'true'
     : undefined;
@@ -25,23 +27,15 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const maxPrice = searchParams.get("maxPrice");
 
   const sortBy = searchParams.get("sortBy") || "createdAt";
-  const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc";
+  const sortOrder = searchParams.get("dir") === "asc" ? "asc" : "desc";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
-  if (search) {
-    // Search by product name, brand name, or category name (case-insensitive)
-    where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { brand: { name: { contains: search, mode: "insensitive" } } },
-      { category: { name: { contains: search, mode: "insensitive" } } },
-    ];
-  }
-
-  if (categoryIds.length > 0) where.categoryId = { in: categoryIds };
-  if (brandIds.length > 0) where.brandId = { in: brandIds };
-  if (countryIds.length > 0) where.countryId = { in: countryIds };
+  if (name) where.name = { contains: name, mode: 'insensitive' };
+  if (category) where.category = { name: { contains: category, mode: 'insensitive' } };
+  if (brand) where.brand = { name: { contains: brand, mode: 'insensitive' } };
+  if (country) where.country = { name: { contains: country, mode: 'insensitive' } };
   if (isActive !== undefined) where.isActive = isActive;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

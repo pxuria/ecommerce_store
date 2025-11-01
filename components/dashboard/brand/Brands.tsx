@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
@@ -8,16 +9,9 @@ import { IBrand } from "@/types/model";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import BrandForm from "./BrandForm";
-import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
-import { TableCell, TableRow } from "@/components/ui/table";
+import DashboardTable from "../DashboardTable";
 import CustomPagination from "@/components/shared/CustomPagination";
 import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
-
-const COLUMNS = [
-    { title: 'نام برند', className: 'text-right' },
-    { title: 'برند (نشانی کوتاه)', className: 'text-right' },
-    { title: 'عملیات', className: 'text-center' }
-];
 
 const Brands = () => {
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
@@ -34,6 +28,7 @@ const Brands = () => {
     const searchParams = useSearchParams();
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = 10;
+
 
     const fetchBrands = useCallback(async () => {
         try {
@@ -93,6 +88,47 @@ const Brands = () => {
         await fetchBrands();
     };
 
+    const COLUMNS = [
+        {
+            title: 'نام برند',
+            key: 'name',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'برند (نشانی کوتاه)',
+            key: 'slug',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'عملیات',
+            key: 'actions',
+            className: 'text-center',
+            render: (_: any, brand: IBrand) => (
+                <div className="flex_center gap-2">
+                    <Button
+                        className="bg-primary-500 text-black !text-xs lg:text-base"
+                        onClick={() => handleEdit(brand)}
+                    >
+                        <SquarePen className="mr-1" /> ویرایش
+                    </Button>
+                    <Button
+                        className="bg-red-700 text-white !text-xs lg:text-base"
+                        onClick={() => {
+                            setSelectedBrand(brand);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                    >
+                        <Trash2 className="mr-1" /> حذف
+                    </Button>
+                </div>
+            ),
+        }
+    ];
+
     return (
         <section>
             {formMode === "edit" && selectedBrand && (
@@ -114,42 +150,10 @@ const Brands = () => {
                         </Button>
 
                         <div className="rounded-md border">
-                            <DashboardTable columns={COLUMNS}>
-                                {loading
-                                    ? renderSkeletonRows(3, COLUMNS)
-                                    : brands.length > 0
-                                        ? brands.map((brand) => (
-                                            <TableRow key={brand.id}>
-                                                <TableCell>{brand.name}</TableCell>
-                                                <TableCell>{brand.slug}</TableCell>
-                                                <TableCell className="flex_center gap-2">
-                                                    <Button
-                                                        className="bg-primary-500 text-black !text-xs lg:text-base"
-                                                        onClick={() => handleEdit(brand)}
-                                                    >
-                                                        <SquarePen className="mr-1" /> ویرایش
-                                                    </Button>
-                                                    <Button
-                                                        className="bg-red-700 text-white !text-xs lg:text-base"
-                                                        onClick={() => {
-                                                            setSelectedBrand(brand);
-                                                            setIsDeleteDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Trash2 className="mr-1" /> حذف
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                        : (
-                                            <TableRow>
-                                                <TableCell colSpan={4} className="text-center text-gray-500">
-                                                    هیچ برندی ثبت نشده است.
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                }
-                            </DashboardTable>
+                            <DashboardTable
+                                data={brands}
+                                loading={loading}
+                                columns={COLUMNS} />
                         </div>
 
                         <CustomPagination pagination={pagination} />

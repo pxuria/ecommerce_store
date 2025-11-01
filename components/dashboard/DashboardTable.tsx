@@ -40,7 +40,7 @@ export const renderSkeletonRows = (count: number, COLUMNS: Column[]) => {
 
 const getValueByKey = (obj: any, path?: string) => {
     if (!path) return undefined;
-    const parts = path.split('.');
+    const parts = path.split('_');
     let acc = obj;
     for (const part of parts) {
         if (acc == null) return undefined;
