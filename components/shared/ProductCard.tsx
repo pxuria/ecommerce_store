@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, memo } from "react";
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Bookmark, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { IProductWithBasePrice } from "@/types/model";
-import { handleShowToast } from "@/lib/toast";
-// import { enBrandName } from "@/constants";
 
 interface Props {
   product: IProductWithBasePrice;
@@ -14,48 +12,6 @@ interface Props {
 }
 
 const ProductCard = ({ product, itemClass = "" }: Props) => {
-  const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleBookmark = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (loading) return;
-
-    try {
-      setLoading(true);
-
-      const method = bookmarked ? "DELETE" : "POST";
-
-      const res = await fetch("/api/users/favorites", {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id }),
-      });
-
-      if (res.status === 401) {
-        handleShowToast('خروج از حساب با موفقیت انجام شد');
-        alert("ابتدا وارد حساب کاربری شوید");
-        return;
-      }
-
-      if (!res.ok) {
-        const error = await res.json();
-        alert(error?.message || "خطا در ذخیره محصول");
-        return;
-      }
-
-      // Toggle on success
-      setBookmarked((prev) => !prev);
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-      alert("خطایی رخ داد، دوباره تلاش کنید.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const tags = [
     { label: product.brand?.name, key: "brandId", value: product.brand?.id },
     { label: product.category?.name, key: "categoryId", value: product.category?.id },
@@ -68,16 +24,6 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
         <div className="flex-grow flex flex-col">
           <div className="relative overflow-hidden rounded-lg">
             <div className="relative">
-              <button
-                className="absolute right-3 top-3 bg-[#f9fafbb3] hover:bg-[#f8f9fa] primary_transition cursor-pointer rounded-full p-2 z-40"
-                onClick={handleBookmark}
-                aria-label="save product"
-                disabled={loading}
-                type="button"
-                name="save"
-              >
-                <Bookmark size={20} fill={bookmarked ? '' : "#000"} />
-              </button>
               <div className="group relative z-0">
                 <div className="carousel_item_img flex_center">
                   <h4 className="font-bold text-white md:text-black hidden sm:block">arshianbaft</h4>

@@ -42,17 +42,18 @@ const HeroSlider = () => {
         <section className="max-w-[94%] mx-auto embla" dir='ltr'>
             <div className="overflow-hidden" ref={emblaRef}>
                 <div className="embla__container">
-                    {bannners.map((item, index) => (
-                        <div className="embla__slide" key={index}>
-                            <Image
-                                priority
-                                width={900}
-                                height={450}
-                                src={item.image}
-                                alt={item.alt || 'بنر'}
-                                className="w-full object-cover max-h-[450px]" />
-                        </div>
-                    ))}
+                    {bannners.length > 0 &&
+                        bannners.map((item, index) => (
+                            <div className="embla__slide" key={index}>
+                                <Image
+                                    priority
+                                    width={900}
+                                    height={450}
+                                    src={item.image}
+                                    alt={item.alt || 'بنر'}
+                                    className="w-full object-cover max-h-[450px]" />
+                            </div>
+                        ))}
                 </div>
             </div>
 

@@ -6,7 +6,7 @@ import ConfirmBox from "@/components/ui/ConfirmBox";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { handleShowToast } from "@/lib/toast";
 import axiosInstance from "@/lib/axiosInstance";
-import { IProduct } from "@/types/model";
+import { type IProduct } from "@/types/model";
 import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
 import ProductForm from "./ProductForm";
 import Image from "next/image";
@@ -16,14 +16,39 @@ import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 
 const COLUMNS = [
-    { title: 'نام محصول', className: 'text-right' },
-    { title: 'عکس محصول', className: 'text-right' },
-    { title: 'محصول (نشانی کوتاه)', className: 'text-right' },
-    { title: 'دسته بندی محصول', className: 'text-right' },
-    { title: 'برند محصول', className: 'text-right' },
-    { title: 'کشور محصول', className: 'text-right' },
-    { title: 'وضعیت محصول', className: 'text-right' },
-    { title: 'تاریخ ایجاد', className: 'text-right' },
+    { title: 'نام محصول', key: 'name', searchable: true, sortable: true, className: 'text-right' },
+    {
+        title: 'عکس محصول',
+        key: 'image',
+        render: (_, product: IProduct) => (
+            <Image
+                width={120}
+                height={80}
+                alt={product?.images?.[0]?.alt ?? product.name}
+                src={product?.images?.[0]?.url ?? '/assets/images/placeholder.webp'}
+                className="rounded-lg object-cover aspect-square"
+            />
+        ),
+        className: 'text-right'
+    },
+    { title: 'محصول (نشانی کوتاه)', key: 'slug', className: 'text-right' },
+    { title: 'دسته بندی محصول', key: 'category', searchable: true, sortable: true, className: 'text-right' },
+    { title: 'برند محصول', key: 'brand', searchable: true, sortable: true, className: 'text-right' },
+    { title: 'کشور محصول', key: 'country', searchable: true, className: 'text-right' },
+    {
+        title: 'وضعیت محصول',
+        key: 'isActive',
+        sortable: true,
+        render: (v) => (v ? 'فعال' : 'غیرفعال'),
+        className: 'text-right'
+    },
+    {
+        title: 'تاریخ ایجاد',
+        key: 'createdAt',
+        sortable: true,
+        render: (v) => toJalaliDate(v, 'jYYYY/jMM/jDD'),
+        className: 'text-right'
+    },
     { title: 'تاریخ حذف', className: 'text-right' },
     { title: 'عملیات', className: 'text-center' }
 ];
@@ -121,7 +146,7 @@ const Products = () => {
                         </Button>
 
                         <div className="rounded-md border">
-                            <DashboardTable columns={COLUMNS}>
+                            <DashboardTable columns={COLUMNS} data={products}>
                                 {loading
                                     ? renderSkeletonRows(3, COLUMNS)
                                     : products.length > 0
