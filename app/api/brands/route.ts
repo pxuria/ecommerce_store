@@ -22,6 +22,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     });
 
     const filterKeyPart = generateFilterKeyPart(where);
+    console.log(filterKeyPart)
     const orderKeyPart = generateOrderKeyPart(orderBy);
     const cacheKey = `${redisKeys.brands.all}:page=${page}:limit=${limit}:${filterKeyPart}:${orderKeyPart}`;
 

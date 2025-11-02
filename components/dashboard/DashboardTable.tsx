@@ -69,7 +69,7 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
 
     const handleSort = (key: string) => {
         if (!key) return;
-        const currentSort = searchParams.get('sort');
+        const currentSort = searchParams.get('sortBy');
         const currentDir = (searchParams.get('dir') as 'asc' | 'desc' | null) || 'asc';
 
         let newDir: 'asc' | 'desc' = 'asc';
@@ -86,12 +86,6 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
         debounceTimer.current = window.setTimeout(() => {
             updateQuery({ [key]: value || null, page: '1' });
         }, 500);
-
-        // // debounce query updates
-        // if (debounceTimer.current) clearTimeout(debounceTimer.current);
-        // debounceTimer.current = setTimeout(() => {
-        //     updateQuery({ [key]: value, page: '1' });
-        // }, 500); // ⏱ debounce delay (ms)
     };
 
     useEffect(() => {

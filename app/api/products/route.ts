@@ -13,7 +13,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const limit = parseInt(searchParams.get("limit") || "20", 20);
   const skip = (page - 1) * limit;
 
-
+  const search = searchParams.get('search')?.trim();
   const name = searchParams.get('name')?.trim();
   const category = searchParams.get('category_name')?.trim();
   const brand = searchParams.get('brand_name')?.trim();
@@ -31,6 +31,14 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
+
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { brand: { name: { contains: search, mode: "insensitive" } } },
+      { category: { name: { contains: search, mode: "insensitive" } } },
+    ];
+  }
 
   if (name) where.name = { contains: name, mode: 'insensitive' };
   if (category) where.category = { name: { contains: category, mode: 'insensitive' } };

@@ -26,14 +26,25 @@ const Brands = () => {
     });
 
     const searchParams = useSearchParams();
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = 10;
+
+    const getParams = useCallback((): Record<any, string | null> => {
+        const decode = (val: string | null) => (val ? decodeURIComponent(val) : null);
+
+        return {
+            sortBy: decode(searchParams.get("sortBy")),
+            dir: decode(searchParams.get("dir")),
+            name: decode(searchParams.get("name")),
+            slug: decode(searchParams.get("slug")),
+            page: decode(searchParams.get("page")) || "1",
+            limit: decode(searchParams.get("limit")) || "20",
+        };
+    }, [searchParams]);
 
 
-    const fetchBrands = useCallback(async () => {
+    const fetchBrands = useCallback(async (filters: Record<any, string | null>) => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get(`brands?page=${page}&limit=${limit}`);
+            const { data } = await axiosInstance.get(`brands`, { params: filters });
             setBrands(data.data);
             setPagination({
                 total: data.pagination.total,
@@ -45,11 +56,11 @@ const Brands = () => {
         } finally {
             setLoading(false);
         }
-    }, [page, limit]);
+    }, []);
 
     useEffect(() => {
-        fetchBrands();
-    }, [fetchBrands])
+        fetchBrands(getParams());
+    }, [fetchBrands, getParams])
 
     const handleDelete = async () => {
         if (!selectedBrand?.id) return;
@@ -57,7 +68,7 @@ const Brands = () => {
             await axiosInstance.delete(`brands/${selectedBrand?.id}`);
             handleShowToast("برند با موفقیت حذف شد.", "success");
             setSelectedBrand(null);
-            await fetchBrands();
+            await fetchBrands(getParams());
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
@@ -80,12 +91,12 @@ const Brands = () => {
 
     const handleCancelForm = async () => {
         setFormMode(null);
-        await fetchBrands();
+        await fetchBrands(getParams());
     };
 
     const onUpdated = async () => {
         setFormMode(null);
-        await fetchBrands();
+        await fetchBrands(getParams());
     };
 
     const COLUMNS = [

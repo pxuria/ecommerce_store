@@ -63,7 +63,7 @@ const Products = () => {
 
     useEffect(() => {
         fetchProducts(getParams());
-    }, [searchParams, getParams, fetchProducts]);
+    }, [getParams, fetchProducts]);
 
     const handleDelete = async () => {
         if (!selectedPrduct?.id) return;

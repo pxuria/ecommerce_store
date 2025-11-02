@@ -293,24 +293,31 @@ export function parseFilters(url: string, filters: FilterConfig[], sortConfig?: 
   return { where, orderBy, page, limit, skip };
 }
 
+function stableStringify(value: any): string {
+  if (value === null || value === undefined) return String(value);
+  if (typeof value !== "object") return String(value);
+
+  if (Array.isArray(value)) {
+    return `[${value.map(v => stableStringify(v)).join(",")}]`;
+  }
+
+  // object: sort keys for deterministic output
+  const keys = Object.keys(value).sort();
+  const parts: string[] = [];
+  for (const k of keys) {
+    parts.push(`${k}:${stableStringify(value[k])}`);
+  }
+  return `{${parts.join(",")}}`;
+}
+
 export function generateFilterKeyPart(where: Record<string, any>) {
-  return Object.entries(where)
-    .map(([k, v]) => `${k}=${v}`)
-    .join("&");
+  if (!where || Object.keys(where).length === 0) return "filter=none";
+  const serialized = stableStringify(where);
+  return `filter=${encodeURIComponent(serialized)}`;
 }
 
 export function generateOrderKeyPart(orderBy: Record<string, any>[]) {
-  return orderBy
-    .map(ob => {
-      const field = Object.keys(ob)[0];
-      const value = ob[field];
-      if (typeof value === "object") {
-        // nested sort (_min/_max)
-        const nestedKey = Object.keys(value)[0];
-        const nestedValue = Object.keys(value[nestedKey])[0];
-        return `${field}.${nestedKey}.${nestedValue}=${value[nestedKey][nestedValue]}`;
-      }
-      return `${field}=${value}`;
-    })
-    .join("&");
+  if (!orderBy) return "order=none";
+  const serialized = stableStringify(orderBy);
+  return `order=${encodeURIComponent(serialized)}`;
 }
