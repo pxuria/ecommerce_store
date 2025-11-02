@@ -3,15 +3,16 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
 import { IBrand } from "@/types/model";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
+import CustomPagination from "@/components/shared/CustomPagination";
 import BrandForm from "./BrandForm";
 import DashboardTable from "../DashboardTable";
-import CustomPagination from "@/components/shared/CustomPagination";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 const Brands = () => {
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
@@ -28,15 +29,15 @@ const Brands = () => {
     const searchParams = useSearchParams();
 
     const getParams = useCallback((): Record<any, string | null> => {
-        const decode = (val: string | null) => (val ? decodeURIComponent(val) : null);
+        const params: Record<string, string | null> = {};
+        searchParams.forEach((value, key) => {
+            params[key] = decodeURIComponent(value);
+        });
 
         return {
-            sortBy: decode(searchParams.get("sortBy")),
-            dir: decode(searchParams.get("dir")),
-            name: decode(searchParams.get("name")),
-            slug: decode(searchParams.get("slug")),
-            page: decode(searchParams.get("page")) || "1",
-            limit: decode(searchParams.get("limit")) || "20",
+            page: params.page || "1",
+            limit: params.limit || "20",
+            ...params,
         };
     }, [searchParams]);
 

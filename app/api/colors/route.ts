@@ -8,7 +8,7 @@ import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
 export const GET = async (req: Request) => asyncHandler(async () => {
     const filters = [
         { name: "name", type: "string" as const },
-        { name: "slug", type: "string" as const }
+        { name: "hex", type: "string" as const }
     ];
 
     const { where, orderBy, page, limit, skip } = parseFilters(req.url, filters, {
@@ -16,8 +16,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
         defaultSortOrder: "asc",
         allowedSorts: {
             id: { id: "asc" },
-            name: { name: "asc" },
-            slug: { slug: "asc" }
+            name: { name: "asc" }
         }
     });
 

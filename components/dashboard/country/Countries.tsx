@@ -1,23 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
 import { ICountry } from "@/types/model";
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
-import CountryForm from "./CountryForm";
-import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
-import { TableCell, TableRow } from "@/components/ui/table";
 import CustomPagination from "@/components/shared/CustomPagination";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
-
-const COLUMNS = [
-    { title: 'نام کشور', className: 'text-right' },
-    { title: 'کشور (نشانی کوتاه)', className: 'text-right' },
-    { title: 'عملیات', className: 'text-center' }
-];
+import DashboardTable from "../DashboardTable";
+import CountryForm from "./CountryForm";
 
 const Countries = () => {
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
@@ -32,13 +26,24 @@ const Countries = () => {
     });
 
     const searchParams = useSearchParams();
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = 10;
 
-    const fetchCountries = useCallback(async () => {
+    const getParams = useCallback((): Record<any, string | null> => {
+        const params: Record<string, string | null> = {};
+        searchParams.forEach((value, key) => {
+            params[key] = decodeURIComponent(value);
+        });
+
+        return {
+            page: params.page || "1",
+            limit: params.limit || "20",
+            ...params,
+        };
+    }, [searchParams]);
+
+    const fetchCountries = useCallback(async (filters: Record<any, string | null>) => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get(`countries?page=${page}&limit=${limit}`);
+            const { data } = await axiosInstance.get('countries', { params: filters });
 
             setCountries(Array.isArray(data.data) ? data.data : []);
             setPagination({
@@ -52,11 +57,11 @@ const Countries = () => {
         } finally {
             setLoading(false);
         }
-    }, [page, limit]);
+    }, []);
 
     useEffect(() => {
-        fetchCountries();
-    }, [fetchCountries])
+        fetchCountries(getParams());
+    }, [fetchCountries, getParams])
 
     const handleDelete = async () => {
         if (!selectedCountry?.id) return;
@@ -64,7 +69,7 @@ const Countries = () => {
             await axiosInstance.delete(`countries/${selectedCountry?.id}`);
             handleShowToast("کشور با موفقیت حذف شد.", "success");
             setSelectedCountry(null);
-            await fetchCountries();
+            await fetchCountries(getParams());
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
@@ -87,13 +92,55 @@ const Countries = () => {
 
     const handleCancelForm = async () => {
         setFormMode(null);
-        await fetchCountries();
+        await fetchCountries(getParams());
     };
 
     const onUpdated = async () => {
         setFormMode(null);
-        await fetchCountries();
+        await fetchCountries(getParams());
     };
+
+    const COLUMNS = [
+        {
+            title: 'نام کشور',
+            key: 'name',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'کشور (نشانی کوتاه)',
+            key: 'slug',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'عملیات',
+            key: '',
+            className: 'text-center',
+            render: (_: any, country: ICountry) => (
+                <div className="flex_center gap-2">
+
+                    <Button
+                        className="bg-primary-500 text-black !text-xs lg:text-base"
+                        onClick={() => handleEdit(country)}
+                    >
+                        <SquarePen className="mr-1" /> ویرایش
+                    </Button>
+                    <Button
+                        className="bg-red-700 text-white !text-xs lg:text-base"
+                        onClick={() => {
+                            setSelectedCountry(country);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                    >
+                        <Trash2 className="mr-1" /> حذف
+                    </Button>
+                </div>
+            )
+        }
+    ];
 
     return (
         <section>
@@ -116,42 +163,10 @@ const Countries = () => {
                         </Button>
 
                         <div className="rounded-md border">
-                            <DashboardTable columns={COLUMNS}>
-                                {loading
-                                    ? renderSkeletonRows(3, COLUMNS)
-                                    : countries.length > 0
-                                        ? countries.map((country) => (
-                                            <TableRow key={country.id}>
-                                                <TableCell>{country.name}</TableCell>
-                                                <TableCell>{country.slug}</TableCell>
-                                                <TableCell className="flex_center gap-2">
-                                                    <Button
-                                                        className="bg-primary-500 text-black !text-xs lg:text-base"
-                                                        onClick={() => handleEdit(country)}
-                                                    >
-                                                        <SquarePen className="mr-1" /> ویرایش
-                                                    </Button>
-                                                    <Button
-                                                        className="bg-red-700 text-white !text-xs lg:text-base"
-                                                        onClick={() => {
-                                                            setSelectedCountry(country);
-                                                            setIsDeleteDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Trash2 className="mr-1" /> حذف
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                        : (
-                                            <TableRow>
-                                                <TableCell colSpan={4} className="text-center text-gray-500">
-                                                    هیچ کشوری ثبت نشده است.
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                }
-                            </DashboardTable>
+                            <DashboardTable
+                                data={countries}
+                                loading={loading}
+                                columns={COLUMNS} />
                         </div>
 
                         <CustomPagination pagination={pagination} />

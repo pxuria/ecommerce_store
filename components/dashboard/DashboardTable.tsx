@@ -69,13 +69,15 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
 
     const handleSort = (key: string) => {
         if (!key) return;
-        const currentSort = searchParams.get('sortBy');
-        const currentDir = (searchParams.get('dir') as 'asc' | 'desc' | null) || 'asc';
 
-        let newDir: 'asc' | 'desc' = 'asc';
-        if (currentSort === key && currentDir === 'asc') newDir = 'desc';
+        const currentSort = searchParams.get('sortBy') || '';
+        const isAsc = currentSort === key;
 
-        updateQuery({ sort: key, dir: newDir });
+        let newSort: string;
+        if (isAsc) newSort = `-${key}`; // switch to descending
+        else newSort = key; // switch to ascending or default
+
+        updateQuery({ sortBy: newSort });
     };
 
     const handleSearchChange = (key: string, value: string) => {

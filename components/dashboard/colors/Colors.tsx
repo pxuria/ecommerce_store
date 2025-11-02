@@ -1,24 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
-import { TableCell, TableRow } from "@/components/ui/table"
+
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
 import { IColor } from "@/types/model";
-import DashboardTable, { renderSkeletonRows } from "../DashboardTable";
-import ColorForm from "./ColorForm";
 import CustomPagination from "@/components/shared/CustomPagination";
-
-const COLUMNS = [
-    { title: 'نام رنگ', className: 'text-right' },
-    { title: 'کد رنگ', className: 'text-right' },
-    { title: 'رنگ', className: 'text-right' },
-    { title: 'عملیات', className: 'text-center' }
-];
+import DashboardTable from "../DashboardTable";
+import ColorForm from "./ColorForm";
 
 const Colors = () => {
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
@@ -96,6 +90,59 @@ const Colors = () => {
         await fetchColors();
     };
 
+    const COLUMNS = [
+        {
+            title: 'نام رنگ',
+            key: 'name',
+            searchable: true,
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'کد رنگ',
+            key: 'hex',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'رنگ',
+            key: 'color_name',
+            className: 'text-right',
+            render: (_: any, color: IColor) => (
+                <div
+                    className={`w-8 h-8 rounded border border-[#b7b1b1] flex_center font-bold ${!color.hex && "bg-gray-200"}`}
+                    style={{ backgroundColor: color.hex || "#fff" }}
+                >
+                    {!color.hex && '?'}
+                </div>
+            )
+        },
+        {
+            title: 'عملیات',
+            key: 'actions',
+            className: 'text-center',
+            render: (_: any, color: IColor) => (
+                <div className="flex_center gap-2">
+                    <Button
+                        className="bg-primary-500 text-black !text-xs lg:text-base"
+                        onClick={() => handleEdit(color)}
+                    >
+                        <SquarePen className="mr-1" /> ویرایش
+                    </Button>
+                    <Button
+                        className="bg-red-700 text-white !text-xs lg:text-base"
+                        onClick={() => {
+                            setSelectedColor(color);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                    >
+                        <Trash2 className="mr-1" /> حذف
+                    </Button>
+                </div>
+            ),
+        }
+    ];
+
     return (
         <section>
             {formMode === "edit" && selectedColor && (
@@ -118,50 +165,10 @@ const Colors = () => {
 
                         {/* Colors Table */}
                         <div className="rounded-md border">
-                            <DashboardTable columns={COLUMNS}>
-                                {loading
-                                    ? renderSkeletonRows(3, COLUMNS)
-                                    : colors.length > 0
-                                        ? colors.map((color) => (
-                                            <TableRow key={color.id}>
-                                                <TableCell>{color.name}</TableCell>
-                                                <TableCell>{color.hex}</TableCell>
-                                                <TableCell>
-                                                    <div
-                                                        className={`w-8 h-8 rounded border border-[#b7b1b1] flex_center font-bold ${!color.hex && "bg-gray-200"}`}
-                                                        style={{ backgroundColor: color.hex || "#fff" }}
-                                                    >
-                                                        {!color.hex && '?'}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="flex_center gap-2">
-                                                    <Button
-                                                        className="bg-primary-500 text-black !text-xs lg:text-base"
-                                                        onClick={() => handleEdit(color)}
-                                                    >
-                                                        <SquarePen className="mr-1" /> ویرایش
-                                                    </Button>
-                                                    <Button
-                                                        className="bg-red-700 text-white !text-xs lg:text-base"
-                                                        onClick={() => {
-                                                            setSelectedColor(color);
-                                                            setIsDeleteDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Trash2 className="mr-1" /> حذف
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                        : (
-                                            <TableRow>
-                                                <TableCell colSpan={4} className="text-center text-gray-500">
-                                                    هیچ رنگی ثبت نشده است.
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                }
-                            </DashboardTable>
+                            <DashboardTable
+                                data={colors}
+                                loading={loading}
+                                columns={COLUMNS} />
                         </div>
 
                         <CustomPagination pagination={pagination} />
@@ -183,9 +190,10 @@ const Colors = () => {
                             }
                         />
                     </>
-                )}
+                )
+            }
 
-        </section>
+        </section >
     )
 }
 
