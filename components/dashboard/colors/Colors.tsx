@@ -27,14 +27,24 @@ const Colors = () => {
     });
 
     const searchParams = useSearchParams();
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = 10;
 
-    const fetchColors = useCallback(async () => {
+    const getParams = useCallback((): Record<any, string | null> => {
+        const params: Record<string, string | null> = {};
+        searchParams.forEach((value, key) => {
+            params[key] = decodeURIComponent(value);
+        });
+
+        return {
+            page: params.page || "1",
+            limit: params.limit || "20",
+            ...params,
+        };
+    }, [searchParams]);
+
+    const fetchColors = useCallback(async (filters: Record<any, string | null>) => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/colors?page=${page}&limit=${limit}`);
-            const data = await res.json();
+            const { data } = await axiosInstance.get('/api/colors', { params: filters });
 
             setColors(Array.isArray(data.data) ? data.data : []);
             setPagination({
@@ -47,11 +57,11 @@ const Colors = () => {
         } finally {
             setLoading(false);
         }
-    }, [page, limit]);
+    }, []);
 
     useEffect(() => {
-        fetchColors();
-    }, [fetchColors])
+        fetchColors(getParams());
+    }, [fetchColors, getParams])
 
     const handleDelete = async () => {
         if (!selectedColor?.id) return;
@@ -59,7 +69,7 @@ const Colors = () => {
             await axiosInstance.delete(`colors/${selectedColor?.id}`);
             handleShowToast("رنگ با موفقیت حذف شد.", "success");
             setSelectedColor(null);
-            await fetchColors();
+            await fetchColors(getParams());
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
@@ -82,12 +92,12 @@ const Colors = () => {
 
     const handleCancelForm = async () => {
         setFormMode(null);
-        await fetchColors();
+        await fetchColors(getParams());
     };
 
     const onUpdated = async () => {
         setFormMode(null);
-        await fetchColors();
+        await fetchColors(getParams());
     };
 
     const COLUMNS = [
