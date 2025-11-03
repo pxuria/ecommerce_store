@@ -1,26 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { CirclePlus, SquarePen, Trash2 } from 'lucide-react';
+
 import CustomPagination from '@/components/shared/CustomPagination';
 import ConfirmBox from '@/components/ui/ConfirmBox';
 import { Button } from '@/components/ui/button';
-import { TableCell, TableRow } from '@/components/ui/table';
 import { handleShowToast } from '@/lib/toast';
 import axiosInstance from '@/lib/axiosInstance';
 import { IBlog } from '@/types/model';
-import DashboardTable, { renderSkeletonRows } from '../DashboardTable';
+import DashboardTable from '../DashboardTable';
 import BlogForm from './BlogForm';
-
-const COLUMNS = [
-    { title: 'تیتر بلاگ', className: 'text-right' },
-    { title: 'عکس بلاگ', className: 'text-right' },
-    { title: 'بلاگ (نشانی کوتاه)', className: 'text-right' },
-    { title: 'مدت زمان مطالعه', className: 'text-right' },
-    { title: 'وضعیت انتشار', className: 'text-right' },
-    { title: 'عملیات', className: 'text-center' }
-];
 
 const Blogs = () => {
     const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
@@ -34,10 +27,25 @@ const Blogs = () => {
         totalPages: 1
     });
 
-    const fetchBlogs = async () => {
+    const searchParams = useSearchParams();
+
+    const getParams = useCallback((): Record<any, string | null> => {
+        const params: Record<string, string | null> = {};
+        searchParams.forEach((value, key) => {
+            params[key] = decodeURIComponent(value);
+        });
+
+        return {
+            page: params.page || "1",
+            limit: params.limit || "20",
+            ...params,
+        };
+    }, [searchParams]);
+
+    const fetchBlogs = useCallback(async (filters: Record<any, string | null>) => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get('blogs');
+            const { data } = await axiosInstance.get('blogs', { params: filters });
             setBlogs(data.data);
             setPagination({
                 total: data.pagination.total,
@@ -49,11 +57,11 @@ const Blogs = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        fetchBlogs();
-    }, [])
+        fetchBlogs(getParams());
+    }, [fetchBlogs, getParams])
 
     const handleDelete = async () => {
         if (!selectedBlog?.id) return;
@@ -61,7 +69,7 @@ const Blogs = () => {
             await axiosInstance.delete(`blogs/${selectedBlog?.id}`);
             handleShowToast("بلاگ با موفقیت حذف شد.", "success");
             setSelectedBlog(null);
-            await fetchBlogs();
+            await fetchBlogs(getParams());
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
@@ -84,13 +92,79 @@ const Blogs = () => {
 
     const handleCancelForm = async () => {
         setFormMode(null);
-        await fetchBlogs();
+        await fetchBlogs(getParams());
     };
 
     const onUpdated = async () => {
         setFormMode(null);
-        await fetchBlogs();
+        await fetchBlogs(getParams());
     };
+
+
+    const COLUMNS = [
+        {
+            title: 'تیتر بلاگ',
+            key: 'title',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'عکس بلاگ',
+            key: 'coverImage',
+            className: 'text-right',
+            render: ({ coverImage }: IBlog) => (
+                <Image
+                    width={120}
+                    height={80}
+                    alt={coverImage}
+                    src={coverImage}
+                    className="rounded-lg object-cover"
+                />
+            ),
+        },
+        {
+            title: 'بلاگ (نشانی کوتاه)',
+            key: 'slug',
+            searchable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'مدت زمان مطالعه',
+            key: 'estimatedTimeToRead',
+            sortable: true,
+            className: 'text-right'
+        },
+        {
+            title: 'وضعیت انتشار',
+            key: '',
+            className: 'text-right',
+            render: ({ isPublished }: IBlog) => isPublished ? 'منتشر شده' : '-',
+        },
+        {
+            title: 'عملیات',
+            key: 'actions',
+            className: 'text-center',
+            render: (_: any, blog: IBlog) => (
+                <div className="flex_center gap-2">
+                    <Button
+                        className="bg-primary-500 text-black !text-xs lg:text-base"
+                        onClick={() => handleEdit(blog)}
+                    >
+                        <SquarePen className="mr-1" /> ویرایش
+                    </Button>
+                    <Button
+                        className="bg-red-700 text-white !text-xs lg:text-base"
+                        onClick={() => {
+                            setSelectedBlog(blog);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                    >
+                        <Trash2 className="mr-1" /> حذف
+                    </Button>
+                </div>
+            )
+        }
+    ];
 
     return (
         <section>
@@ -113,53 +187,10 @@ const Blogs = () => {
                         </Button>
 
                         <div className="rounded-md border">
-                            <DashboardTable columns={COLUMNS}>
-                                {loading
-                                    ? renderSkeletonRows(3, COLUMNS)
-                                    : blogs.length > 0
-                                        ? blogs.map(blog => (
-                                            <TableRow key={blog.id}>
-                                                <TableCell>{blog.title}</TableCell>
-                                                <TableCell>
-                                                    <Image
-                                                        width={120}
-                                                        height={80}
-                                                        alt={blog.title}
-                                                        src={blog.coverImage}
-                                                        className="rounded-lg object-cover"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>{blog.slug}</TableCell>
-                                                <TableCell>{blog.estimatedTimeToRead}</TableCell>
-                                                <TableCell>{blog.isPublished ? 'منتشر شده' : '-'}</TableCell>
-                                                <TableCell className="flex_center gap-2">
-                                                    <Button
-                                                        className="bg-primary-500 text-black !text-xs lg:text-base"
-                                                        onClick={() => handleEdit(blog)}
-                                                    >
-                                                        <SquarePen className="mr-1" /> ویرایش
-                                                    </Button>
-                                                    <Button
-                                                        className="bg-red-700 text-white !text-xs lg:text-base"
-                                                        onClick={() => {
-                                                            setSelectedBlog(blog);
-                                                            setIsDeleteDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Trash2 className="mr-1" /> حذف
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                        : (
-                                            <TableRow>
-                                                <TableCell colSpan={4} className="text-center text-gray-500">
-                                                    هیچ بلاگی ثبت نشده است.
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                }
-                            </DashboardTable>
+                            <DashboardTable
+                                loading={loading}
+                                data={blogs}
+                                columns={COLUMNS} />
                         </div>
 
                         <CustomPagination pagination={pagination} />
