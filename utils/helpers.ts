@@ -276,12 +276,9 @@ export function parseFilters(url: string, filters: FilterConfig[], sortConfig?: 
 
     orderBy = Object.entries(mappedSort).map(([key, value]) => {
       if (typeof value === "object") {
-        // Nested sort (_min/_max)
         const nestedKey = Object.keys(value)[0];
         const nestedField = Object.keys((value as any)[nestedKey])[0];
-        return {
-          [key]: { [nestedKey]: { [nestedField]: sortOrderParam } }
-        };
+        return { [key]: { [nestedKey]: { [nestedField]: sortOrderParam } } };
       } else {
         return { [key]: sortOrderParam };
       }

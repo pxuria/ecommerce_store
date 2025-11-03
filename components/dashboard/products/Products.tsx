@@ -39,6 +39,7 @@ const Products = () => {
             category_name: decode(searchParams.get("category_name")),
             brand_name: decode(searchParams.get("brand_name")),
             country_name: decode(searchParams.get("country_name")),
+            isActive: decode(searchParams.get("isActive")),
             page: decode(searchParams.get("page")) || "1",
         };
     }, [searchParams]);
@@ -133,14 +134,12 @@ const Products = () => {
             title: 'دسته بندی محصول',
             key: 'category_name',
             searchable: true,
-            sortable: true,
             className: 'text-right'
         },
         {
             title: 'برند محصول',
             key: 'brand_name',
             searchable: true,
-            sortable: true,
             className: 'text-right'
         },
         {
@@ -152,9 +151,17 @@ const Products = () => {
         {
             title: 'وضعیت محصول',
             key: 'isActive',
-            sortable: true,
-            render: (v: any) => (v ? 'فعال' : 'غیرفعال'),
-            className: 'text-right'
+            searchItems: [
+                { key: 'فعال', value: 'true' },
+                { key: 'غیر فعال', value: 'false' },
+                { key: 'همه', value: ' ' }
+            ],
+            className: 'text-right',
+            render: (_: any, product: IProduct) => (
+                <span className={product.isActive ? 'text-green-400' : 'text-red-400'}>
+                    {product.isActive ? 'فعال' : 'غیر فعال'}
+                </span>
+            )
         },
         {
             title: 'تاریخ ایجاد',

@@ -18,10 +18,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   const category = searchParams.get('category_name')?.trim();
   const brand = searchParams.get('brand_name')?.trim();
   const country = searchParams.get('country_name')?.trim();
-
-  const isActive = searchParams.get('isActive') != null
-    ? searchParams.get('isActive') === 'true'
-    : undefined;
+  const isActive = searchParams.get('isActive')?.trim();
 
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
@@ -44,7 +41,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
   if (category) where.category = { name: { contains: category, mode: 'insensitive' } };
   if (brand) where.brand = { name: { contains: brand, mode: 'insensitive' } };
   if (country) where.country = { name: { contains: country, mode: 'insensitive' } };
-  if (isActive !== undefined) where.isActive = isActive;
+  if (isActive && !(isActive == null || isActive.trim().length === 0)) where.isActive = isActive === "true";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let orderBy: any = { createdAt: sortOrder };

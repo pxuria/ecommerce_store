@@ -130,7 +130,6 @@ const Banners = () => {
         {
             title: 'وضعیت',
             key: 'isActive',
-            searchable: true,
             searchItems: [
                 { key: 'فعال', value: 'true' },
                 { key: 'غیر فعال', value: 'false' },
@@ -138,7 +137,7 @@ const Banners = () => {
             ],
             className: 'text-right',
             render: (_: any, banner: IBanner) => (
-                <span className={`badge ${banner.isActive ? 'text-green-400' : 'text-red-400'} text-white`}>
+                <span className={banner.isActive ? 'text-green-400' : 'text-red-400'}>
                     {banner.isActive ? 'فعال' : 'غیر فعال'}
                 </span>
             )
