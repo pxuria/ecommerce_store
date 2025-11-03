@@ -105,7 +105,6 @@ const Colors = () => {
             title: 'نام رنگ',
             key: 'name',
             searchable: true,
-            sortable: true,
             className: 'text-right'
         },
         {

@@ -105,14 +105,12 @@ const Countries = () => {
             title: 'نام کشور',
             key: 'name',
             searchable: true,
-            sortable: true,
             className: 'text-right'
         },
         {
             title: 'کشور (نشانی کوتاه)',
             key: 'slug',
             searchable: true,
-            sortable: true,
             className: 'text-right'
         },
         {

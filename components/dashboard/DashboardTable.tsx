@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Skeleton } from '../ui/skeleton';
 import { Input } from '../ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export interface Column {
     title: string;
@@ -14,6 +15,7 @@ export interface Column {
     className?: string;
     sortable?: boolean;
     searchable?: boolean;
+    searchItems?: { key: string; value: string }[];
     render?: (value: any, row: any) => React.ReactNode;
 }
 
@@ -72,10 +74,11 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
 
         const currentSort = searchParams.get('sortBy') || '';
         const isAsc = currentSort === key;
+        const newSort = isAsc ? `-${key}` : key
 
-        let newSort: string;
-        if (isAsc) newSort = `-${key}`; // switch to descending
-        else newSort = key; // switch to ascending or default
+        // let newSort: string;
+        // if (isAsc) newSort = `-${key}`; // switch to descending
+        // else newSort = key; // switch to ascending or default
 
         updateQuery({ sortBy: newSort });
     };
@@ -122,18 +125,51 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
 
                     {/* Search row */}
                     <TableRow>
-                        {columns.map(col => (
-                            <TableCell key={col.key ?? col.title}>
-                                {col.searchable ? (
-                                    <Input
-                                        placeholder='جستجو'
-                                        value={localFilters[col.key ?? ''] ?? searchParams.get(col.key ?? '') ?? ''}
-                                        onChange={e => handleSearchChange(col.key as string, e.target.value)}
-                                        className="h-8 text-xs outline-none border border-[#efefef]"
-                                    />
-                                ) : null}
-                            </TableCell>
-                        ))}
+                        {columns.map(col => {
+                            const filterValue =
+                                localFilters[col.key ?? ''] ??
+                                searchParams.get(col.key ?? '') ??
+                                '';
+
+                            return (
+                                <TableCell key={col.key ?? col.title}>
+                                    {col.searchable && !col.searchItems ? (
+                                        <Input
+                                            placeholder="جستجو"
+                                            value={filterValue}
+                                            onChange={e => handleSearchChange(col.key as string, e.target.value)}
+                                            className="h-8 text-xs outline-none border border-[#efefef]"
+                                        />
+                                    ) : null}
+
+
+                                    {/* Dropdown filter */}
+                                    {col.searchItems ? (
+                                        <div className="space-y-1">
+                                            <Select
+                                                value={filterValue}
+                                                onValueChange={(val) =>
+                                                    handleSearchChange(col.key as string, val)
+                                                }>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent className='bg-white'>
+                                                    {col.searchItems.map((option) => (
+                                                        <SelectItem
+                                                            key={option.value}
+                                                            value={option.value}
+                                                            className='cursor-pointer hover:bg-[#efefef] justify-end'>
+                                                            {option.key}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    ) : null}
+                                </TableCell>
+                            )
+                        })}
                     </TableRow>
                 </TableHeader>
 

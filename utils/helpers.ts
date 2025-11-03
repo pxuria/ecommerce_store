@@ -255,7 +255,7 @@ export function parseFilters(url: string, filters: FilterConfig[], sortConfig?: 
   const where: Record<string, any> = {};
   filters.forEach((f) => {
     const value = searchParams.get(f.name);
-    if (value == null) return;
+    if (value == null || value.trim().length === 0) return;
 
     switch (f.type) {
       case "string":

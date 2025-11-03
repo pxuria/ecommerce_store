@@ -131,8 +131,17 @@ const Banners = () => {
             title: 'وضعیت',
             key: 'isActive',
             searchable: true,
-            sortable: true,
-            className: 'text-right'
+            searchItems: [
+                { key: 'فعال', value: 'true' },
+                { key: 'غیر فعال', value: 'false' },
+                { key: 'همه', value: ' ' }
+            ],
+            className: 'text-right',
+            render: (_: any, banner: IBanner) => (
+                <span className={`badge ${banner.isActive ? 'text-green-400' : 'text-red-400'} text-white`}>
+                    {banner.isActive ? 'فعال' : 'غیر فعال'}
+                </span>
+            )
         },
         {
             title: 'عملیات',

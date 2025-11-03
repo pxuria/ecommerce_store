@@ -104,12 +104,14 @@ const Categories = () => {
     const COLUMNS = [
         {
             title: 'نام دسته بندی',
-            keu: '',
+            keu: 'name',
+            searchable: true,
             className: 'text-right'
         },
         {
             title: 'دسته بندی (نشانی کوتاه)',
-            keu: '',
+            keu: 'slug',
+            searchable: true,
             className: 'text-right'
         },
         {

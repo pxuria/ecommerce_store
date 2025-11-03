@@ -105,14 +105,12 @@ const Brands = () => {
             title: 'نام برند',
             key: 'name',
             searchable: true,
-            sortable: true,
             className: 'text-right'
         },
         {
             title: 'برند (نشانی کوتاه)',
             key: 'slug',
             searchable: true,
-            sortable: true,
             className: 'text-right'
         },
         {
