@@ -44,7 +44,7 @@ const Colors = () => {
     const fetchColors = useCallback(async (filters: Record<any, string | null>) => {
         setLoading(true);
         try {
-            const { data } = await axiosInstance.get('/api/colors', { params: filters });
+            const { data } = await axiosInstance.get('colors', { params: filters });
 
             setColors(Array.isArray(data.data) ? data.data : []);
             setPagination({

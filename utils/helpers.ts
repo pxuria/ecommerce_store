@@ -13,7 +13,7 @@ import { type Product, type ProductColorVariant } from "@prisma/client";
 
 type FilterConfig = {
   name: string;
-  type: "string" | "number" | "boolean";
+  type: "string" | "number" | "boolean" | "definedValue";
 };
 
 type SortConfig = {
@@ -266,6 +266,9 @@ export function parseFilters(url: string, filters: FilterConfig[], sortConfig?: 
         break;
       case "boolean":
         where[f.name] = value === "true";
+        break;
+      case "definedValue":
+        where[f.name] = value;
         break;
     }
   });

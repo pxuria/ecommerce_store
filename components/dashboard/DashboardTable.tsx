@@ -74,11 +74,7 @@ const DashboardTable = ({ columns, data, loading, skeletonCount = 3 }: Props) =>
 
         const currentSort = searchParams.get('sortBy') || '';
         const isAsc = currentSort === key;
-        const newSort = isAsc ? `-${key}` : key
-
-        // let newSort: string;
-        // if (isAsc) newSort = `-${key}`; // switch to descending
-        // else newSort = key; // switch to ascending or default
+        const newSort = isAsc ? `-${key}` : key;
 
         updateQuery({ sortBy: newSort });
     };

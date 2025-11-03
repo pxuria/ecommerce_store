@@ -104,19 +104,19 @@ const Categories = () => {
     const COLUMNS = [
         {
             title: 'نام دسته بندی',
-            keu: 'name',
+            key: 'name',
             searchable: true,
             className: 'text-right'
         },
         {
             title: 'دسته بندی (نشانی کوتاه)',
-            keu: 'slug',
+            key: 'slug',
             searchable: true,
             className: 'text-right'
         },
         {
             title: 'عملیات',
-            keu: 'actions',
+            key: 'actions',
             className: 'text-center',
             render: (_: any, category: ICategory) => (
                 <div className="flex_center gap-2">

@@ -9,7 +9,7 @@ export const GET = async (req: Request) => asyncHandler(async () => {
     { name: "lastName", type: "string" as const },
     { name: "email", type: "string" as const },
     { name: "phone", type: "string" as const },
-    { name: "role", type: "string" as const },
+    { name: "role", type: "definedValue" as const },
     { name: "address", type: "string" as const },
     { name: "city", type: "string" as const },
     { name: "postalCode", type: "string" as const }
@@ -33,6 +33,9 @@ export const GET = async (req: Request) => asyncHandler(async () => {
       email: true,
       phone: true,
       role: true,
+      postalCode: true,
+      city: true,
+      address: true,
       createdAt: true,
       updatedAt: true,
     }

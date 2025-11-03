@@ -26,13 +26,24 @@ const Users = () => {
     });
 
     const searchParams = useSearchParams();
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = 10;
 
-    const fetchUsers = useCallback(async () => {
+    const getParams = useCallback((): Record<any, string | null> => {
+        const params: Record<string, string | null> = {};
+        searchParams.forEach((value, key) => {
+            params[key] = decodeURIComponent(value);
+        });
+
+        return {
+            page: params.page || "1",
+            limit: params.limit || "20",
+            ...params,
+        };
+    }, [searchParams]);
+
+    const fetchUsers = useCallback(async (filters: Record<any, string | null>) => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get(`users?page=${page}&limit=${limit}`);
+            const { data } = await axiosInstance.get('users', { params: filters });
             setUsers(data.data);
             setPagination({
                 total: data.pagination.total,
@@ -44,11 +55,11 @@ const Users = () => {
         } finally {
             setLoading(false);
         }
-    }, [page, limit]);
+    }, []);
 
     useEffect(() => {
-        fetchUsers();
-    }, [fetchUsers])
+        fetchUsers(getParams());
+    }, [fetchUsers, getParams])
 
     const handleDelete = async () => {
         if (!selectedUser?.id) return;
@@ -56,7 +67,7 @@ const Users = () => {
             await axiosInstance.delete(`users/${selectedUser?.id}`);
             handleShowToast("کاربر با موفقیت حذف شد.", "success");
             setSelectedUser(null);
-            await fetchUsers();
+            await fetchUsers(getParams());
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
@@ -76,7 +87,7 @@ const Users = () => {
             });
             handleShowToast("تغییر نقش کاربر با موفقیت انجام شد", "success");
             setSelectedUser(null);
-            await fetchUsers();
+            await fetchUsers(getParams());
         } catch (error) {
             if (error instanceof Error) {
                 handleShowToast(error.message, "error");
@@ -117,7 +128,12 @@ const Users = () => {
             title: 'نقش',
             key: 'role',
             className: 'text-right',
-            searchable: true,
+            // searchable: true,
+            searchItems: [
+                { key: "ادمین", value: UserRole.ADMIN },
+                { key: "کاربر", value: UserRole.USER },
+                { key: "همه", value: ' ' }
+            ],
             render: (v: any) => v === UserRole.ADMIN ? 'ادمین' : 'کاربر'
         },
         {
