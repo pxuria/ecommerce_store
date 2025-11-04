@@ -6,26 +6,26 @@ import AboutusDetails from "@/components/shared/AboutusDetails";
 import { brandName, enBrandName } from "@/constants";
 
 export const metadata: Metadata = {
-  // title: "درباره مارین | فروشگاه آنلاین پوشاک زنانه و دخترانه | About Marin",
-  // description:
-  //   "مارین، فروشگاه آنلاین تخصصی پوشاک زنانه و دخترانه با ارائه جدیدترین و باکیفیت‌ترین محصولات از برندهای معتبر جهانی | Marin, Specialized Online Women's and Girls' Clothing Store",
+  title: `درباره ${brandName} | فروشگاه آنلاین انواع پارچه | About ${enBrandName}`,
+  description: `${brandName}، مرجع تخصصی فروش آنلاین انواع پارچه از جمله پارچه مبل، پرده، لباس و دکوراسیون داخلی. ارائه بهترین کیفیت و جدیدترین طرح‌ها از معتبرترین برندهای ایرانی و خارجی.`,
   openGraph: {
-    // title: "درباره مارین | فروشگاه آنلاین پوشاک زنانه و دخترانه",
-    // description:
-    //   "مارین، فروشگاه آنلاین تخصصی پوشاک زنانه و دخترانه با ارائه جدیدترین و باکیفیت‌ترین محصولات از برندهای معتبر جهانی",
+    title: `درباره ${brandName} | فروشگاه آنلاین انواع پارچه`,
+    description: `${brandName} عرضه‌کننده متنوع‌ترین پارچه‌های ایرانی و خارجی شامل پارچه مبل، پرده، لباس، کوسن، و دکوراسیون.`,
+    url: `https://${enBrandName}.com/about-us`,
+    siteName: brandName,
     images: [
       {
         url: "/assets/images/about.jpg",
         width: 4413,
         height: 6620,
-        alt: `${enBrandName} Fashion Store`,
+        alt: `${enBrandName} Online Fabric Store`,
       },
     ],
     locale: "fa_IR",
     type: "website",
   },
   alternates: {
-    canonical: 'https://${enBrandName}.com/about-us',
+    canonical: `https://${enBrandName}.com/about-us`,
   },
   robots: {
     index: true,
@@ -55,23 +55,6 @@ const page = () => {
           <p className="text-lg font-bold text-primary-800">کد پستی: 1786838654</p>
           <p className="text-lg font-bold text-primary-800">شماره تماس با ما: 09129722530</p>
           <p className="text-lg font-bold text-primary-800">شماره ثابت: 02191016694</p>
-          {/* <p className="text-lg mb-6 leading-relaxed">
-            <strong className="text-lg font-bold text-pink_700">{brandName}</strong>{" "}
-            یک فروشگاه آنلاین تخصصی در زمینه پوشاک زنانه و دخترانه است که با هدف
-            ارائه جدیدترین و باکیفیت‌ترین محصولات از برندهای معتبر جهانی تأسیس
-            شده است. ما با انتخاب دقیق مجموعه‌ای از لباس‌های مدرن، پینترستی، شیک
-            و متناسب با سبک زندگی امروزی، تجربه‌ای لذت‌بخش از خرید اینترنتی را
-            برای مشتریان خود فراهم می‌کنیم. در {brandName}، اولویت ما ارائه محصولاتی
-            با کیفیت بالا، قیمت مناسب و تنوع گسترده است تا هر فرد بتواند استایل
-            مورد علاقه خود را پیدا کند. تیم ما به‌طور مداوم در جستجوی جدیدترین
-            ترندهای دنیای مد است و تضمین می‌کنیم که محصولات ارائه شده همواره
-            به‌روز و مطابق با استانداردهای مخاطبان ما باشند. علاوه بر این، ما با
-            پشتیبانی حرفه‌ای، ارسال سریع و خدمات مشتریان کارآمد، تلاش می‌کنیم تا
-            فرآیند خرید را برای شما آسان و لذت‌بخش کنیم. اگر به دنبال استایل‌های
-            جدید، لباس‌های باکیفیت و خریدی مطمئن هستید، {brandName} همراه شما خواهد
-            بود. ما اینجاییم تا زیبایی و اعتماد‌به‌نفس را به استایل شما هدیه
-            دهیم.🩷✨
-          </p> */}
         </div>
 
         <div className="w-full lg:w-1/2">
@@ -79,7 +62,7 @@ const page = () => {
             src="/assets/images/about.jpg"
             width={4413}
             height={6620}
-            alt="contact us"
+            alt={`درباره ${brandName}`}
             className="w-full rounded-xl shadow-xl h-[460px] object-cover"
             loading="eager"
           />

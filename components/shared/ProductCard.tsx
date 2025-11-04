@@ -26,14 +26,14 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
             <div className="relative">
               <div className="group relative z-0">
                 <div className="carousel_item_img flex_center">
-                  <h4 className="font-bold text-white md:text-black hidden sm:block">arshianbaft</h4>
-                  {/* <Image
-                  src="/assets/images/outlined_logo.png"
-                  alt={enBrandName}
-                  width={435}
-                  height={142}
-                  className="w-16 h-5"
-                /> */}
+                  <Image
+                    src="/assets/images/logo.webp"
+                    alt="arshian baft logo"
+                    width={550}
+                    height={450}
+                    priority
+                    className="w-14 h-10"
+                  />
                 </div>
 
                 {product.discountPercent > 0 &&

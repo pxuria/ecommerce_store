@@ -291,7 +291,7 @@ ul.slick-dots li button::before {
 }
 
 .carousel_item_img {
-  @apply absolute w-[7rem] rounded-lg rounded-br-[32px] bg-transparent md:bg-[#fff] h-12 top-0 left-0 z-10;
+  @apply absolute w-[5rem] rounded-lg rounded-br-[32px] bg-transparent md:bg-[#fff] h-12 top-0 left-0 z-10;
 }
 
 .carousel_item_img::before {

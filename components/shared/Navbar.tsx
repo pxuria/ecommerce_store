@@ -11,6 +11,7 @@ import NavItems from "./NavItems";
 import MobileNavbar from "./MobileNavbar";
 import useMediaQuery from "@/utils/useMediaQuery";
 import { Search, User } from "lucide-react";
+import Image from "next/image";
 
 const Navbar = () => {
   const [openAuth, setOpenAuth] = useState(false);
@@ -28,15 +29,14 @@ const Navbar = () => {
     <header className="mx-auto px-4 sm:px-10 lg:px-12 mt-4 flex items-center justify-between flex-nowrap mb-8">
       <Link href="/" className="w-1/3 text-2xl font-bold">
         {/* LOGO */}
-        <h2 className="">arshian baft</h2>
-        {/* <Image
-          src="/assets/images/outlined_logo.png"
-          alt="marin"
-          width={435}
+        <Image
+          src="/assets/images/logo.webp"
+          alt="arshian baft logo"
+          width={550}
+          height={450}
           priority
-          height={142}
-          className="w-24 h-8"
-        /> */}
+          className="w-24 h-20"
+        />
       </Link>
 
       {/* navigation */}

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import Login from "./Login";
 import Signup from "./Signup";
+import Image from "next/image";
 
 interface Props {
   open: boolean;
@@ -23,10 +24,17 @@ const AuthForm = ({ onOpen, open }: Props) => {
 
   return (
     <Dialog onOpenChange={onOpen} open={open}>
-      <DialogContent className="bg-white min-h-[450px] overflow-hidden !rounded-2xl auth_dialog w-[90%] mx-auto">
+      <DialogContent className="bg-white min-h-[450px] overflow-hidden !rounded-2xl auth_dialog w-[90%] mx-auto" closeDialog={false}>
         <DialogHeader>
-          <DialogTitle className="text-nowrap w-fit text-[32px] font-bold mx-auto mb-4">
-            arshian baft
+          <DialogTitle className="w-fit mx-auto mb-4">
+            <Image
+              src="/assets/images/logo.webp"
+              alt="arshian baft logo"
+              width={550}
+              height={450}
+              priority
+              className="w-24 h-20"
+            />
           </DialogTitle>
         </DialogHeader>
 
