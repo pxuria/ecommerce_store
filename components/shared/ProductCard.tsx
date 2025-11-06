@@ -44,8 +44,8 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
 
                 <Image
                   unoptimized
-                  src={product.images[0].url}
-                  alt={product.images[0].alt}
+                  src={product.images?.[0].url ?? ''}
+                  alt={product.images?.[0].alt}
                   width={900}
                   height={900}
                   className="object-cover h-[8rem] sm:h-[10rem] md:h-[15rem] rounded-3xl group-hover:rounded-2xl w-full transition-all ease-in duration-500 group-hover:scale-110"
@@ -86,14 +86,14 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
               <div className="flex flex-col items-end">
                 <div className="flex items-end gap-1">
                   <span className="text-xs sm:text-sm text-red-400 line-through">
-                    {product.basePrice.toLocaleString("en-US")}
+                    {product.basePrice?.toLocaleString("en-US")}
                   </span>
                   <span className="text-black text-sm">تومان</span>
                 </div>
 
                 <div className="flex items-end gap-1">
                   <span className="text-base sm:text-lg font-bold text-secondary-700">
-                    {product.finalPrice.toLocaleString("en-US")}
+                    {product.finalPrice?.toLocaleString("en-US")}
                   </span>
                   <span className="text-black text-sm sm:text-base font-bold">تومان</span>
                 </div>
@@ -101,7 +101,7 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
             ) : (
               <div className="flex items-end gap-1">
                 <span className="text-base sm:text-lg font-bold">
-                  {product.basePrice.toLocaleString("en-US")}
+                  {product.basePrice?.toLocaleString("en-US")}
                 </span>
                 <span className="text-black text-sm sm:text-base font-bold">تومان</span>
               </div>

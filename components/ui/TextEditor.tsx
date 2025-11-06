@@ -1,4 +1,6 @@
-import { useRef } from "react";
+'use client';
+
+import { useRef, useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import type { Editor as TinyMCEEditor, BlobInfo } from "tinymce";
 import { uploadImage } from "@/utils/helpers";
@@ -26,7 +28,6 @@ import 'tinymce/plugins/directionality';
 import 'tinymce/plugins/emoticons';
 import 'tinymce/plugins/fullscreen';
 import 'tinymce/plugins/help';
-import 'tinymce/plugins/help/js/i18n/keynav/fa';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
@@ -52,13 +53,14 @@ interface TextEditorProps {
 
 const TextEditor = ({ value, onChange }: TextEditorProps) => {
     const editorRef = useRef<TinyMCEEditor | null>(null);
+    const [isReady, setIsReady] = useState(false);
 
-    // useEffect(() => {
-    //     if (editorRef.current && value !== editorRef.current.getContent()) {
-    //         editorRef.current.setContent(value || "");
-    //     }
-    // }, [value]);
 
+    useEffect(() => {
+        if (isReady && editorRef.current && value !== editorRef.current.getContent()) {
+            editorRef.current.setContent(value || "");
+        }
+    }, [value, isReady]);
 
     const handleImage = async (blobInfo: BlobInfo) => {
         try {
@@ -80,37 +82,36 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
     return (
         <Editor
             // apiKey={process.env.NEXT_PUBLIC_TINYMCE_API}
-            onInit={(_evt, editor) => editorRef.current = editor}
-            value={value}
+            onInit={(_, editor) => {
+                editorRef.current = editor;
+                setIsReady(true);
+            }}
             initialValue={value}
             licenseKey="gpl"
-            onEditorChange={(content) => onChange(content)}
+            onEditorChange={(content) => {
+                // به‌جای رفرش آنی، از requestAnimationFrame استفاده کن
+                requestAnimationFrame(() => onChange?.(content));
+            }}
             init={{
                 // language: 'fa',
-                license_key: 'gpl',
                 height: 500,
+                licenseKey: 'gpl',
                 menubar: false,
                 plugins:
                     'preview searchreplace autolink directionality code fullscreen image link media codesample table pagebreak anchor advlist lists wordcount help charmap quickbars emoticons',
                 toolbar:
                     'undo redo | blocks fontsize | bold italic underline strikethrough forecolor backcolor removeformat | align numlist bullist lineheight outdent indent ltr rtl | link image media table | charmap emoticons | code fullscreen preview | print pagebreak anchor codesample searchreplace',
-                // plugins: [
-                //     "advlist autolink lists link image charmap preview anchor",
-                //     "searchreplace visualblocks code fullscreen",
-                //     "insertdatetime media table help wordcount",
-                // ],
-                // toolbar:
-                //     "undo redo | blocks | bold italic forecolor | " +
-                //     "alignleft aligncenter alignright alignjustify | " +
-                //     "bullist numlist outdent indent | removeformat | image | help",
                 toolbar_mode: 'wrap',
                 content_style: "body { font-size:16px }",
                 skin: 'oxide',
                 content_css: 'default',
                 images_upload_handler: handleImage,
-                file_picker_callback(callback, value, meta) {
-
-                },
+                inline_boundaries: false,
+                inline_styles: false,
+                object_resizing: false,
+                branding: false,
+                promotion: false,
+                // file_picker_callback(callback, value, meta) {}
             }}
         />
     );

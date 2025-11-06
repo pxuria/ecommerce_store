@@ -31,12 +31,13 @@ interface Props {
 const BlogForm = ({ item, onClose, onUpdated }: Props) => {
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState<FileWithPreview | null>(null);
+    const [existingImageUrl, setExistingImageUrl] = useState<string>(item?.coverImage || '');
 
     const defaultValues = {
         title: item?.title || "",
         slug: item?.slug || "",
         content: item?.content || "",
-        coverImage: item?.coverImage || null,
+        coverImage: item?.coverImage || '',
         estimatedTimeToRead: item?.estimatedTimeToRead || 1,
         metaTitle: item?.metaTitle || "",
         metaDescription: item?.metaDescription || "",
@@ -60,24 +61,33 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
 
         setLoading(true);
         try {
-            let uploadedImage: string[] = [];
-            if (image) uploadedImage = await uploadImage([image] as File[]);
-            console.log(uploadImage)
-            console.log({
-                ...values,
-                coverImage: uploadedImage[0]
-            })
+            let finalImageUrl: string | null = null;
+            if (image) {
+                const uploaded = await uploadImage([image as FileWithPreview]);
+                finalImageUrl = uploaded[0];
+            } else {
+                finalImageUrl = existingImageUrl || null;
+            }
 
-            const { data } = await axiosInstance.post("blogs", {
+            if (!finalImageUrl) throw new Error('تصویر بلاگ الزامی است.');
+
+            const payload = {
                 ...values,
-                coverImage: uploadedImage[0]
-            });
+                coverImage: finalImageUrl
+            };
+
+
+            const { data } = onUpdated
+                ? await axiosInstance.put(`blogs/${item?.id}`, payload)
+                : await axiosInstance.post("blogs", payload);
+
             console.log(data);
+            onUpdated?.();
+            reset();
         } catch (error) {
             console.log(error);
         } finally {
             setLoading(false);
-            reset();
         }
     };
 
@@ -141,11 +151,16 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
                 <div className="w-full mt-8">
                     <FormLabel className="form_label">عکس بلاگ</FormLabel>
                     <ImageUploading
-                        setValue={(value) =>
-                            setValue("coverImage", value as FileWithPreview, { shouldValidate: true })
-                        }
+                        setValue={(value) => setValue("coverImage", value as unknown as File | string, { shouldValidate: true })}
                         files={image}
                         setFiles={file => setImage(file && !Array.isArray(file) ? file : null)}
+                        existingImageUrls={existingImageUrl ? [existingImageUrl] : null}
+                        setExistingImageUrls={(urls) => {
+                            const url = Array.isArray(urls) ? urls[0] ?? null : urls ?? null;
+                            setExistingImageUrl(url || '');
+                            form.setValue("coverImage", url || "");
+                        }}
+
                         disabled={loading}
                     />
                 </div>
@@ -157,7 +172,7 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="form_label">متن</FormLabel>
-                            <FormControl>
+                            <FormControl dir="ltr">
                                 <TextEditor value={field.value} onChange={field.onChange} />
                             </FormControl>
                             <FormMessage />

@@ -112,12 +112,12 @@ const Blogs = () => {
             title: 'عکس بلاگ',
             key: 'coverImage',
             className: 'text-right',
-            render: ({ coverImage }: IBlog) => (
+            render: (_:any,blog: IBlog) => (
                 <Image
                     width={120}
                     height={80}
-                    alt={coverImage}
-                    src={coverImage}
+                    alt={blog.coverImage}
+                    src={blog.coverImage}
                     className="rounded-lg object-cover"
                 />
             ),
@@ -138,7 +138,7 @@ const Blogs = () => {
             title: 'وضعیت انتشار',
             key: '',
             className: 'text-right',
-            render: ({ isPublished }: IBlog) => isPublished ? 'منتشر شده' : '-',
+            render: (_: any, blog: IBlog) => blog.isPublished ? 'منتشر شده' : 'پیش‌نویس',
         },
         {
             title: 'عملیات',

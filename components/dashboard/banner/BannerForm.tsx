@@ -54,7 +54,7 @@ const BannerForm = ({ item, onClose, onUpdated }: Props) => {
                 finalImageUrl = existingImageUrl || null;
             }
 
-            if (!finalImageUrl) throw new Error('image is required');
+            if (!finalImageUrl) throw new Error('تصویر بنر الزامی است.');
 
             const payload = {
                 image: finalImageUrl,
