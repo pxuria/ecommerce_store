@@ -112,7 +112,7 @@ const Blogs = () => {
             title: 'عکس بلاگ',
             key: 'coverImage',
             className: 'text-right',
-            render: (_:any,blog: IBlog) => (
+            render: (_: any, blog: IBlog) => (
                 <Image
                     width={120}
                     height={80}
@@ -204,7 +204,7 @@ const Blogs = () => {
                             isDialogOpen={isDeleteDialogOpen}
                             setIsDialogOpen={setIsDeleteDialogOpen}
                             content={
-                                <p className="text-sm md:text-md text-white">
+                                <p className="text-sm md:text-md">
                                     آیا مطمئن هستید که می‌خواهید بلاگ{" "}
                                     <span className="font-bold text-base md:text-md">{selectedBlog?.title}</span>{" "}
                                     را حذف کنید؟

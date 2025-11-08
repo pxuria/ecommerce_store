@@ -6,7 +6,7 @@ export const blogSchema = z.object({
         .min(5, "Title must be at least 5 characters")
         .max(100, "Title must be at most 100 characters")
         .trim(),
-    slug: z.string().min(1, "slug is required"),
+    // slug: z.string().min(1, "slug is required"),
     content: z.string().min(20, "Content must be at least 20 characters long"),
     coverImage: z.union([
         z.instanceof(File).optional(),

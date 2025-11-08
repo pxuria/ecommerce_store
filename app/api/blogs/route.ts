@@ -39,19 +39,21 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 });
 
 export const POST = async (req: Request) => asyncHandler(async () => {
-    const { title, slug, content, coverImage, estimatedTimeToRead, metaTitle, metaDescription, metaKeywords, isPublished } = await req.json();
-    if (!title || !slug || !content || !coverImage || !estimatedTimeToRead) throw new HttpError('some fields are required', 400);
+    const { title, content, coverImage, estimatedTimeToRead, metaTitle, metaDescription, metaKeywords, isPublished } = await req.json();
+    if (!title || !content || !coverImage || !estimatedTimeToRead) throw new HttpError('some fields are required', 400);
+
+    const slug = await toSlug(title, prisma.blog);
 
     const blog = await prisma.blog.create({
         data: {
-            title: title,
-            slug: toSlug(slug),
-            content: content,
-            coverImage: coverImage,
-            estimatedTimeToRead: estimatedTimeToRead,
-            metaTitle: metaTitle,
-            metaDescription: metaDescription,
-            metaKeywords: metaKeywords,
+            title,
+            slug,
+            content,
+            coverImage,
+            estimatedTimeToRead,
+            metaTitle,
+            metaDescription,
+            metaKeywords,
             isPublished: isPublished ?? false
         }
     });

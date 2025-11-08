@@ -35,7 +35,7 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
 
     const defaultValues = {
         title: item?.title || "",
-        slug: item?.slug || "",
+        // slug: item?.slug || "",
         content: item?.content || "",
         coverImage: item?.coverImage || '',
         estimatedTimeToRead: item?.estimatedTimeToRead || 1,
@@ -107,12 +107,12 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
                 />
 
                 {/* slug */}
-                <InputField
+                {/* <InputField
                     name="slug"
                     label="بلاگ (نشانی کوتاه)"
                     loading={loading}
                     control={control}
-                />
+                /> */}
 
                 {/* estimatedTimeToRead */}
                 <InputField

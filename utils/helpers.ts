@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { Session } from "next-auth";
 import { URL } from "url";
-import slugify from "slugify";
+import { slugify } from 'transliteration';
 import Decimal from "decimal.js";
 import moment from "moment-jalaali";
 import axiosInstance from "@/lib/axiosInstance";
@@ -202,7 +202,21 @@ export const toJalaliDate = (
   return moment(isoDate).format(format);
 };
 
-export const toSlug = (slug: string) => slugify(slug, { lower: true, strict: true });
+export const toSlug = async <T extends { findUnique: any }>(
+  text: string,
+  model: T
+) => {
+  const baseSlug = slugify(text, { lowercase: true });
+  let uniqueSlug = baseSlug;
+  let count = 1;
+
+  // Keep adding suffix until the slug is unique
+  while (await model.findUnique({ where: { slug: uniqueSlug } })) {
+    uniqueSlug = `${baseSlug}-${count++}`;
+  }
+
+  return uniqueSlug;
+};
 
 export function attachBaseProductData(
   products: ProductWithRelations[],

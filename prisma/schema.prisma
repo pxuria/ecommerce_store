@@ -175,18 +175,19 @@ model ProductAttribute {
 }
 
 model Blog {
-  id                  Int      @id @default(autoincrement())
+  id                  Int       @id @default(autoincrement())
   title               String
-  slug                String   @unique
+  slug                String    @unique
   content             String
   coverImage          String
   estimatedTimeToRead Int
   metaTitle           String?
   metaDescription     String?
   metaKeywords        String?
-  isPublished         Boolean  @default(false)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  isPublished         Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime? @map("deleted_at")
 
   @@index([slug])
 }

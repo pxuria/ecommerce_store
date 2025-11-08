@@ -178,7 +178,7 @@ const Categories = () => {
                             isDialogOpen={isDeleteDialogOpen}
                             setIsDialogOpen={setIsDeleteDialogOpen}
                             content={
-                                <p className="text-sm md:text-md text-white">
+                                <p className="text-sm md:text-md">
                                     آیا مطمئن هستید که می‌خواهید دسته بندی{" "}
                                     <span className="font-bold text-base md:text-md">{selectedCategory?.name}</span>{" "}
                                     را حذف کنید؟
