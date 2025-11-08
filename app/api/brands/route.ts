@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
 import { asyncHandler, generateFilterKeyPart, generateOrderKeyPart, HttpError, parseFilters, toSlug } from '@/utils/helpers';
-import { cachedData, cacheWithTTL, delCachedData } from '@/utils/serverCache';
+import { cachedData, cacheWithTTL, delCachedPrefix } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const filters = [
@@ -58,6 +58,6 @@ export const POST = async (request: Request) => asyncHandler(async () => {
 
     const brand = await prisma.productBrand.create({ data: { name, slug: toSlug(slug) } });
 
-    await delCachedData(redisKeys.brands.all);
+    await delCachedPrefix(redisKeys.brands.base);
     return { data: brand };
 }, { successStatus: 201, auth: true });
