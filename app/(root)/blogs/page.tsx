@@ -1,7 +1,5 @@
+import BlogsList from "@/components/shared/BlogsList";
 import { Metadata } from "next";
-import BlogCard from "@/components/shared/blogs/BlogCard";
-import CustomPagination from "@/components/shared/CustomPagination";
-import { Blog } from "@prisma/client";
 
 export const metadata: Metadata = {
     title: "مقالات آموزشی ترید | تحلیل و آموزش مبانی بازار | وبلاگ Daylight",
@@ -40,22 +38,9 @@ export const metadata: Metadata = {
     },
 };
 
-const page = async () => {
-    const res = await fetch('/api/blogs', {
-        cache: 'no-store'
-    });
-    const blogs = await res.json();
+const page = () => {
 
-    return (
-        <section className="container mx-auto px-10 mt-12">
-            <div className="flex flex-wrap gap-4">
-                {Array.isArray(blogs.data as Blog) &&
-                    blogs.data.map((item: Blog) => <BlogCard key={item.id} blog={item} />)}
-            </div>
-
-            <CustomPagination pagination={blogs.pagination} />
-        </section>
-    );
+    return <BlogsList />;
 };
 
 export default page;

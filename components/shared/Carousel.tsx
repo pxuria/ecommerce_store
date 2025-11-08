@@ -2,12 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { IProductWithBasePrice } from "@/types/model";
+import { IBlog, IProductWithBasePrice } from "@/types/model";
 import ProductCard from "./ProductCard";
 import CarouselBtn from "./CarouselBtn";
+import BlogCard from "./blogs/BlogCard";
 
-import useEmblaCarousel from "embla-carousel-react";
 import './carousel/embla.css'
 
 interface Props {
@@ -35,8 +36,7 @@ const Carousel = ({
   type = 'product',
   carouselClass = "",
 }: Props) => {
-  const [cards, setCards] = useState<IProductWithBasePrice[]>([]);
-
+  const [cards, setCards] = useState<IProductWithBasePrice[] | IBlog[]>([]);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
@@ -105,16 +105,16 @@ const Carousel = ({
         >
           {cards?.length > 0 && (
             <div className="embla" ref={emblaRef}>
-              <div className="embla__container">
+              <div className="embla__container items-stretch">
                 {cards.map((item, index) => type === 'product' ? (
                   <ProductCard
                     key={index}
-                    product={item}
+                    product={item as IProductWithBasePrice}
                     itemClass="mx-1 md:mx-2 flex-[0_0_50%] md:flex-[0_0_30%]" />
                 ) : (
-                  <ProductCard
+                  <BlogCard
                     key={index}
-                    product={item}
+                    blog={item as IBlog}
                     itemClass="mx-1 md:mx-2 flex-[0_0_50%] md:flex-[0_0_30%]" />
                 )
                 )}
