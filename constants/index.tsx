@@ -19,6 +19,10 @@ export const navbarLinks = [
     link: "/products",
   },
   {
+    label: "بلاگ‌ها",
+    link: "/blogs",
+  },
+  {
     label: "درباره ما",
     link: "/about-us",
   },
@@ -36,6 +40,10 @@ export const mobileNavbarLinks = [
   {
     label: "محصولات",
     link: "/products",
+  },
+  {
+    label: "بلاگ‌ها",
+    link: "/blogs",
   },
   {
     label: "درباره ما",

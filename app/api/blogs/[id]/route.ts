@@ -46,7 +46,10 @@ export const PUT = async (req: Request, { params }: ParamsType) => asyncHandler(
 
 export const DELETE = async (_: Request, { params }: ParamsType) => asyncHandler(async () => {
     const id = parseId(params);
-    await prisma.blog.delete({ where: { id } });
+    await prisma.blog.update({
+        where: { id },
+        data: { deletedAt: new Date(), isPublished: false }
+    });
     await delCachedPrefix(redisKeys.blogs.base);
     return { message: 'Blog deleted' };
 }, { auth: true });

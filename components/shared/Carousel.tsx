@@ -19,6 +19,7 @@ interface Props {
   linkClass?: string;
   titleClass?: string;
   api: string;
+  type?: "blog" | "product";
   carouselClass?: string;
 }
 
@@ -31,6 +32,7 @@ const Carousel = ({
   linkClass,
   titleClass,
   api,
+  type = 'product',
   carouselClass = "",
 }: Props) => {
   const [cards, setCards] = useState<IProductWithBasePrice[]>([]);
@@ -104,7 +106,18 @@ const Carousel = ({
           {cards?.length > 0 && (
             <div className="embla" ref={emblaRef}>
               <div className="embla__container">
-                {cards.map((item, index) => <ProductCard key={index} product={item} itemClass="mx-1 md:mx-2 flex-[0_0_50%] md:flex-[0_0_30%]" />)}
+                {cards.map((item, index) => type === 'product' ? (
+                  <ProductCard
+                    key={index}
+                    product={item}
+                    itemClass="mx-1 md:mx-2 flex-[0_0_50%] md:flex-[0_0_30%]" />
+                ) : (
+                  <ProductCard
+                    key={index}
+                    product={item}
+                    itemClass="mx-1 md:mx-2 flex-[0_0_50%] md:flex-[0_0_30%]" />
+                )
+                )}
               </div>
             </div>
           )}

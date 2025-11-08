@@ -56,27 +56,7 @@ const Navbar = () => {
             </Button>
           )}
 
-          {/* <Popover onOpenChange={setCartTrigger} open={cartTrigger}>
-            <PopoverTrigger asChild>
-              <div className="relative cursor-pointer">
-                <span className="absolute -top-2 -right-2 w-5 h-5 flex_center rounded-full z-10 bg-secondary-700 text-xs text-white">
-                  {cart.totalQuantity > 99 ? "😊" : cart.totalQuantity}
-                </span>
-                <Button
-                  className="bg-primary-300 text-black hover:bg-primary-400 px-3 py-2 rounded duration-500 h-10 w-10 flex_center btn"
-                  size="icon"
-                  type="button"
-                  aria-label="shopping_bag"
-                  onClick={() => setCartTrigger(true)}
-                >
-                  <ShoppingBag className="w-12 h-12" />
-                </Button>
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="bg-[#fff] mt-1 p-2 rounded-xl outline-none border-light_muted"> */}
           <CartPopover />
-          {/* </PopoverContent>
-          </Popover> */}
 
           {!session ? (
             <Button

@@ -38,6 +38,7 @@ const page = () => {
 
       <Carousel
         title="آخرین بلاگ‌ها"
+        type='blog'
         seeAllLink="blogs"
         carouselClass="z-10"
         api="blogs?limit=16"

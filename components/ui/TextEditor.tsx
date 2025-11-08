@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import type { Editor as TinyMCEEditor, BlobInfo } from "tinymce";
 import { uploadImage } from "@/utils/helpers";
@@ -53,49 +53,34 @@ interface TextEditorProps {
 
 const TextEditor = ({ value, onChange }: TextEditorProps) => {
     const editorRef = useRef<TinyMCEEditor | null>(null);
-    const [isReady, setIsReady] = useState(false);
-
-
-    useEffect(() => {
-        if (isReady && editorRef.current && value !== editorRef.current.getContent()) {
-            editorRef.current.setContent(value || "");
-        }
-    }, [value, isReady]);
 
     const handleImage = async (blobInfo: BlobInfo) => {
         try {
-            // const file = blobInfo.blob();
-            // const url = await uploadImage(file);
-
             const file = new File([blobInfo.blob()], blobInfo.filename(), { type: blobInfo.blob().type });
+            console.log(file)
             const urls = await uploadImage([file]);
-            if (!urls || urls.length === 0 || !urls[0]) throw new Error("No URL returned from upload");
-
+            console.log(urls)
+            if (!urls?.[0]) throw new Error("No URL returned from upload");
             return urls[0];
         } catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown error";
-            console.error("TinyMCE image upload failed:", message);
+            console.error("TinyMCE image upload failed:", error);
             throw error;
         }
     };
 
     return (
         <Editor
-            // apiKey={process.env.NEXT_PUBLIC_TINYMCE_API}
             onInit={(_, editor) => {
                 editorRef.current = editor;
-                setIsReady(true);
+                editor.setContent(value || "");
             }}
-            initialValue={value}
             licenseKey="gpl"
             onEditorChange={(content) => {
-                // به‌جای رفرش آنی، از requestAnimationFrame استفاده کن
-                requestAnimationFrame(() => onChange?.(content));
+                requestAnimationFrame(() => onChange(content));
             }}
             init={{
-                // language: 'fa',
                 height: 500,
-                licenseKey: 'gpl',
+                // licenseKey: 'gpl',
                 menubar: false,
                 plugins:
                     'preview searchreplace autolink directionality code fullscreen image link media codesample table pagebreak anchor advlist lists wordcount help charmap quickbars emoticons',
@@ -106,8 +91,6 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
                 skin: 'oxide',
                 content_css: 'default',
                 images_upload_handler: handleImage,
-                inline_boundaries: false,
-                inline_styles: false,
                 object_resizing: false,
                 branding: false,
                 promotion: false,
