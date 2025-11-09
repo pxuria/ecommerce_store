@@ -2,7 +2,8 @@
 
 import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import type { Editor as TinyMCEEditor, BlobInfo } from "tinymce";
+import type { Editor as TinyMCEEditor } from "tinymce";
+
 import { uploadImage } from "@/utils/helpers";
 
 import 'tinymce/tinymce';
@@ -54,7 +55,8 @@ interface TextEditorProps {
 const TextEditor = ({ value, onChange }: TextEditorProps) => {
     const editorRef = useRef<TinyMCEEditor | null>(null);
 
-    const handleImage = async (blobInfo: BlobInfo) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleImage = async (blobInfo: any) => {
         try {
             const file = new File([blobInfo.blob()], blobInfo.filename(), { type: blobInfo.blob().type });
             console.log(file)
