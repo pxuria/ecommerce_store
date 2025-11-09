@@ -105,7 +105,7 @@ export interface IUser {
 }
 
 export interface IBlog {
-    id: string;
+    id: string | number;
     title: string;
     slug: string;
     content: string;

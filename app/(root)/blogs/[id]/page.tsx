@@ -1,21 +1,28 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import BlogPageSidebar from "@/components/shared/blogs/BlogPageSidebar";
-import { formatDate } from "@/utils/helpers";
+import { formatDate, HttpError } from "@/utils/helpers";
 import { IBlog } from "@/types/model";
+import { redisKeys } from "@/constants/redis-keys";
+import { cachedData, cacheWithTTL } from "@/utils/serverCache";
+import prisma from "@/lib/db";
 
-const fetchBlogById = async (id: string) => {
-  try {
-    const res = await fetch(`/api/blogs/${id}`);
-    const data = await res.json();
-    return data.data;
-  } catch (error) {
-    console.log(error)
-  }
-}
+
+const fetchBlogById = async (id: number) => {
+  const redisId = `${redisKeys.blogs.byId}${id}`;
+
+  const cachedBlog = await cachedData(redisId);
+  if (cachedBlog) return { ...JSON.parse(cachedBlog) };
+
+  const blog = await prisma.blog.findUnique({ where: { id } });
+  if (!blog) throw new HttpError('Blog not found', 404);
+
+  await cacheWithTTL(redisId, JSON.stringify(blog), 300);
+  return blog as IBlog;
+};
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const blog: IBlog = await fetchBlogById(params.id);
+  const blog = await fetchBlogById(Number(params.id)) as IBlog;
 
   if (!blog || "error" in blog || "message" in blog) {
     return {
@@ -36,27 +43,25 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 }
 
 const page = async ({ params }: { params: { id: string } }) => {
-  const blog: IBlog = await fetchBlogById(params.id)
+  const blog = await fetchBlogById(Number(params.id)) as IBlog;
+  console.log('BLOG::', blog)
 
   return (
     <section className="md:container md:mx-auto mt-16">
       <div className="flex items-start flex-nowrap gap-4">
         <div className="bg-lightBlack rounded-3xl px-8 py-2 w-full xl:w-2/3">
-          <h1 className="text-4xl font-semibold text-white">{blog.title}</h1>
+          <h1 className="text-4xl font-semibold">{blog.title}</h1>
 
           <div className="flex flex-wrap justify-between items-center my-4">
             <div className="flex items-center justify-start flex-nowrap gap-2">
-              {/* <span className="text-sm text-white font-medium">
-                {blog.author?.first_name} {blog.author?.last_name}
-              </span> */}
               {blog.createdAt && (
-                <span className="text-sm text-[#818181] font-medium">
+                <span className="text-sm text-[#3e3e3e] font-medium">
                   {formatDate(blog.createdAt.toString())}
                 </span>
               )}
             </div>
             {blog.estimatedTimeToRead ? (
-              <span className="text-sm text-purple_500 font-medium">
+              <span className="text-sm text-secondary-700 font-medium">
                 خواندن این مطلب {blog.estimatedTimeToRead} دقیقه زمان میبرد
               </span>
             ) : null}
@@ -71,7 +76,7 @@ const page = async ({ params }: { params: { id: string } }) => {
           />
 
           <div
-            className="mt-8 mb-12 leading-8 text-base font-normal text-white"
+            className="mt-8 mb-12"
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
         </div>

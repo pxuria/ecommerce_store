@@ -59,7 +59,7 @@ const BlogCard = ({ blog, itemClass }: Props) => {
                 <div className="rounded-xl overflow-hidden relative">
                     <Image
                         className="max-w-full w-full object-cover object-center h-[200px] overflow-hidden hover:scale-105 transition-all ease-in duration-300"
-                        src={blog.coverImage || "assets/images/candles.svg"}
+                        src={blog.coverImage ?? '/assets/images/placeholder.webp'}
                         alt={blog.title}
                         width={200}
                         height={180}
