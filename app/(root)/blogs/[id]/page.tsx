@@ -44,7 +44,6 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 
 const page = async ({ params }: { params: { id: string } }) => {
   const blog = await fetchBlogById(Number(params.id)) as IBlog;
-  console.log('BLOG::', blog)
 
   return (
     <section className="md:container md:mx-auto mt-16">

@@ -60,9 +60,11 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 });
 
 export const POST = async (request: Request) => asyncHandler(async () => {
-    const { name, slug } = await request.json();
-    if (!name || !slug) throw new HttpError('country name or slug is required', 400);
-    const country = await prisma.productCountry.create({ data: { name, slug: toSlug(slug) } });
+    const { name } = await request.json();
+    if (!name) throw new HttpError('country name or slug is required', 400);
+
+    const slug = await toSlug(name, prisma.productCountry);
+    const country = await prisma.productCountry.create({ data: { name, slug } });
 
     await delCachedPrefix(redisKeys.countries.base);
     return { data: country };

@@ -8,6 +8,7 @@ import noProduct from "@/public/assets/lotties/no_product2.json";
 import productLoading from "@/public/assets/lotties/product-loading.json";
 import { IBlog } from "@/types/model";
 import BlogCard from "./blogs/BlogCard";
+import SearchFilter from "./SearchFilter";
 
 const BlogsList = () => {
     const [blogs, setBlogs] = useState<IBlog[]>([]);
@@ -51,6 +52,7 @@ const BlogsList = () => {
 
     return (
         <section className="px-4 md:px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
+            <SearchFilter />
             <div className="w-full flex items-start justify-center gap-4 flex-wrap md:flex-nowrap px-0 md:px-4">
                 <div className='flex items-center justify-end gap-4 flex-wrap md:px-2 w-full'>
                     {loading

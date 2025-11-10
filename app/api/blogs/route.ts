@@ -2,22 +2,32 @@ export const runtime = 'nodejs';
 
 import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, HttpError, toSlug } from '@/utils/helpers';
+import { asyncHandler, generateFilterKeyPart, generateOrderKeyPart, HttpError, parseFilters, toSlug } from '@/utils/helpers';
 import { cachedData, cacheWithTTL, delCachedPrefix } from '@/utils/serverCache';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
-    const cachedBlogs = await cachedData(redisKeys.blogs.all);
-    if (cachedBlogs) return { ...JSON.parse(cachedBlogs) };
+    const filters = [{ name: "isPublished", type: "boolean" as const }];
 
-    const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "20", 20);
-    const skip = (page - 1) * limit;
+    const { where, orderBy, page, limit, skip } = parseFilters(req.url, filters, {
+        defaultSortBy: "name",
+        defaultSortOrder: "asc",
+        allowedSorts: {
+            id: { id: "asc" },
+            createdAt: { createdAt: "asc" }
+        }
+    });
+
+    const filterKeyPart = generateFilterKeyPart(where);
+    const orderKeyPart = generateOrderKeyPart(orderBy);
+    const cacheKey = `${redisKeys.blogs.all}:page=${page}:limit=${limit}:${filterKeyPart}:${orderKeyPart}`;
+
+    const cachedBlogs = await cachedData(cacheKey);
+    if (cachedBlogs) return { ...JSON.parse(cachedBlogs) };
 
     const blogs = await prisma.blog.findMany({ skip, take: limit, orderBy: { createdAt: "desc" } });
     const total = await prisma.blog.count();
 
-    await cacheWithTTL(redisKeys.blogs.all, JSON.stringify({
+    await cacheWithTTL(cacheKey, JSON.stringify({
         data: blogs,
         pagination: {
             total,

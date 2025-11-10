@@ -54,10 +54,11 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 });
 
 export const POST = async (req: Request) => asyncHandler(async () => {
-    const { name, slug } = await req.json();
-    if (!name || !slug) throw new HttpError('category name or slug is required', 400);
+    const { name } = await req.json();
+    if (!name) throw new HttpError('category name or slug is required', 400);
 
-    const category = await prisma.productCategory.create({ data: { name, slug: toSlug(slug) } });
+    const slug = await toSlug(name, prisma.productCategory);
+    const category = await prisma.productCategory.create({ data: { name, slug } });
 
     await delCachedPrefix(redisKeys.categories.base);
     return { data: category }

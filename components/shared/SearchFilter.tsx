@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
-const ProductsFilters = () => {
+const SearchFilter = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -54,7 +54,7 @@ const ProductsFilters = () => {
           id="search"
           type="search"
           name="search"
-          placeholder="جستجو محصولات"
+          placeholder="جستجو..."
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           className="w-full rounded-r-lg outline-none border border-light_muted px-4"
@@ -72,4 +72,4 @@ const ProductsFilters = () => {
   );
 };
 
-export default ProductsFilters;
+export default SearchFilter;

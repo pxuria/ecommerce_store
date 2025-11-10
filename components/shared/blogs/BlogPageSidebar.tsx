@@ -18,7 +18,7 @@ const BlogPageSidebar = () => {
 
         const fetchSideBlogs = async () => {
             try {
-                const { data } = await axiosInstance.get("blog/latest-blog");
+                const { data } = await axiosInstance.get("blogs/latest-blog");
                 setSideBlogs(data);
             } catch (error) {
                 console.log(error);

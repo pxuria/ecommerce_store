@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Filter from "@/components/shared/Filter";
-import ProductsFilters from "@/components/shared/ProductsFilters";
+import SearchFilter from "@/components/shared/SearchFilter";
 import ProductCard from "@/components/shared/ProductCard";
 import CustomPagination from "@/components/shared/CustomPagination";
 import LottieText from "@/components/shared/LottieText";
@@ -63,7 +63,7 @@ const ProductsList = () => {
                 )}
 
                 <div className={`flex items-center justify-end gap-4 flex-wrap md:px-2 ${showFilters ? "w-3/4" : "w-full"}`}>
-                    <ProductsFilters />
+                    <SearchFilter />
                     {showFilters && (
                         <div className="block md:hidden w-full">
                             <Filter />

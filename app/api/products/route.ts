@@ -101,11 +101,12 @@ export const GET = async (req: Request) => asyncHandler(async () => {
 
 export const POST = async (req: Request) => asyncHandler(async () => {
   const body = await req.json();
+  const slug = await toSlug(body.slug, prisma.product);
 
   const product = await prisma.product.create({
     data: {
       name: body.name,
-      slug: toSlug(body.slug),
+      slug,
       description: body.description,
       categoryId: parseInt(body.categoryId),
       brandId: parseInt(body.brandId),
