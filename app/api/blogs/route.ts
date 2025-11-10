@@ -17,10 +17,13 @@ export const GET = async (req: Request) => asyncHandler(async () => {
         }
     });
 
+    console.log({ where, orderBy, page, limit, skip })
+
     const filterKeyPart = generateFilterKeyPart(where);
     const orderKeyPart = generateOrderKeyPart(orderBy);
     const cacheKey = `${redisKeys.blogs.all}:page=${page}:limit=${limit}:${filterKeyPart}:${orderKeyPart}`;
 
+    console.log(cacheKey)
     const cachedBlogs = await cachedData(cacheKey);
     if (cachedBlogs) return { ...JSON.parse(cachedBlogs) };
 
@@ -53,7 +56,6 @@ export const POST = async (req: Request) => asyncHandler(async () => {
     if (!title || !content || !coverImage || !estimatedTimeToRead) throw new HttpError('some fields are required', 400);
 
     const slug = await toSlug(title, prisma.blog);
-
     const blog = await prisma.blog.create({
         data: {
             title,
