@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import { RefreshCw, SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
@@ -116,11 +116,11 @@ const Products = () => {
             key: 'image',
             render: (_: any, product: IProduct) => (
                 <Image
-                    width={120}
-                    height={80}
+                    width={100}
+                    height={75}
                     alt={product?.images?.[0]?.alt ?? product.name}
                     src={product?.images?.[0]?.url ?? '/assets/images/placeholder.webp'}
-                    className="rounded-lg object-cover aspect-square"
+                    className="rounded-lg object-cover aspect-square h-[100px]"
                 />
             ),
             className: 'text-right'
@@ -215,12 +215,20 @@ const Products = () => {
             {formMode === null &&
                 (
                     <>
-                        <Button
-                            onClick={handleAdd}
-                            className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
-                            افزودن محصول
-                            <SquarePlus />
-                        </Button>
+                        <div className="flex items-center gap-4 mb-8">
+                            <Button
+                                onClick={handleAdd}
+                                className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
+                                افزودن محصول
+                                <SquarePlus />
+                            </Button>
+
+                            <Button
+                                onClick={() => fetchProducts(getParams())}
+                                className="text-white bg-secondary-700 aspect-square text-base">
+                                <RefreshCw />
+                            </Button>
+                        </div>
 
                         <div className="rounded-md border">
                             <DashboardTable

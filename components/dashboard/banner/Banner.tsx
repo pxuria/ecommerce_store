@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import { RefreshCw, SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
@@ -181,12 +181,20 @@ const Banners = () => {
             {formMode === null &&
                 (
                     <>
-                        <Button
-                            onClick={handleAdd}
-                            className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
-                            افزودن بنر
-                            <SquarePlus />
-                        </Button>
+                        <div className="flex items-center gap-4 mb-8">
+                            <Button
+                                onClick={handleAdd}
+                                className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
+                                افزودن بنر
+                                <SquarePlus />
+                            </Button>
+
+                            <Button
+                                onClick={() => fetchBanners(getParams())}
+                                className="text-white bg-secondary-700 aspect-square text-base">
+                                <RefreshCw />
+                            </Button>
+                        </div>
 
                         <div className="rounded-md border">
                             <DashboardTable

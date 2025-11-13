@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Trash2, UserStar } from "lucide-react";
+import { RefreshCw, Trash2, UserStar } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
 import { UserRole } from "@prisma/client";
 import { handleShowToast } from "@/lib/toast";
@@ -186,6 +186,14 @@ const Users = () => {
 
     return (
         <section>
+            <div className="flex items-center gap-4 mb-8">
+                <Button
+                    onClick={() => fetchUsers(getParams())}
+                    className="text-white bg-secondary-700 aspect-square text-base">
+                    <RefreshCw />
+                </Button>
+            </div>
+
             <div className="rounded-md border">
                 <DashboardTable
                     data={users}

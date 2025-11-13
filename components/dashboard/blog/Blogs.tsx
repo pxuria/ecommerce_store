@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { CirclePlus, SquarePen, Trash2 } from 'lucide-react';
+import { RefreshCw, SquarePen, SquarePlus, Trash2 } from 'lucide-react';
 
 import CustomPagination from '@/components/shared/CustomPagination';
 import ConfirmBox from '@/components/ui/ConfirmBox';
@@ -179,12 +179,20 @@ const Blogs = () => {
             {formMode === null &&
                 (
                     <>
-                        <Button
-                            onClick={handleAdd}
-                            className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
-                            افزودن بلاگ
-                            <CirclePlus />
-                        </Button>
+                        <div className="flex items-center gap-4 mb-8">
+                            <Button
+                                onClick={handleAdd}
+                                className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
+                                افزودن بلاگ
+                                <SquarePlus />
+                            </Button>
+
+                            <Button
+                                onClick={() => fetchBlogs(getParams())}
+                                className="text-white bg-secondary-700 aspect-square text-base">
+                                <RefreshCw />
+                            </Button>
+                        </div>
 
                         <div className="rounded-md border">
                             <DashboardTable

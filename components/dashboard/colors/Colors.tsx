@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import { RefreshCw, SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import ConfirmBox from "@/components/ui/ConfirmBox";
@@ -165,12 +165,20 @@ const Colors = () => {
             {formMode === null &&
                 (
                     <>
-                        <Button
-                            onClick={handleAdd}
-                            className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
-                            افزودن رنگ
-                            <SquarePlus />
-                        </Button>
+                        <div className="flex items-center gap-4 mb-8">
+                            <Button
+                                onClick={handleAdd}
+                                className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
+                                افزودن رنگ
+                                <SquarePlus />
+                            </Button>
+
+                            <Button
+                                onClick={() => fetchColors(getParams())}
+                                className="text-white bg-secondary-700 aspect-square text-base">
+                                <RefreshCw />
+                            </Button>
+                        </div>
 
                         {/* Colors Table */}
                         <div className="rounded-md border">

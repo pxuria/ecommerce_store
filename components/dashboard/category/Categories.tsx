@@ -11,7 +11,7 @@ import ConfirmBox from "@/components/ui/ConfirmBox";
 import CategoryForm from "./CategoryForm";
 import DashboardTable from "../DashboardTable";
 import CustomPagination from "@/components/shared/CustomPagination";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import { RefreshCw, SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 
 const Categories = () => {
@@ -153,12 +153,20 @@ const Categories = () => {
             {formMode === null &&
                 (
                     <>
-                        <Button
-                            onClick={handleAdd}
-                            className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
-                            افزودن دسته بندی
-                            <SquarePlus />
-                        </Button>
+                        <div className="flex items-center gap-4 mb-8">
+                            <Button
+                                onClick={handleAdd}
+                                className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
+                                افزودن دسته بندی
+                                <SquarePlus />
+                            </Button>
+
+                            <Button
+                                onClick={() => fetchCategories(getParams())}
+                                className="text-white bg-secondary-700 aspect-square text-base">
+                                <RefreshCw />
+                            </Button>
+                        </div>
 
                         <div className="rounded-md border">
                             <DashboardTable

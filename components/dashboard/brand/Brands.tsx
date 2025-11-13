@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import { RefreshCw, SquarePen, SquarePlus, Trash2 } from "lucide-react";
 
 import axiosInstance from "@/lib/axiosInstance";
 import { handleShowToast } from "@/lib/toast";
@@ -152,12 +152,20 @@ const Brands = () => {
             {formMode === null &&
                 (
                     <>
-                        <Button
-                            onClick={handleAdd}
-                            className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base mb-8">
-                            افزودن برند
-                            <SquarePlus />
-                        </Button>
+                        <div className="flex items-center gap-4 mb-8">
+                            <Button
+                                onClick={handleAdd}
+                                className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
+                                افزودن برند
+                                <SquarePlus />
+                            </Button>
+
+                            <Button
+                                onClick={() => fetchBrands(getParams())}
+                                className="text-white bg-secondary-700 aspect-square text-base">
+                                <RefreshCw />
+                            </Button>
+                        </div>
 
                         <div className="rounded-md border">
                             <DashboardTable
