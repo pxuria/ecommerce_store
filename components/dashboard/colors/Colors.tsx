@@ -165,7 +165,7 @@ const Colors = () => {
             {formMode === null &&
                 (
                     <>
-                        <div className="flex items-center gap-4 mb-8">
+                        <div className="flex items-center gap-2 mb-8">
                             <Button
                                 onClick={handleAdd}
                                 className="text-white bg-secondary-700 w-full lg:w-[calc(33%-16px)] !text-xs lg:text-base">
@@ -174,6 +174,7 @@ const Colors = () => {
                             </Button>
 
                             <Button
+                                size='icon'
                                 onClick={() => fetchColors(getParams())}
                                 className="text-white bg-secondary-700 aspect-square text-base">
                                 <RefreshCw />

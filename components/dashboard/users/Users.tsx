@@ -186,13 +186,12 @@ const Users = () => {
 
     return (
         <section>
-            <div className="flex items-center gap-4 mb-8">
-                <Button
-                    onClick={() => fetchUsers(getParams())}
-                    className="text-white bg-secondary-700 aspect-square text-base">
-                    <RefreshCw />
-                </Button>
-            </div>
+            <Button
+                size='icon'
+                onClick={() => fetchUsers(getParams())}
+                className="text-white bg-secondary-700 aspect-square text-base mb-8">
+                <RefreshCw />
+            </Button>
 
             <div className="rounded-md border">
                 <DashboardTable
