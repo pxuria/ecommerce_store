@@ -9,6 +9,7 @@ import { Form } from "@/components/ui/form";
 import { ICountry } from "@/types/model";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
+import { handleShowToast } from "@/lib/toast";
 
 interface Props {
     item?: ICountry;
@@ -36,20 +37,17 @@ const CoutnryForm = ({ item, onClose, onUpdated }: Props) => {
         }
         setLoading(true);
         try {
-            if (onUpdated) {
-                const { data } = await axiosInstance.put(`countries/${item?.id}`, {
-                    name: values.name,
-                    slug: values.slug
-                });
-                console.log(data);
-            }
-            else {
-                const { data } = await axiosInstance.post("countries", {
-                    name: values.name,
-                    slug: values.slug
-                });
-                console.log(data);
-            }
+            const payload = {
+                name: values.name,
+                slug: values.slug
+            };
+
+            const { data } = onUpdated
+                ? await axiosInstance.put(`countries/${item?.id}`, payload)
+                : await axiosInstance.post("countries", payload);
+
+            console.log(data);
+            handleShowToast(onUpdated ? 'کشور با موفقیت ویرایش شد' : 'کشور با موفقیت ساخته شد');
         } catch (error) {
             console.log(error);
         } finally {

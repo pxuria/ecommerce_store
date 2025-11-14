@@ -13,6 +13,7 @@ import ImageUploading from "@/components/ui/ImageUploading";
 import { FileWithPreview } from "@/types";
 import { Switch } from "@/components/ui/switch";
 import { uploadImage } from "@/utils/helpers";
+import { handleShowToast } from "@/lib/toast";
 
 interface Props {
     item?: IBanner;
@@ -66,6 +67,8 @@ const BannerForm = ({ item, onClose, onUpdated }: Props) => {
             const { data } = onUpdated
                 ? await axiosInstance.put(`banners/${item?.id}`, payload)
                 : await axiosInstance.post("banners", payload);
+
+            handleShowToast(onUpdated ? 'بنر با موفقیت ویرایش شد' : 'بنر با موفقیت ساخته شد');
 
             console.log(data);
             onUpdated?.();

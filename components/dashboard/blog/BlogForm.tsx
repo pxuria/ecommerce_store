@@ -81,6 +81,8 @@ const BlogForm = ({ item, onClose, onUpdated }: Props) => {
                 ? await axiosInstance.put(`blogs/${item?.id}`, payload)
                 : await axiosInstance.post("blogs", payload);
 
+            handleShowToast(onUpdated ? 'بلاگ با موفقیت ویرایش شد' : 'بلاگ با موفقیت ساخته شد');
+
             console.log(data);
             onUpdated?.();
             reset();

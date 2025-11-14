@@ -9,6 +9,7 @@ import { Form } from "@/components/ui/form";
 import { IColor } from "@/types/model";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
+import { handleShowToast } from "@/lib/toast";
 
 interface Props {
     item?: IColor;
@@ -36,20 +37,17 @@ const ColorForm = ({ item, onClose, onUpdated }: Props) => {
         }
         setLoading(true);
         try {
-            if (onUpdated) {
-                const { data } = await axiosInstance.put(`colors/${item?.id}`, {
-                    name: values.name,
-                    hex: values.hex
-                });
-                console.log(data);
-            }
-            else {
-                const { data } = await axiosInstance.post("colors", {
-                    name: values.name,
-                    hex: values.hex
-                });
-                console.log(data);
-            }
+            const payload = {
+                name: values.name,
+                hex: values.hex
+            };
+
+            const { data } = onUpdated
+                ? await axiosInstance.put(`colors/${item?.id}`, payload)
+                : await axiosInstance.post("colors", payload);
+
+            console.log(data);
+            handleShowToast(onUpdated ? 'رنگ با موفقیت ویرایش شد' : 'رنگ با موفقیت ساخته شد');
         } catch (error) {
             console.log(error);
         } finally {

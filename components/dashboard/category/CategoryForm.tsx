@@ -9,6 +9,7 @@ import { Form } from "@/components/ui/form";
 import { ICategory } from "@/types/model";
 import InputField from "../InputField";
 import FormButtons from "../FormButtons";
+import { handleShowToast } from "@/lib/toast";
 
 interface Props {
     item?: ICategory;
@@ -36,20 +37,17 @@ const CategoryForm = ({ item, onClose, onUpdated }: Props) => {
         }
         setLoading(true);
         try {
-            if (onUpdated) {
-                const { data } = await axiosInstance.put(`categories/${item?.id}`, {
-                    name: values.name,
-                    slug: values.slug
-                });
-                console.log(data);
-            }
-            else {
-                const { data } = await axiosInstance.post("categories", {
-                    name: values.name,
-                    slug: values.slug
-                });
-                console.log(data);
-            }
+            const payload = {
+                name: values.name,
+                slug: values.slug
+            };
+
+            const { data } = onUpdated
+                ? await axiosInstance.put(`categories/${item?.id}`, payload)
+                : await axiosInstance.post("categories", payload);
+
+            console.log(data);
+            handleShowToast(onUpdated ? 'دسته بندی با موفقیت ویرایش شد' : 'دسته بندی با موفقیت ساخته شد');
         } catch (error) {
             console.log(error);
         } finally {

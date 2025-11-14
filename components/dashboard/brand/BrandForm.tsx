@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { BrandSchema, brandValues } from "@/utils/validations/brand.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axiosInstance";
+import { handleShowToast } from "@/lib/toast";
 import { Form } from "@/components/ui/form";
 import { IBrand } from "@/types/model";
 import InputField from "../InputField";
@@ -36,20 +37,18 @@ const BrandForm = ({ item, onClose, onUpdated }: Props) => {
         }
         setLoading(true);
         try {
-            if (onUpdated) {
-                const { data } = await axiosInstance.put(`brands/${item?.id}`, {
-                    name: values.name,
-                    slug: values.slug
-                });
-                console.log(data);
-            }
-            else {
-                const { data } = await axiosInstance.post("brands", {
-                    name: values.name,
-                    slug: values.slug
-                });
-                console.log(data);
-            }
+            const payload = {
+                name: values.name,
+                slug: values.slug
+            };
+
+            const { data } = onUpdated
+                ? await axiosInstance.put(`brands/${item?.id}`, payload)
+                : await axiosInstance.post("brands", payload);
+
+            console.log(data);
+            handleShowToast(onUpdated ? 'برند با موفقیت ویرایش شد' : 'برند با موفقیت ساخته شد');
+
         } catch (error) {
             console.log(error);
         } finally {
