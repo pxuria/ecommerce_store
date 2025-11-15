@@ -1,15 +1,14 @@
 export const runtime = 'nodejs';
 
-import { redisKeys } from '@/constants/redis-keys';
 import prisma from '@/lib/db';
-import { asyncHandler, generateFilterKeyPart, generateOrderKeyPart, HttpError, parseFilters, toSlug } from '@/utils/helpers';
-import { cachedData, cacheWithTTL, delCachedPrefix } from '@/utils/serverCache';
+import { asyncHandler, HttpError, parseFilters, toSlug } from '@/utils/helpers';
 
 export const GET = async (req: Request) => asyncHandler(async () => {
     const filters = [{ name: "isPublished", type: "boolean" as const }];
+    const { searchParams } = new URL(req.url);
 
     const { where, orderBy, page, limit, skip } = parseFilters(req.url, filters, {
-        defaultSortBy: "name",
+        defaultSortBy: "id",
         defaultSortOrder: "asc",
         allowedSorts: {
             id: { id: "asc" },
@@ -17,28 +16,19 @@ export const GET = async (req: Request) => asyncHandler(async () => {
         }
     });
 
-    console.log({ where, orderBy, page, limit, skip })
+    let search = searchParams.get("search")?.trim() || "";
+    search = search.normalize("NFC").replace(/\u200c/g, "");
 
-    const filterKeyPart = generateFilterKeyPart(where);
-    const orderKeyPart = generateOrderKeyPart(orderBy);
-    const cacheKey = `${redisKeys.blogs.all}:page=${page}:limit=${limit}:${filterKeyPart}:${orderKeyPart}`;
+    if (search) {
+        where.OR = [
+            { title: { contains: search, mode: "insensitive" } },
+            { content: { contains: search, mode: "insensitive" } }
+        ];
+    }
 
-    console.log(cacheKey)
-    const cachedBlogs = await cachedData(cacheKey);
-    if (cachedBlogs) return { ...JSON.parse(cachedBlogs) };
-
-    const blogs = await prisma.blog.findMany({ skip, take: limit, orderBy: { createdAt: "desc" } });
+    const blogs = await prisma.blog.findMany({ where, skip, take: limit, orderBy });
+    // console.log('BLOGS', blogs)
     const total = await prisma.blog.count();
-
-    await cacheWithTTL(cacheKey, JSON.stringify({
-        data: blogs,
-        pagination: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit)
-        }
-    }), 300);
 
     return {
         data: blogs,
@@ -70,6 +60,5 @@ export const POST = async (req: Request) => asyncHandler(async () => {
         }
     });
 
-    await delCachedPrefix(redisKeys.blogs.base);
     return { data: blog };
 }, { successStatus: 201, auth: true });

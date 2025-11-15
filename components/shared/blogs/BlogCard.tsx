@@ -11,25 +11,6 @@ interface Props {
 }
 
 const BlogCard = ({ blog, itemClass }: Props) => {
-    // function stripHtml(html: string): string {
-    //     if (!html) return "";
-    //     // Remove all HTML tags including <img>
-    //     let text = html.replace(/<img[^>]*>/g, "").replace(/<[^>]*>/g, "");
-    //     text = text
-    //         .replace(/&nbsp;/g, " ")
-    //         .replace(/&zwnj;/g, "")
-    //         .replace(/&amp;/g, "&")
-    //         .replace(/&lt;/g, "<")
-    //         .replace(/&gt;/g, ">")
-    //         .replace(/&quot;/g, '"')
-    //         .replace(/&#039;/g, "'");
-    //     text = text.replace(/\s+/g, " ").trim();
-    //     if (text.length > 85) return text.substring(0, 85).trim() + "...";
-    //     return text;
-    // }
-
-    // const summary = blog.content.slice(0, 200) + "...";
-
     function cleanHtml(html: string): string {
         if (!html) return "";
         let cleaned = html.replace(/<img[^>]*>/g, ""); // remove img tags
@@ -49,8 +30,7 @@ const BlogCard = ({ blog, itemClass }: Props) => {
         textContent = tempDiv.textContent || tempDiv.innerText || "";
     }
 
-    const truncatedText = textContent.length > 200 ? textContent.slice(0, 200).trim() + "..." : textContent;
-
+    const truncatedText = textContent.length > 80 ? textContent.slice(0, 80).trim() + "..." : textContent;
 
     return (
         <div className={`2xl:w-[calc(24%-8px)] lg:w-[calc(33%-8px)] sm:w-[calc(50%-8px)] p-3 rounded-3xl overflow-hidden flex flex-col ${itemClass}`}>
@@ -85,10 +65,6 @@ const BlogCard = ({ blog, itemClass }: Props) => {
                     {blog.estimatedTimeToRead} دقیقه مدت زمان مطالعه
                 </span>
             </div>
-
-            {/* <p className="text-justify text-sm font-normal flex-1 text-[#787878] ellipsis_text text-wrap">
-                {stripHtml(summary)}
-            </p> */}
 
             <div
                 className="text-justify text-sm font-normal flex-1 text-[#787878] ellipsis_text text-wrap mt-2 leading-relaxed"
