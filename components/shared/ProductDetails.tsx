@@ -170,17 +170,15 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
 
             <Button
               type="button"
-              className={`btn rounded-lg text-white flex_center flex-1 gap-2 ${quantity === 0
-                ? "w-full bg-secondary-600 hover:bg-secondary-700"
-                : "bg-red-500 hover:bg-red-600"
-                }`}
+              className={`btn rounded-lg text-white flex_center flex-1 gap-2 ${(quantity === 0 && product.isActive)
+                ? 'w-full bg-secondary-600 hover:bg-secondary-700'
+                : 'bg-red-500 hover:bg-red-600'}`}
               onClick={quantity === 0 ? handleAddToCart : handleRemoveAllFromCart}
             >
-              {
-                true ? "ناموجود"
-                  : quantity === 0
-                    ? "افزودن به سبد خرید"
-                    : "حذف از سبد خرید"}
+              {!product.isActive ? 'ناموجود'
+                : (quantity === 0
+                  ? "افزودن به سبد خرید"
+                  : "حذف از سبد خرید")}
               {quantity === 0 ? (
                 <ShoppingBag size={16} />
               ) : (

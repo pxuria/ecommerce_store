@@ -45,7 +45,7 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
             discountPercent: Number(cv.discountPercent ?? 0)
         })) ?? [],
         attributes: item?.attributes?.map(a => ({ key: a.key, value: a.value })) ?? [],
-        isActive: item?.isActive ? !!item?.isActive : true
+        isActive: item?.isActive ?? true
     }
 
     const form = useForm<productValues>({
@@ -125,6 +125,8 @@ const ProductForm = ({ item, onClose, onUpdated }: Props) => {
             setLoading(false);
         }
     };
+
+    console.log(form.getValues())
 
     return (
         <Form {...form}>

@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import type { Editor as TinyMCEEditor } from "tinymce";
-
 import { uploadImage } from "@/utils/helpers";
 
 import 'tinymce/tinymce';
@@ -70,11 +69,20 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
         }
     };
 
+    useEffect(() => {
+        if (editorRef.current && value !== editorRef.current.getContent()) {
+            editorRef.current.setContent(value || "");
+        }
+    }, [value]);
+
+
     return (
         <Editor
             onInit={(_, editor) => {
                 editorRef.current = editor;
-                editor.setContent(value || "");
+                setTimeout(() => {
+                    editor.setContent(value || "");
+                }, 100);
             }}
             licenseKey="gpl"
             onEditorChange={(content) => {
@@ -93,7 +101,6 @@ const TextEditor = ({ value, onChange }: TextEditorProps) => {
                 skin: 'oxide',
                 content_css: 'default',
                 images_upload_handler: handleImage,
-                object_resizing: false,
                 branding: false,
                 promotion: false,
                 // file_picker_callback(callback, value, meta) {}
