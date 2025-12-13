@@ -42,7 +42,7 @@ const HeroSlider = () => {
         <section className="max-w-[94%] mx-auto embla" dir='ltr'>
             <div className="overflow-hidden" ref={emblaRef}>
                 <div className="embla__container">
-                    {bannners.length > 0 &&
+                    {bannners?.length > 0 &&
                         bannners.map((item, index) => (
                             <div className="embla__slide" key={index}>
                                 <Image
