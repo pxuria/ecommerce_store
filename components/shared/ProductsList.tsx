@@ -54,15 +54,15 @@ const ProductsList = () => {
 
 
     return (
-        <section className="px-4 md:px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
-            <div className="w-full flex items-start justify-center gap-4 flex-wrap md:flex-nowrap px-0 md:px-4">
+        <section className="px-4 sm:px-10 lg:px-12 mt-10 min-h-[85vh] flex-column items-center justify-between">
+            <div className="w-full flex items-start justify-center gap-4 flex-wrap md:flex-nowrap">
                 {showFilters && (
                     <div className="hidden md:block w-1/4">
                         <Filter />
                     </div>
                 )}
 
-                <div className={`flex items-center justify-end gap-4 flex-wrap md:px-2 ${showFilters ? "w-3/4" : "w-full"}`}>
+                <div className={`flex items-center w-full justify-end gap-4 flex-wrap md:px-2 ${showFilters ? "w-3/4" : "w-full"}`}>
                     <SearchFilter />
                     {showFilters && (
                         <div className="block md:hidden w-full">
@@ -73,14 +73,14 @@ const ProductsList = () => {
                     {loading
                         ? <LottieText text="در حال بارگذاری" itemClass="w-64 h-64" file={productLoading} />
                         : (products.length ? (
-                            <div className="w-full flex items-stretch justify-start gap-2 sm:gap-4 flex-wrap">
+                            <div className="w-full flex items-stretch justify-start sm:gap-3 gap-2 flex-wrap">
                                 {products?.map((item: IProductWithBasePrice) => (
                                     <ProductCard
                                         key={item.id}
                                         product={item}
-                                        itemClass={`w-[calc(50%-8px)] sm:w-[calc(50%-16px)] ${showFilters
-                                            ? "md:w-[calc(33%-16px)]"
-                                            : "lg:w-[calc(33%-16px)] xl:w-[calc(25%-8px)]"
+                                        itemClass={`w-[calc(50%-8px)] md:w-[calc(50%-12px)] ${showFilters
+                                            ? "lg:w-[calc(33%-12px)]"
+                                            : "lg:w-[calc(33%-12px)] xl:w-[calc(25%-12px)]"
                                             }`}
                                     />
                                 ))}

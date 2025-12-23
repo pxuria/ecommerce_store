@@ -91,19 +91,19 @@ const ProductCard = ({ product, itemClass = "" }: Props) => {
                   <span className="text-black text-sm">تومان</span>
                 </div>
 
-                <div className="flex items-end gap-1">
-                  <span className="text-base sm:text-lg font-bold text-secondary-700">
+                <div className="flex items-end gap-1 text-secondary-700">
+                  <span className="text-base sm:text-xl font-bold">
                     {product.finalPrice?.toLocaleString("en-US")}
                   </span>
-                  <span className="text-black text-sm sm:text-base font-bold">تومان</span>
+                  <span className="text-sm sm:text-base font-bold">تومان</span>
                 </div>
               </div>
             ) : (
-              <div className="flex items-end gap-1">
-                <span className="text-base sm:text-lg font-bold">
+              <div className="flex items-end gap-1 text-secondary-700">
+                <span className="text-base sm:text-xl font-bold">
                   {product.basePrice?.toLocaleString("en-US")}
                 </span>
-                <span className="text-black text-sm sm:text-base font-bold">تومان</span>
+                <span className="text-sm sm:text-base font-bold">تومان</span>
               </div>
             )}
           </div>

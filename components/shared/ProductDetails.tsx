@@ -151,7 +151,6 @@ const ProductDetails = ({ product }: { product: IProductWithBasePrice }) => {
                   type="button"
                   className="py-3 px-4 bg-secondary-700 text-white"
                   onClick={handleAddToCart}
-                  disabled={quantity >= 0}
                 >
                   <Plus size={16} />
                 </Button>

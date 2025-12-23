@@ -79,7 +79,7 @@ const BlogsList = () => {
 
 
     return (
-        <section className="px-4 md:px-14 mt-10 min-h-[85vh] flex-column items-center justify-between">
+        <section className="px-4 sm:px-10 lg:px-12 mt-10 min-h-[85vh] flex-column items-center justify-between">
             <div className="flex flex-nowrap w-full">
                 <input
                     id="search"
