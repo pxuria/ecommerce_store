@@ -4,7 +4,7 @@ import { MetadataRoute } from "next";
 export async function GET(): Promise<MetadataRoute.Sitemap> {
   try {
     const { data } = await axiosInstance.get(
-      "https://marincollection.com/api/products"
+      "https://arshianbaft.com/api/products"
     );
     const products = data.data;
     if (!Array.isArray(products)) {
@@ -15,7 +15,7 @@ export async function GET(): Promise<MetadataRoute.Sitemap> {
 
     // Map products to sitemap format
     return products.map((product: { id: string; updatedAt: string }) => ({
-      url: `https://marincollection.com/product/${product.id}`,
+      url: `https://arshianbaft.com/product/${product.id}`,
       lastModified: new Date(product.updatedAt).toISOString(),
     }));
   } catch (error) {
