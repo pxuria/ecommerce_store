@@ -139,7 +139,7 @@ const Footer = () => {
       {/* copy rights */}
       <div className="absolute w-full bg-secondary-700 h-8 bottom-0 right-0 flex_center">
         <span className="text-xs text-white font-medium">
-          تمامی حقوق این سایت متعلق به تلاریو میباشد {year} ©
+          تمامی حقوق این سایت متعلق به عرشیان بافت میباشد {year} ©
         </span>
       </div>
     </footer>
