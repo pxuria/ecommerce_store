@@ -6,8 +6,8 @@ import payLottie from "../public/assets/lotties/pay.json";
 import { Bookmark, Boxes, ChartColumnBig, Gift, Images, LandPlot, Newspaper, Package, Palette, Tag, User, Users } from "lucide-react";
 
 
-export const brandName = 'عرشیان بافت';
-export const enBrandName = 'arshianbaft';
+export const brandName = 'سرای عرشیان بافت';
+export const enBrandName = 'Arshianbaft';
 
 export const navbarLinks = [
   {

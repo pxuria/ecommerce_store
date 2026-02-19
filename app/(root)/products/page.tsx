@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import ProductsList from "@/components/shared/ProductsList";
+import { brandName, enBrandName } from "@/constants";
 
 export const metadata: Metadata = {
-  title: "خرید انواع پارچه با بهترین قیمت | فروشگاه عرشیان بافت (ArshianBaft)",
+  title: `خرید انواع پارچه با بهترین قیمت | فروشگاه ${brandName} (${enBrandName})`,
   description:
     "فروشگاه اینترنتی عرشیان بافت ارائه‌دهنده انواع پارچه مجلسی، نخی، کتانی، مخمل، ساتن و اسپرت با کیفیت بالا و قیمت مناسب. ارسال سریع به سراسر کشور.",
   keywords: [
@@ -19,9 +20,9 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title:
-      "آرشیان بافت | فروشگاه اینترنتی پارچه با کیفیت و قیمت مناسب (ArshianBaft)",
+      `${brandName} | فروشگاه اینترنتی پارچه با کیفیت و قیمت مناسب (${enBrandName})`,
     description:
-      "در آرشیان بافت بهترین پارچه‌ها را برای دوخت لباس، مانتو، کت و دامن با قیمت رقابتی و ارسال سریع تهیه کنید.",
+      `در ${brandName} بهترین پارچه‌ها را برای دوخت لباس، مانتو، کت و دامن با قیمت رقابتی و ارسال سریع تهیه کنید.`,
     type: "website",
     locale: "fa_IR",
     url: "https://arshianbaft.com/products",
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "فروشگاه پارچه آرشیان بافت",
+        alt: `فروشگاه پارچه ${brandName}`,
       },
     ],
   },
