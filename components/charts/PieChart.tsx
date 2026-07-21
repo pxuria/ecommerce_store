@@ -16,13 +16,14 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
-import { ChartDataInput } from "recharts/types/polar/Pie";
+
+type PieChartDatum = Record<string, string | number>
 
 interface Props {
     title: string;
     titleDescription?: string;
     chartConfig: ChartConfig;
-    chartData: ChartDataInput[]
+    chartData: PieChartDatum[]
     dataKey?: string
     nameKey?: string
 }

@@ -8,7 +8,7 @@ import { deleteFromS3 } from '@/utils/server-helpers';
 import { ProductColorVariant } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
-export const defaultIncludes = {
+const defaultIncludes = {
   images: true,
   attributes: true,
   colorVariants: { include: { color: true } },

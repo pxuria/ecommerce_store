@@ -1,5 +1,5 @@
 {
-  "app": "arshianbaft-demo",
+  "app": "arshianbaft",
   "port": 3000,
   "build": {
     "location": "iran"
