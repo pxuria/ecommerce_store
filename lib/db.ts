@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 declare global {
-    // eslint-disable-next-line no-var
-    var __prisma__: PrismaClient | undefined;
+  // eslint-disable-next-line no-var
+  var __prisma__: PrismaClient | undefined;
 }
 
 /**
@@ -10,33 +10,39 @@ declare global {
  * In dev, Next.js hot reloads can create many clients if we don't reuse a global.
  */
 const prisma =
-    global.__prisma__ ??
-    new PrismaClient({
-        log: process.env.NODE_ENV === 'production' ? ['error', 'warn'] : ['query', 'error', 'warn'],
-    });
+  global.__prisma__ ??
+  new PrismaClient({
+    log:
+      process.env.NODE_ENV === "production"
+        ? ["error", "warn"]
+        : ["query", "error", "warn"],
+  });
 
-if (process.env.NODE_ENV !== 'production') {
-    global.__prisma__ = prisma;
+if (process.env.NODE_ENV !== "production") {
+  global.__prisma__ = prisma;
 }
 
 export async function connectDB() {
-    try {
-        if (!process.env.DATABASE_URL) throw new Error('❌ DATABASE_URL is not defined in environment variables');
-        await prisma.$connect();
-        console.log("✅ Prisma connected successfully.")
-        return prisma;
-    } catch (err) {
-        console.error('[DB] Connection error:', err);
-        throw new Error('Database connection failed');
-    }
+  try {
+    if (!process.env.DATABASE_URL)
+      throw new Error(
+        "❌ DATABASE_URL is not defined in environment variables",
+      );
+    await prisma.$connect();
+    console.log("✅ Prisma connected successfully.");
+    return prisma;
+  } catch (err) {
+    console.error("[DB] Connection error:", err);
+    throw new Error("Database connection failed");
+  }
 }
 
 export async function disconnectDB() {
-    try {
-        await prisma.$disconnect();
-    } catch (err) {
-        console.error('[DB] Disconnect error:', err);
-    }
+  try {
+    await prisma.$disconnect();
+  } catch (err) {
+    console.error("[DB] Disconnect error:", err);
+  }
 }
 
 export default prisma;

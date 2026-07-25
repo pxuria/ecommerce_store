@@ -44,7 +44,7 @@ const SearchFilter = () => {
       <button
         type="button"
         onClick={toggleFilters}
-        className="text-nowrap text-white bg-secondary-600 hover:bg-secondary-700 px-4 py-2 rounded-lg"
+        className="text-nowrap text-white bg-secondary-600 hover:bg-secondary-700 px-4 py-2 rounded-lg h-[40px]"
       >
         فیلتر ها
       </button>
